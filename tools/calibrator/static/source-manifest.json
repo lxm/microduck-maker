@@ -1,0 +1,17 @@
+{
+  "repository": "https://github.com/kissqy/Microduck-kissqy",
+  "revision": "3d2b210dae8cd78b20f090fe7bed8c6a49bb7108",
+  "files": {
+    "duck.js": "b393047caf33970aa337200ef5a46e1a58af84611de3b71f565e297739814207",
+    "pose.js": "2ed790562837c8014d5321098c74cba14b4d0b3c2498e7bdaf3d81e045b11350",
+    "pose-state.js": "743c6efe38652f7a8a5fb21465accf7cfed6ae602fd561dfe2f6169c8e022cf1",
+    "calibration-reference.js": "ee256295e0ef8580a278e2f91366c5819a1dca5e2cfb5c57ab1deb79e86dc8e1",
+    "joint-reference.js": "3c8247b750ad21b9f885f5d7c5e489effd0a142db7719d07208966be530bc664",
+    "joint-map.js": "5a4c1bc0142424a0fe277eba9a508485af3ff89e83ac823b3bd899baa432b812",
+    "vendor/three.module.min.js": "e2b5ee6bccd38fd6d8a2428546b83c5f2426d84b152ef82be8055556e3b40eb6",
+    "vendor/three.core.min.js": "61ba0df005b05991361d040d8ff670e1aadfd0ce7aeebd1fdb0725957a8957de",
+    "vendor/OrbitControls.js": "c49106c5bd6b6f75b850ca54aa46a29154c929ce5de6cde6df96057d6edc8b21",
+    "assets/duck-visual.bin": "2051b738abb89cc672923ee9ae4705354e0760ba90238398eb402ba453b06d98",
+    "assets/duck-visual.json": "8922b98bb9ba3c99bc18f936a42abdbfe87cc045d18200e5948c99ee841f573f"
+  }
+}

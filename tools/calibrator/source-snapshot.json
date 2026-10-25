@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-25",
+  "description": "Existing HD1910 calibration runtime, tests and outer UI copied unchanged into the maker repository. Documentation and CI are adapted for independent publication.",
+  "files": {
+    "agent.py": "abb771698bd161dd34defeecad29fd51cef0933aa05f06604081f7dc02ddf652",
+    "core.py": "0bbeba0c6f22cd870748f761f1baed90f8b3ecc11d16be3b45f6739b315011ae",
+    "gait_test.py": "68296bc804aa4f95ae00b638205d0238b2680816966207828458b282eb8feb56",
+    "limit_probe.py": "83bbaee22e29aa5541b199c038de3772ce5db962e4fecdf5d776eb5b82b324ff",
+    "run-gait-test.sh": "6ea87b911126d4fe4359e9857ea3d8e45f4ccda1bea3c7bf621d58e0461ba879",
+    "run.sh": "02123e9c563650b8794d45e683c39560ec11acbc9c19f5d8d291d1f324a90ca1",
+    "server.py": "cdad1639dd472ba73986227d883ccd8618f427d0f867afc510a7e7cd1077e00e",
+    "storage.py": "91afca9108fd50e66387ed1b52f5e5b9cdbf6ff66571b659191a434b3febb156",
+    "test_calibrator.py": "0bf42e178e990b00c7d0428031dc05de6fcba1f73c21890a98298ef2d98d81b4",
+    "test_gait_test.py": "514ac178604b384c3888598118d2ac542f5d83b4a26001588cac2f9227e6d830",
+    "test_limit_probe.py": "ed3ca8d892c414b8deba4e4f7dca7bf3fd5378949cf14dba6ad19d5d0c2a5526",
+    "test_serial_adapter.py": "23852220d9019ec1b5ecce2baadd545a4d35f2bd40a4ddb4299c132ff248d84f",
+    "test_zero.py": "48a993a53153727fcc54971f544bee23e243acbb32bea1bada1d8ba796d58fd4",
+    "zero.py": "997fb44547e7d106c8884a842a9093682b78476cd7eec3652ad143f9ad209637",
+    "static/app.css": "2aac465f6e13724e01bb8189eea57b6975a67cbd8e98e688299c3a42eaf4d0e5",
+    "static/app.js": "8f2c91619eb1c527e09b402c128145f8dd2801faa9adee32b198da61ea296c78",
+    "static/index.html": "ba8e70f1897bdbc71690c20c834df7a915b7609f6fb2d5b470b219e995d20749",
+    "static/view.js": "8e02e61e5f08a2bcc821911c0d665aadc609387a60f1c18e75d657b56d70dfe6"
+  }
+}
