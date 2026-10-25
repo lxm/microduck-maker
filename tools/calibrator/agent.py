@@ -107,8 +107,6 @@ class SerialBus:
         return self.packet(sid,2,bytes([addr,n]))
     def write(self,sid,addr,data):
         # Independent final wire guard. Never offer CAL, sync-write or broadcast.
-        if getattr(self,'measurement_only',False) and addr not in (40,42,48,50,51):
-            raise CalibrationError('限位测量禁止写 EEPROM')
         allowed=(addr in (31,42,48) and len(data)==2) or (addr in (50,51) and len(data)==1) or (addr in (40,55) and list(data) in ([0],[1]))
         if not allowed:raise CalibrationError('禁止的写寄存器')
         try:return self.packet(sid,3,bytes([addr])+bytes(data))[0]
@@ -160,17 +158,15 @@ class Maintenance:
         return dict(**self.session.status(),backup=str(self.journal.path),mode='hardware',serial_port=self.port)
     def handle(self,req):
         action=req.get('action')
+        if action=='probe':raise CalibrationError('自动找限位已移除，请刷新页面')
+        if action=='zero' and ('ids' in req or 'detached_output' in req):
+            raise CalibrationError('单独舵机对中已移除，请使用整体零位检查')
         if action=='enter':
             if req.get('supported') is not True:raise CalibrationError('先把小鸭固定在支架上，腿部留出空间')
             return self.enter()
         if not self.session:raise CalibrationError('尚未进入标定会话')
-        if action=='status':
-            if not (self.session.probe and self.session.probe.running()):self.session.advance_zero()
-        elif action=='probe':
-            self.session.start_probe(sid=req.get('id'),direction=req.get('direction'),
-                travel_deg=req.get('travel_deg',10),speed_deg_s=req.get('speed_deg_s',1),
-                torque_limit=req.get('torque_limit',100),repeats=req.get('repeats',3),confirmed=req.get('confirmed'))
-        elif action=='zero':self.session.start_zero(req.get('confirmed'),ids=req.get('ids'),detached_output=req.get('detached_output',False),speed_deg_s=3 if req.get('ids') is not None else 5,wait_for_feedback=req.get('ids') is not None)
+        if action=='status':self.session.advance_zero()
+        elif action=='zero':self.session.start_zero(req.get('confirmed'))
         elif action=='sample':self.session.sample(req.get('id'),0,req.get('endpoint'))
         elif action=='apply':self.session.apply(req.get('token'))
         elif action=='undo':self.session.undo(req.get('id'))
@@ -182,18 +178,6 @@ class Maintenance:
         elif action=='finish':return self.close()
         else:raise CalibrationError('不支持的操作')
         return self.status()
-    def tick_probe(self,last_request):
-        probe=self.session.probe if self.session else None
-        if not probe or not probe.running():return
-        try:
-            from limit_probe import HEARTBEAT_SECONDS
-            if time.monotonic()-last_request>HEARTBEAT_SECONDS:
-                probe.abort('页面心跳超过2秒未更新，已停止探测')
-            else:self.session.advance_probe()
-        except Exception:
-            # advance/abort records the fault and attempts OFF. Keep stdio's
-            # request/reply alignment; the next status returns the terminal result.
-            pass
     def close(self):
         if self.closed:return dict(closed=True)
         safe=not self.daemon_stopped
@@ -245,19 +229,17 @@ def main():
     def stop(*_):raise SystemExit(0)
     signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGHUP,stop)
     print(json.dumps(dict(ready=True)),flush=True)
-    last_request=next_probe=time.monotonic()
     try:
         while not m.closed:
             # Browser heartbeat is forwarded by the local server. SSH alive alone
             # must not keep an unattended calibration pose energised forever.
-            probing=bool(m.session and m.session.probe and m.session.probe.running())
-            readable,_,_=select.select([sys.stdin],[],[],.05 if probing else (12 if m.session else 60))
-            if not readable and not probing:break
+            readable,_,_=select.select([sys.stdin],[],[],12 if m.session else 60)
+            if not readable:break
             if readable:
                 line=sys.stdin.readline()
                 if not line:break
                 try:
-                    req=json.loads(line);last_request=time.monotonic();result=m.handle(req)
+                    req=json.loads(line);result=m.handle(req)
                     print(json.dumps(dict(ok=True,result=result),ensure_ascii=False),flush=True)
                 except Exception as exc:
                     extra=''
@@ -266,9 +248,6 @@ def main():
                         except Exception as off_error:extra='；'+str(off_error)
                     print(json.dumps(dict(ok=False,error=str(exc)+extra,result=m.status() if m.session else None),ensure_ascii=False),flush=True)
                     if not m.session:break
-            if time.monotonic()>=next_probe:
-                m.tick_probe(last_request)
-                next_probe=time.monotonic()+.1
     finally:
         result=m.close()
         print(json.dumps(dict(closed=result),ensure_ascii=False),flush=True)

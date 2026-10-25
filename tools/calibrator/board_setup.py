@@ -152,6 +152,7 @@ def prepare(allow_install=True):
         raise RuntimeError('板端环境准备需要 Linux 与 sudo -n 权限')
     if not shutil.which('systemctl'):
         raise RuntimeError('板端缺少 systemctl，请核对运行环境')
+    print('板端 Python ' + sys.version.split()[0] + '；正在检查 systemctl、fuser 和 pyserial…', file=sys.stderr, flush=True)
     installed = []
     if not shutil.which('fuser'):
         if not allow_install:
@@ -160,9 +161,11 @@ def prepare(allow_install=True):
         installed.append('psmisc')
     python = sys.executable
     if serial_available(python):
+        print('系统 Python 的 pyserial 可用，无需安装。', file=sys.stderr, flush=True)
         source = 'system'
     elif serial_available(VENV / 'bin/python'):
         python = str(VENV / 'bin/python')
+        print('已有独立环境的 pyserial 可用。', file=sys.stderr, flush=True)
         source = 'isolated-venv'
     else:
         if not allow_install:
@@ -183,6 +186,7 @@ def prepare(allow_install=True):
         installed.append('pyserial==3.5')
     if not shutil.which('fuser'):
         raise RuntimeError('fuser 安装后核验失败')
+    print('开始被动发现串口与 robotd 当前端口，不打开 UART…', file=sys.stderr, flush=True)
     # Use the selected interpreter for discovery, so its pySerial USB metadata is available.
     result = subprocess.run([python, str(Path(__file__).resolve()), '--discover'],
                             capture_output=True, text=True, check=True, timeout=15)

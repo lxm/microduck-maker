@@ -33,7 +33,7 @@ robotd
 
 串口描述与 USB 元数据使用 [pySerial 的 list_ports 接口](https://pyserial.readthedocs.io/en/latest/tools.html#serial-tools-list-ports)，并补充枚举板载 UART 与稳定别名节点。
 
-已有可用 pyserial 时使用现有解释器；缺少时使用 `/opt/robot/microduck-calibrator/venv/` 内固定的 `pyserial==3.5`。venv Python 会用于发现和实际维护代理，避免“安装到了一个 Python，运行时却用了另一个”。不使用全局 pip 或 `--break-system-packages`；系统依赖由 apt-get 安装。安装过程写入电脑记录目录的 `setup-stderr.log`。
+已有可用 pyserial 时使用现有解释器；缺少时使用 `/opt/robot/microduck-calibrator/venv/` 内固定的 `pyserial==3.5`。venv Python 会用于发现和实际维护代理，避免“安装到了一个 Python，运行时却用了另一个”。不使用全局 pip 或 `--break-system-packages`；系统依赖由 apt-get 安装。连接、上传、检查和安装过程实时显示在页面的“SSH 环境检查日志”中，同时写入电脑记录目录的 `setup-stderr.log`。
 
 加 `--no-install-deps` 可关闭自动安装；已有系统/独立环境可以继续使用，缺少依赖则报错并保留原控制服务。非 apt 系统需预装 venv 和 fuser，或自行在板端准备 pyserial；不自动升级 Python 本体。
 
@@ -51,7 +51,7 @@ Zero 3W 的公开启动示例使用 `--eeprom-only`。此模式不访问上述�
 
 ## 只读预检
 
-将 `agent.py`、`core.py`、`storage.py`、`limit_probe.py` 放到板端同一目录，在该目录执行：
+将 `agent.py`、`core.py`、`storage.py`、`board_setup.py` 放到板端同一目录，在该目录执行：
 
 ```sh
 sudo python3 agent.py --serial-port /dev/ttyS2 --check

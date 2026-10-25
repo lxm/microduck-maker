@@ -163,17 +163,17 @@ class RemotePreparationTests(unittest.TestCase):
     def test_preparation_does_not_start_maintenance(self):
         with tempfile.TemporaryDirectory() as d:
             remote=self.remote(d);remote.dest='/tmp/duck-calibrator-test'
-            with patch('server.subprocess.run',return_value=Mock(returncode=0,stdout=json.dumps(found('/dev/ttyS2')))) as run,patch('server.subprocess.Popen') as popen:
+            with patch.object(remote,'setup_command',return_value=found('/dev/ttyS2')) as run,patch('server.subprocess.Popen') as popen:
                 result=remote.prepare()
             self.assertTrue(result['ready']);popen.assert_not_called()
             command=shlex.split(run.call_args.args[0][-1])
-            self.assertEqual(command[:3],['sudo','-n','python3'])
-            self.assertTrue(command[3].endswith('/board_setup.py'))
+            self.assertEqual(command[:4],['sudo','-n','python3','-u'])
+            self.assertTrue(command[4].endswith('/board_setup.py'))
 
     def test_failed_preparation_never_launches_agent(self):
         with tempfile.TemporaryDirectory() as d:
             remote=self.remote(d);remote.dest='/tmp/duck-calibrator-test'
-            with patch('server.subprocess.run',return_value=Mock(returncode=1,stdout=json.dumps({'ok':False,'error':'offline'}))),patch('server.subprocess.Popen') as popen:
+            with patch.object(remote,'setup_command',return_value={'ok':False,'error':'offline'}),patch('server.subprocess.Popen') as popen:
                 with self.assertRaisesRegex(CalibrationError,'尚未停止控制服务'):remote.start()
             popen.assert_not_called()
 

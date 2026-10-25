@@ -9,7 +9,7 @@ $('connection').hidden=info.mode!=='hardware';
 if(info.auto_install===false)$('dependency-note').textContent='自动安装已关闭。检查主板已有依赖并发现串口；此步骤不停止控制服务、不打开串口。';
 $('mode').textContent=info.mode==='demo'?'模拟演示 · 未连接实机':'实机模式 · '+info.host;
 $('enter').textContent=info.mode==='demo'?'开始模拟标定':'连接并进入标定';
-$('notice').textContent=info.mode==='demo'?'模拟模式：所有读数与使能均为模拟，不连接小鸭。':(info.eeprom_only?'手动标定：零位 → 2048，保存到舵机 EEPROM；自动找限位：只测量，不写 EEPROM。保留备份日志，不读写 TOML。':'')+'进入后会核验断力、备份零位，并暂停手柄与 robotd；请在支架上操作。';
+$('notice').textContent=info.mode==='demo'?'模拟模式：所有读数与使能均为模拟，不连接小鸭。':(info.eeprom_only?'手动标定：零位 → 2048，保存到舵机 EEPROM。保留备份日志，不读写 TOML。':'')+'进入后会核验断力、备份零位，并暂停手柄与 robotd；请在支架上操作。';
 if(info.active&&info.state?.servos){state=info.state;active=true;sessionStarted=true;}
 function current(){return state?.servos?.find(x=>x.id===selected);}
 function renderConnection(){
@@ -32,35 +32,44 @@ function renderConnection(){
   (preparation?.ready?`板端依赖就绪 · 发现 ${preparation.ports.length} 个串口${preparation.installed?.length?' · 已安装 '+preparation.installed.join('、'):''}。`+
    (preparation.ports.length>1&&!preparation.runtime_port?(choices.value?'已选择 '+choices.value+'。':'请明确选择舵机总线串口。'):'进入标定前会再次核对串口。'):'尚未检查主板环境。');
 }
+let setupLogTimer=null,setupLogRequest=null;
+async function readSetupLog(){
+ if(setupLogRequest)return setupLogRequest;
+ setupLogRequest=(async()=>{
+  try{
+   const response=await fetch('/api/setup-log');if(!response.ok)throw Error('HTTP '+response.status);
+   const log=await response.json(),element=$('setup-log');
+   const follow=element.scrollHeight-element.scrollTop-element.clientHeight<35;
+   const content=log.lines.join('\n');
+   if(content&&element.textContent!==content){element.textContent=content;if(follow)element.scrollTop=element.scrollHeight;}
+   $('setup-log-state').textContent=log.running?'进行中…':log.run?'已结束':'';
+   if(log.running&& !setupLogTimer){$('setup-log-panel').open=true;setupLogTimer=setInterval(readSetupLog,600);}
+   if(!log.running&&!busy&&setupLogTimer){clearInterval(setupLogTimer);setupLogTimer=null;}
+  }catch(e){$('setup-log-state').textContent='日志读取失败：'+e.message;}
+ })();
+ try{await setupLogRequest;}finally{setupLogRequest=null;}
+}
+function startSetupLog(){
+ $('setup-log-panel').open=true;$('setup-log-state').textContent='正在连接…';
+ if(!setupLogTimer)setupLogTimer=setInterval(readSetupLog,600);
+}
+async function finishSetupLog(){
+ if(setupLogTimer)clearInterval(setupLogTimer);setupLogTimer=null;
+ if(setupLogRequest)await setupLogRequest;
+ await readSetupLog();
+}
 async function prepareBoard(){
  if(busy||active)return;
- busy=preparing=true;setupMessage='';preparation=null;render();$('error').hidden=true;
+ busy=preparing=true;setupMessage='';preparation=null;render();$('error').hidden=true;startSetupLog();
  try{
   const response=await fetch('/api/action',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':info.csrf},body:JSON.stringify({action:'prepare'})});
   const data=await response.json();if(!data.ok)throw Error(data.error);
   preparation=data.result;
  }catch(e){setupMessage='环境准备失败；控制服务未停止。'+e.message;$('error').textContent=e.message;$('error').hidden=false;}
- finally{busy=preparing=false;render();}
+ finally{await finishSetupLog();busy=preparing=false;render();}
 }
 function zeroRunning(){return ['arming','moving'].includes(state?.zero_check?.phase);}
-function probeRunning(){return active&&['arming','seeking','returning'].includes(state?.limit_probe?.phase);}
-for(const [i,id] of ids.entries()){const o=document.createElement('option');o.value=id;o.textContent=`ID${id} · ${names[i]}`;$('probe-joint').append(o);}
-function selectJoint(id){selected=id;$('clear').checked=$('probe-clear').checked=false;$('probe-direction').value='';if(id===34)pose='zero';render();view?.set(selected,pose);}
-function renderProbe(){
- const p=state?.limit_probe,running=probeRunning();
- $('probe-joint').value=selected;
- for(const id of ['probe-joint','probe-direction','probe-travel','probe-speed','probe-output','probe-repeats','probe-clear'])$(id).disabled=busy||running||zeroRunning();
- $('probe-start').disabled=busy||!active||!state?.limit_probe_supported||state?.fault||running||zeroRunning()||state?.all_torque_off!==true||!$('probe-clear').checked||!$('probe-direction').value;
- $('probe-stop').disabled=!sessionStarted;
- const label=p?`ID${p.id} · ${names[ids.indexOf(p.id)]}`:'';
- const phase={arming:'准备低输出保持',seeking:'接近疑似限位',returning:'退回起点',complete:'重复测量完成',cancelled:'测量已取消',no_contact:'搜索范围内未找到疑似限位',failed:'测量中止'};
- $('probe-status').textContent=p?`${label} · ${phase[p.phase]||p.phase}\n已测 ${p.samples.length} / ${p.repeats} 次 · 起点 ${p.origin_raw} → 搜索边界 ${p.end_raw} · 实测 ${p.position_raw} · 目标 ${p.goal_raw}\n${p.error||p.note}${p.eeprom_unchanged===true?' · EEPROM 已核对未变':''}${!active?' · 历史记录':''}`:
- !active?'连接并进入标定后可用；不会计算或保存零位。':state?.limit_probe_supported?'选择方向，确认全部断力后开始。只会驱动所选关节。':'请结束旧会话，再连接以加载限位探测功能。';
- const stats=p?.statistics;
- $('probe-stats').textContent=stats?`疑似接触点：${p.samples.map(x=>x.position_raw).join(' / ')} 计数\n最大差值 ${stats.spread_counts} 计数（${stats.spread_deg.toFixed(3)}°） · 标准差 ${stats.std_counts.toFixed(2)} 计数（${stats.std_deg.toFixed(3)}°）\n${stats.count<2?'只有一个样本，暂不能判断重复性。':'这些数值只反映本次条件下的重复性，不表示限位角度或机械零位准确。'}`:'完成至少两次测量后对比重复性。1 计数约 0.088°。';
- $('probe-readings').replaceChildren();
- for(const sample of p?.samples||[]){const tr=document.createElement('tr');for(const value of [sample.round,sample.position_raw,sample.from_start_deg.toFixed(3),sample.goal_error_counts,sample.voltage.toFixed(1)+' V',sample.temperature+' °C']){const td=document.createElement('td');td.textContent=value;tr.append(td);}$('probe-readings').append(tr);}
-}
+function selectJoint(id){selected=id;$('clear').checked=false;if(id===34)pose='zero';render();view?.set(selected,pose,true);}
 function render(){
  renderConnection();
  $('joints').replaceChildren();
@@ -69,7 +78,7 @@ function render(){
   const b=document.createElement('button');b.className=id===selected?'selected':'';b.dataset.id=id;b.setAttribute('aria-current',String(id===selected));
   const label=document.createElement('span');label.textContent=`ID${id} · ${names[i]}`;
   const st=document.createElement('span');st.className='joint-state';st.textContent=state?.held?.includes(id)?'● 保持':state?.completed?.[id]?'✓':'○';if(state?.held?.includes(id))st.classList.add('amber');
-  b.append(label,st);b.disabled=probeRunning();b.onclick=()=>selectJoint(id);$('joints').append(b);
+  b.append(label,st);b.onclick=()=>selectJoint(id);$('joints').append(b);
  });
  const r=current(),held=state?.held?.includes(selected),saved=Boolean(state?.completed?.[selected]),pending=state?.pending?.id===selected?state.pending:null;
  $('joint-title').textContent=`ID${selected} · ${names[ids.indexOf(selected)]}`;
@@ -85,16 +94,14 @@ function render(){
  $('enter').disabled=busy||active||!$('supported').checked||(info.mode==='hardware'&&(!preparation?.ready||!$('serial-port').value));
  $('finish').disabled=busy||!sessionStarted;$('relax').disabled=!sessionStarted;
  $('zero-stop').disabled=!sessionStarted;
- $('zero-all').disabled=busy||!active||!state?.zero_inspection_supported||zeroRunning()||probeRunning()||!$('zero-clear').checked;
- $('zero-ankles').disabled=$('zero-all').disabled||!state?.all_torque_off;
+ $('zero-all').disabled=busy||!active||!state?.zero_inspection_supported||zeroRunning()||!$('zero-clear').checked;
  const z=state?.zero_check;
  $('zero-status').textContent=!active?'进入标定后可用；无需在本次会话重新标定所有关节。':!state?.zero_inspection_supported?'请先结束旧会话，再重新连接以使用全部回零功能。':!z?(info.eeprom_only&&!state?.completed?.['34']?'仅 EEPROM 模式：身体可逐颗标定；全部回零前需在本次会话完成嘴部闭合、张开两端点标定。':'就绪 · 归零只使用舵机已保存的零位，不改写标定。'):
  z.phase==='arming'?`正在逐颗接入保持 ${z.armed} / ${z.ids?.length||15} · 可随时全部断力`:
  z.phase==='moving'?`正在缓慢归零 ${z.progress}% · 距零位最大 ${z.max_error_deg.toFixed(2)}°`:
  z.phase==='holding'?`ID ${(z.ids||ids).join("、")} 已回零并保持 · 实测最大误差 ${z.max_error_deg.toFixed(2)}°`:
  z.phase==='failed'?`归零未完成：${z.error} · 请核对断力状态`:'归零已停止 · 再次开始需要重新勾选确认';
- if(zeroRunning()||probeRunning())for(const id of ['sample','closed','open','apply','hold','release','undo'])$(id).disabled=true;
- $('next').disabled=probeRunning();
+ if(zeroRunning())for(const id of ['sample','closed','open','apply','hold','release','undo'])$(id).disabled=true;
  $('offsets').textContent=r?`EEPROM 原始值 ${r.initial_offset_raw} → 当前 ${r.offset_raw}。身体 2048 = 机械零位，方向 −1；程序不再叠加此偏移。方向、限位与 IMU 安装矩阵不在此工具内改动。`:'尚未读取零位';
  $('preview').className='preview'+(pending?' ready':'');
  $('preview').textContent=pending?`已稳定采样：${pending.position} 计数\n零位偏移调整 ${(pending.correction_counts*360/4096).toFixed(2)}° · 30 秒内保持不动并保存${pending.mouth?'\n嘴部开度 '+((2048-pending.mouth.open_raw)*360/4096).toFixed(1)+'°':''}`:saved?'本次零位已保存。保持在刚标定的位置，可单独使能。':selected===34&&state?.mouth_closed?'闭嘴已采样，请手动张开后记录第二个端点。':'采样后显示零位改变量。';
@@ -103,7 +110,7 @@ function render(){
  $('reference-note').textContent=pose==='home'?'HOME 是站立目标，不是机械零位。请切回“机械零位 0°”再采样保存。':'只需对齐选中关节两侧的结构关系；其余真实关节不用同时摆成图中的姿势。';
  if(pose!=='zero')$('sample').disabled=$('closed').disabled=$('open').disabled=true;
  if(state?.backup)$('backup').textContent='备份：'+state.backup;
- if(active&&state?.verified_at)$('live').textContent=`最近核验 ${new Date(state.verified_at*1000).toLocaleTimeString()} · ${state.held?.length||0} 颗保持 · ${probeRunning()?'板端正在推进限位测量':zeroRunning()?'正在连续读取归零反馈':'页面每 3 秒读取'}`;
+ if(active&&state?.verified_at)$('live').textContent=`最近核验 ${new Date(state.verified_at*1000).toLocaleTimeString()} · ${state.held?.length||0} 颗保持 · ${zeroRunning()?'正在连续读取归零反馈':'页面每 3 秒读取'}`;
  $('readings').replaceChildren();
  for(const row of state?.servos||[]){
   const tr=document.createElement('tr');
@@ -111,13 +118,12 @@ function render(){
   values.forEach((value,i)=>{const td=document.createElement('td');td.textContent=value;if(i===2&&state.held?.includes(row.id))td.className='amber';tr.append(td);});$('readings').append(tr);
  }
  $('overview-state').textContent=active?`${Object.keys(state?.completed||{}).length} 颗已保存 · ${state?.held?.length||0} 颗保持`:'没有实时会话 · 请勿把历史读数当作当前状态';
- renderProbe();
 }
 async function action(name,extra={},quiet=false){
  let recovered=false;
  if(busy&&name!=='relax')return;const sequence=++requestSequence;busy=true;render();if(!quiet)$('error').hidden=true;
+ if(name==='enter'&&info.mode==='hardware')startSetupLog();
  if(name==='zero'||name==='relax')$('zero-clear').checked=false;
- if(name==='probe'||name==='relax')$('probe-clear').checked=false;
  try{
   const resp=await fetch('/api/action',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':info.csrf},body:JSON.stringify({action:name,motion_token:info.motion_token,...extra})});
   const data=await resp.json();if(sequence!==requestSequence)return;if(data.motion_token)info.motion_token=data.motion_token;
@@ -128,14 +134,9 @@ async function action(name,extra={},quiet=false){
   else{state=data.result;active=true;sessionStarted=true;}
   if(name==='apply'||name==='hold')$('clear').checked=false;
  }catch(e){if(sequence===requestSequence){$('error').textContent=e.message;$('error').hidden=false;if(quiet&&!recovered){active=false;$('live').textContent='连接/核验中断，状态未知；请托稳。';}}}
- finally{if(sequence===requestSequence){busy=false;render();}}
+ finally{if(name==='enter'&&info.mode==='hardware')await finishSetupLog();if(sequence===requestSequence){busy=false;render();}}
 }
 $('supported').onchange=$('clear').onchange=$('zero-clear').onchange=render;
-$('probe-clear').onchange=render;
-$('probe-joint').onchange=()=>selectJoint(Number($('probe-joint').value));
-for(const id of ['probe-direction','probe-travel','probe-speed','probe-output','probe-repeats'])$(id).onchange=()=>{$('probe-clear').checked=false;render();};
-$('probe-start').onclick=()=>action('probe',{id:selected,direction:Number($('probe-direction').value),travel_deg:Number($('probe-travel').value),speed_deg_s:Number($('probe-speed').value),torque_limit:Number($('probe-output').value),repeats:Number($('probe-repeats').value),confirmed:$('probe-clear').checked});
-$('probe-stop').onclick=()=>action('relax');
 $('prepare').onclick=prepareBoard;
 $('serial-port').onchange=render;
 $('enter').onclick=()=>action('enter',{supported:$('supported').checked,serial_port:$('serial-port').value||info.serial_port});
@@ -147,12 +148,12 @@ $('hold').onclick=()=>action('hold',{id:selected,clear:$('clear').checked});
 $('release').onclick=()=>action('release',{id:selected});
 $('undo').onclick=()=>action('undo',{id:selected});
 $('relax').onclick=()=>action('relax');$('finish').onclick=()=>action('finish');
-$('zero-ankles').onclick=()=>action('zero',{confirmed:$('zero-clear').checked,ids:[14,24],detached_output:$('ankles-detached').checked});
 $('zero-all').onclick=()=>action('zero',{confirmed:$('zero-clear').checked});
 $('zero-stop').onclick=()=>action('relax');
 $('next').onclick=()=>{pose='zero';selectJoint(ids[(ids.indexOf(selected)+1)%ids.length]);};
 document.querySelectorAll('[data-pose]').forEach(b=>b.onclick=()=>{pose=b.dataset.pose;render();view?.set(selected,pose);});
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>view?.camera(b.dataset.view));
-render();let lastPoll=0;setInterval(()=>{if(active&&!busy&&performance.now()-lastPoll>((zeroRunning()||probeRunning())?200:3000)){lastPoll=performance.now();action('status',{},true);}},200);
-try{view=await createView();view.set(selected,pose);$('model-loading').hidden=true;window.calibratorReady=true;}
+if(info.mode==='hardware')readSetupLog();
+render();let lastPoll=0;setInterval(()=>{if(active&&!busy&&performance.now()-lastPoll>(zeroRunning()?200:3000)){lastPoll=performance.now();action('status',{},true);}},200);
+try{view=await createView();view.set(selected,pose,true);$('model-loading').hidden=true;window.calibratorReady=true;}
 catch(e){$('model-loading').textContent='三维模型未加载：'+e.message;}

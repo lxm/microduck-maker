@@ -43,64 +43,22 @@ class ZeroCliTests(unittest.TestCase):
         self.s.relax_all()
         self.assertTrue(all(r[40]==0 and r[48:52]==original[sid][48:52] for sid,r in self.bus.rows.items()))
 
-    def test_selected_ankles_only_no_mouth_or_eeprom_changes(self):
-        self.s.mouth=None
-        self.bus.rows[20][56:58]=list((1000).to_bytes(2,'little'))
-        original=copy.deepcopy(self.bus.rows)
-        self.s.start_zero(True,ids=[14,24],speed_deg_s=3,wait_for_feedback=True)
-        for _ in range(300):
-            self.tick()
-            if not self.s.zero_running():break
-        self.assertEqual(self.s.zero_check['phase'],'holding')
-        self.assertEqual(self.s.held,{14,24})
-        self.assertEqual({sid for sid,_,_ in self.bus.writes},{14,24})
-        self.assertFalse(any(addr in (31,55) for _,addr,_ in self.bus.writes))
-        self.s.config_commit.assert_not_called()
-        for sid in IDS:
-            if sid in (14,24):
-                self.assertEqual(word(self.bus.rows[sid],42),2048)
-                self.assertEqual(word(self.bus.rows[sid],56),2048)
-            else:self.assertEqual(self.bus.rows[sid],original[sid])
-        self.assertEqual(self.s.zero_check['max_error_deg'],0)
+    def test_removed_subset_and_detached_arguments_never_write(self):
+        for options in ({'ids':[14,24]},{'detached_output':True}):
+            with self.assertRaises(TypeError):self.s.start_zero(True,**options)
+        self.assertFalse(self.bus.writes)
 
-    def test_selected_outside_range_refused_before_writes(self):
+    def test_outside_range_refused_before_writes(self):
         self.bus.rows[14][56:58]=list((2897).to_bytes(2,'little'))
         with self.assertRaisesRegex(CalibrationError,'ID14 当前超出'):
-            self.s.start_zero(True,ids=[14,24])
+            self.s.start_zero(True)
         self.assertFalse(self.bus.writes)
 
-    def test_detached_ankle_centers_from_outside_assembly_range(self):
-        self.s.mouth=None
-        self.bus.rows[14][56:58]=list((2897).to_bytes(2,'little'))
-        self.s.start_zero(True,ids=[14,24],detached_output=True,speed_deg_s=3,wait_for_feedback=True)
-        for _ in range(1000):
-            self.tick()
-            if not self.s.zero_running():break
-        self.assertEqual(self.s.zero_check['phase'],'holding')
-        self.assertEqual(self.s.held,{14,24})
-        self.assertEqual({sid for sid,_,_ in self.bus.writes},{14,24})
-        self.assertFalse(any(addr in (31,55) for _,addr,_ in self.bus.writes))
-        self.assertTrue(all(word(self.bus.rows[sid],56)==2048 for sid in (14,24)))
-
-    def test_detached_requires_explicit_body_ids(self):
-        for ids in (None,[34],[14,34]):
-            with self.assertRaises(CalibrationError):
-                self.s.start_zero(True,ids=ids,detached_output=True)
-        self.assertFalse(self.bus.writes)
-
-    def test_invalid_selected_ids_refused(self):
-        for ids in ([],[14,14],[254],[True],'14,24'):
-            with self.assertRaises(CalibrationError):self.s.start_zero(True,ids=ids)
-        self.assertFalse(self.bus.writes)
-
-    def test_selected_cancel_never_resumes(self):
-        self.s.start_zero(True,ids=[14,24])
-        self.tick()
-        self.s.relax_all()
-        self.bus.writes=[]
+    def test_cancel_never_resumes(self):
+        self.s.start_zero(True)
+        self.tick();self.s.relax_all();self.bus.writes=[]
         for _ in range(3):self.tick()
-        self.assertFalse(self.bus.writes)
-        self.assertFalse(self.s.held)
+        self.assertFalse(self.bus.writes);self.assertFalse(self.s.held)
 
     def test_existing_lower_limit_never_raised(self):
         self.bus.rows[30][48:50]=list((250).to_bytes(2,'little'))

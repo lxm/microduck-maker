@@ -134,7 +134,6 @@ class Session:
         self.completed={}
         self.held=set()
         self.zero_check=None
-        self.probe=None
         self.fault=None
         self.verified_at=time.time()
         self.save('initial',dict(registers=self.initial,mouth=mouth,time=time.time()))
@@ -152,7 +151,6 @@ class Session:
     def status(self):
         return dict(all_torque_off=not self.held,held=sorted(self.held),fault=self.fault,verified_at=self.verified_at,completed=self.completed,pending=self.pending,
             zero_check=copy.deepcopy(self.zero_check),zero_inspection_supported=True,
-            limit_probe=copy.deepcopy(self.probe.result) if self.probe else None,limit_probe_supported=True,
             mouth_closed=self.mouth_closed,servos=[dict(id=sid,name=NAMES[sid],
                 position=word(self.current[str(sid)],56),offset_raw=word(self.current[str(sid)],31),
                 angle_deg=(2048-word(self.current[str(sid)],56))*360/4096,
@@ -288,14 +286,11 @@ class Session:
 
     def relax_all(self):
         # Cancel first: a later status poll must never resume an interrupted move.
-        probe_sid=self.probe.result['id'] if self.probe else None
-        probe_cancelled=bool(self.probe and self.probe.running())
-        if probe_cancelled:self.probe.result['phase']='cancelled'
         if self.zero_check and self.zero_check['phase'] in ('arming','moving','holding'):
             self.zero_check['phase']='cancelled'
         errors=[];self.pending=None
         # Attempt every ID even when one does not answer. No early abort.
-        for sid in ([probe_sid]+[s for s in IDS if s!=probe_sid] if probe_sid else IDS):
+        for sid in IDS:
             try:write_checked(self.bus,sid,40,[0])
             except Exception as e:errors.append(f'ID{sid}: {e}')
         if not errors:
@@ -308,11 +303,7 @@ class Session:
             self.fault='断力/恢复未全部确认；保持托稳并切断主电源。'+'；'.join(errors)
             raise CalibrationError(self.fault)
         self.held.clear();self.current=snapshot(self.bus);self.verified_at=time.time()
-        if self.probe and getattr(self.bus,'measurement_only',False):
-            self.probe.verify_eeprom(self.current)
-            self.bus.measurement_only=False
         self.save('all-off',dict(registers=self.current))
-        if probe_cancelled:self.save('limit-probe-cancelled',copy.deepcopy(self.probe.result))
         return self.status()
 
     def refresh(self):
@@ -336,23 +327,10 @@ class Session:
         return self.zero_check is not None and self.zero_check['phase'] in ('arming','moving')
 
     def require_idle(self):
-        if self.probe and self.probe.running():
-            raise CalibrationError('正在探测限位，请先停止并全部断力')
         if self.zero_running():
             raise CalibrationError('正在归零，请先全部断力，再进行单关节操作')
 
-    def start_probe(self,**options):
-        from limit_probe import LimitProbe
-        self.require_idle()
-        probe=LimitProbe(self,**options)
-        self.probe=probe
-        return self.status()
-
-    def advance_probe(self):
-        if self.probe and self.probe.running():self.probe.advance()
-        return self.status()
-
-    def start_zero(self,confirmed=False,*,torque_limit=300,speed_deg_s=5,wait_for_feedback=False,ids=None,detached_output=False):
+    def start_zero(self,confirmed=False,*,torque_limit=300,speed_deg_s=5,wait_for_feedback=False):
         self.require_idle()
         if confirmed is not True:
             raise CalibrationError('请确认所有零位已核对、躯干已固定且手已离开所有关节')
@@ -360,27 +338,18 @@ class Session:
             raise CalibrationError('归零扭矩上限需100—681')
         if type(speed_deg_s) not in (int,float) or not math.isfinite(speed_deg_s) or not 1<=speed_deg_s<=5:
             raise CalibrationError('归零速度需1—5°/秒')
-        if type(detached_output) is not bool:raise CalibrationError('空载对中参数需为布尔值')
-        if detached_output and (ids is None or not isinstance(ids,list) or 34 in ids):
-            raise CalibrationError('未固定舵盘对中需明确选择身体舵机，不支持嘴部')
-        if ids is None:selected=list(IDS)
-        else:
-            if not isinstance(ids,list) or not ids or len(ids)>len(IDS):
-                raise CalibrationError('请选择至少一个有效舵机编号')
-            selected=[sid_value(s) for s in ids]
-            if len(set(selected))!=len(selected):raise CalibrationError('舵机编号不能重复')
-            if self.held:raise CalibrationError('指定关节归零前请先全部断力')
+        selected=list(IDS)
         now=self.checked_snapshot()
         m=self.mouth
         if 34 in selected and (not m or m.get('closed_raw')!=2048 or not 1024<=m.get('open_raw',0)<=2032 or m.get('eeprom_offset_raw')!=word(now['34'],31)):
             raise CalibrationError('嘴部闭合零位或配置未核验，不能全部归零')
-        self.validate_zero_range(now,selected,detached_output=detached_output)
+        self.validate_zero_range(now)
         self.current=now;self.pending=None
         # Never raise a lower pre-existing cap; mouth remains at the calibrated
         # low-force inspection setting. No EEPROM or runtime config is changed.
         caps={str(s):min(torque_limit,300 if s==34 else 681,word(now[str(s)],48)) for s in selected}
         if any(v<100 for v in caps.values()):raise CalibrationError('现有扭矩上限不足100，请先检查舵机参数')
-        self.zero_check=dict(phase='arming',ids=selected,detached_output=detached_output,armed=0,progress=0,targets={str(s):2048 for s in selected},
+        self.zero_check=dict(phase='arming',ids=selected,armed=0,progress=0,targets={str(s):2048 for s in selected},
             max_error_deg=max(abs(word(r,56)-2048)*360/4096 for r in (now[str(s)] for s in selected)),speed_deg_s=speed_deg_s,
             torque_limits=caps,waiting_for=[])
         self._zero_feedback=wait_for_feedback;self._zero_wait_since=None
@@ -392,14 +361,10 @@ class Session:
         # leaving the serial owner available to process OFF between steps.
         return self.status()
 
-    def validate_zero_range(self,rows,ids=None,*,detached_output=False):
-        for sid in (IDS if ids is None else ids):
+    def validate_zero_range(self,rows):
+        for sid in IDS:
             raw=word(rows[str(sid)],56)
-            if detached_output:
-                # With the horn detached, assembled-joint angles have no physical
-                # meaning. Retain single-turn feedback, bounded steps and lag trips.
-                valid=0<=raw<=4095
-            elif sid==34:
+            if sid==34:
                 valid=self.mouth['open_raw']-2<=raw<=self.mouth['closed_raw']+2
             else:
                 angle=(2048-raw)*360/4096
@@ -424,7 +389,7 @@ class Session:
             self.refresh()
             z=self.zero_check
             selected=z.get('ids',IDS)
-            self.validate_zero_range(self.current,selected,detached_output=z.get('detached_output',False))
+            self.validate_zero_range(self.current)
             if z['phase']=='arming':
                 sid=selected[z['armed']];row=self.current[str(sid)]
                 position=word(row,56)
@@ -488,8 +453,6 @@ class FakeBus:
             self.rows[sid]=r
     def read(self,sid,addr,n):return 0,bytes(self.rows[sid][addr:addr+n])
     def write(self,sid,addr,data):
-        if getattr(self,'measurement_only',False) and addr not in (40,42,48,50,51):
-            raise CalibrationError('限位测量禁止写 EEPROM')
         r=self.rows[sid];physical=word(r,56)+signed(word(r,31));self.writes.append((sid,addr,list(data)))
         r[addr:addr+len(data)]=list(data)
         if addr==31:r[56:58]=list(((physical-signed(word(r,31)))%4096).to_bytes(2,'little'))
