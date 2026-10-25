@@ -16,6 +16,7 @@ import time
 import uuid
 from core import Session, CalibrationError, IDS, snapshot, sid_value
 from storage import Journal, Configs
+from board_setup import port_argument
 
 HARDWARE=Path('/run/lxm-kissqy-hardware.json')
 UNITS=('codexpad-s10','padd','updaterd','robotd-kissqy-test','robotd')
@@ -117,7 +118,9 @@ class SerialBus:
 
 class Maintenance:
     def __init__(self,port='/dev/serial0',eeprom_only=False):
-        self.port=port;self.eeprom_only=eeprom_only
+        self.port=port_argument(port)
+        if self.port=='auto':raise CalibrationError('请先发现并选择具体串口，再进入维护')
+        self.eeprom_only=eeprom_only
         self.session=None;self.bus=None;self.locks=[];self.bus_lock=None;self.stopped=[];self.daemon_stopped=False;self.journal=None;self.closed=False
     def enter(self):
         if self.session or self.closed:raise CalibrationError('请重新打开会话')
@@ -154,7 +157,7 @@ class Maintenance:
         self.session=Session(self.bus,self.journal.save,configs.commit,configs.mouth)
         return dict(**self.status(),initial_backup=dict(registers=self.session.initial,configs={k:None if v is None else v.decode() for k,v in configs.expected.items()}))
     def status(self):
-        return dict(**self.session.status(),backup=str(self.journal.path),mode='hardware')
+        return dict(**self.session.status(),backup=str(self.journal.path),mode='hardware',serial_port=self.port)
     def handle(self,req):
         action=req.get('action')
         if action=='enter':
@@ -228,10 +231,11 @@ class Maintenance:
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--serial-port',choices=('/dev/serial0','/dev/ttyS2'),default='/dev/serial0')
+    parser.add_argument('--serial-port',type=port_argument,default='/dev/serial0')
     parser.add_argument('--eeprom-only',action='store_true')
     parser.add_argument('--check',action='store_true',help='只读状态检查，不停止服务或打开串口')
     args=parser.parse_args()
+    if args.serial_port=='auto':parser.error('板端代理需要具体串口；请通过网页发现并选择串口')
     if args.check:
         h=off_gate()
         if h.get('port') and Path(h['port']).resolve()!=Path(args.serial_port).resolve():

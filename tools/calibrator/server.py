@@ -9,6 +9,7 @@ from pathlib import Path
 import queue
 import re
 import secrets
+import shlex
 import signal
 import subprocess
 import threading
@@ -17,6 +18,7 @@ from urllib.parse import urlsplit, unquote
 import uuid
 from core import CalibrationError, FakeBus, Session
 from storage import Journal
+from board_setup import port_argument, select_port
 
 HERE=Path(__file__).resolve().parent
 
@@ -65,21 +67,53 @@ class Demo:
         return dict(closed=True,all_torque_off=True,services_restored=True,backup=str(self.journal.path),mode='demo')
 
 class Remote:
-    def __init__(self,host,journal,serial_port='/dev/serial0',eeprom_only=False):
+    def __init__(self,host,journal,serial_port='auto',eeprom_only=False,auto_install=True):
         self.host=host;self.journal=journal;self.process=None;self.lines=queue.Queue()
-        self.serial_port=serial_port;self.eeprom_only=eeprom_only
-    def start(self):
-        names=['core.py','storage.py','agent.py','limit_probe.py']
+        self.serial_port=port_argument(serial_port);self.eeprom_only=eeprom_only
+        self.auto_install=auto_install;self.dest=None;self.setup_result=None
+        self.opts=['-o','BatchMode=yes','-o','ConnectTimeout=6','-o','ServerAliveInterval=3','-o','ServerAliveCountMax=3']
+    def stage(self):
+        if self.dest:return
+        names=['core.py','storage.py','agent.py','limit_probe.py','board_setup.py']
         digest=hashlib.sha256(b''.join((HERE/n).read_bytes() for n in names)).hexdigest()[:16]
         dest='/tmp/duck-calibrator-'+digest+'-'+secrets.token_hex(4)
-        opts=['-o','BatchMode=yes','-o','ConnectTimeout=6','-o','ServerAliveInterval=3','-o','ServerAliveCountMax=3']
-        # All shell tokens after SSH are fixed or generated hex. Never interpolate
-        # requests or a free-text address in the remote shell.
-        subprocess.run(['ssh',*opts,self.host,'mkdir','-m','700',dest],check=True,capture_output=True,timeout=12)
-        subprocess.run(['scp',*opts,*[str(HERE/n) for n in names],self.host+':'+dest+'/'],check=True,capture_output=True,timeout=20)
+        subprocess.run(['ssh',*self.opts,self.host,'mkdir','-m','700',dest],check=True,capture_output=True,timeout=12)
+        subprocess.run(['scp',*self.opts,*[str(HERE/n) for n in names],self.host+':'+dest+'/'],check=True,capture_output=True,timeout=20)
+        self.dest=dest
+    def prepare(self):
+        if self.process:raise CalibrationError('标定会话中不能重新准备环境或扫描串口')
+        self.setup_result=None
+        self.stage()
+        command=['sudo','-n','python3',self.dest+'/board_setup.py']
+        if not self.auto_install:command.append('--no-install-deps')
+        try:
+            with (self.journal.path/'setup-stderr.log').open('a') as err:
+                result=subprocess.run(['ssh','-T',*self.opts,self.host,shlex.join(command)],
+                    capture_output=False,stdout=subprocess.PIPE,stderr=err,text=True,timeout=450)
+            data=json.loads(result.stdout)
+            if result.returncode or not data.get('ok') or not data.get('ready'):
+                raise CalibrationError(data.get('error','板端环境检查失败'))
+            python=data.get('python')
+            if not isinstance(python,str) or not re.fullmatch(r'/[A-Za-z0-9_./+-]+',python):
+                raise CalibrationError('板端返回了无效的 Python 解释器路径')
+            if not isinstance(data.get('ports'),list):raise CalibrationError('板端串口列表无效')
+            for row in data['ports']:
+                port_argument(row['device'])
+                for alias in row.get('aliases',[]):port_argument(alias)
+            self.setup_result=data
+            self.journal.save('board-prepared',data)
+            return data
+        except (OSError,subprocess.SubprocessError,ValueError,TypeError,KeyError,CalibrationError) as exc:
+            raise CalibrationError(f'板端环境准备失败，尚未停止控制服务：{exc}。详情见 {self.journal.path}/setup-stderr.log') from exc
+    def start(self):
+        # Always refresh inventory before maintenance: a USB device may have changed
+        # since the user last opened the dropdown. Preparation never opens a UART.
+        found=self.prepare()
+        self.serial_port=select_port(self.serial_port,found)
         err=(self.journal.path/'ssh-stderr.log').open('w')
         flags=['--serial-port',self.serial_port]+(['--eeprom-only'] if self.eeprom_only else [])
-        self.process=subprocess.Popen(['ssh','-T',*opts,self.host,'sudo','-n','python3','-u',dest+'/agent.py',*flags],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=err,text=True,bufsize=1)
+        command=['sudo','-n',found['python'],'-u',self.dest+'/agent.py',*flags]
+        self.process=subprocess.Popen(['ssh','-T',*self.opts,self.host,shlex.join(command)],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=err,text=True,bufsize=1)
         err.close()
         def reader():
             for line in self.process.stdout:self.lines.put(line)
@@ -116,9 +150,10 @@ class Remote:
         finally:self.close_pipe()
 
 class App:
-    def __init__(self,host,data,serial_port='/dev/serial0',eeprom_only=False):
+    def __init__(self,host,data,serial_port='auto',eeprom_only=False,auto_install=True):
         self.host=host;self.data=data;self.backend=None;self.lock=threading.RLock();self.csrf=secrets.token_hex(24)
-        self.serial_port=serial_port;self.eeprom_only=eeprom_only
+        self.serial_port=port_argument(serial_port);self.eeprom_only=eeprom_only;self.auto_install=auto_install
+        self.prepared_remote=None;self.preparation=None
         self.motion_token=secrets.token_hex(24)
         self.last=0;self.expired=False;self.result=None;self.events=[]
     def request(self,req):
@@ -127,13 +162,29 @@ class App:
         # owner. Otherwise a slow zero-start HTTP request could arrive after OFF.
         if action in ('relax','finish','enter'):self.motion_token=secrets.token_hex(24)
         with self.lock:
+            if action=='prepare':
+                if not self.host:raise CalibrationError('模拟模式不需要检查或安装板端依赖')
+                if self.backend and not self.expired:raise CalibrationError('请先结束标定会话，再检查环境和串口')
+                if not self.prepared_remote:
+                    path=self.data/('setup-'+time.strftime('%Y%m%dT%H%M%S')+'-'+uuid.uuid4().hex[:8])
+                    self.prepared_remote=Remote(self.host,Journal(path),self.serial_port,self.eeprom_only,self.auto_install)
+                self.preparation=None
+                self.preparation=self.prepared_remote.prepare()
+                return self.preparation
             if action in ('zero','hold','probe') and req.get('motion_token')!=self.motion_token:
                 raise CalibrationError('使能请求已被断力或会话切换取消，请重新确认后操作')
             if action=='probe':self.motion_token=secrets.token_hex(24) # Never replay a queued search.
             if action=='enter':
                 if self.backend and not self.expired:raise CalibrationError('会话已存在，请先结束')
-                path=self.data/(time.strftime('%Y%m%dT%H%M%S')+'-'+uuid.uuid4().hex[:8])
-                self.backend=Remote(self.host,Journal(path),self.serial_port,self.eeprom_only) if self.host else Demo(path)
+                if req.get('supported') is not True:raise CalibrationError('请先确认小鸭已托稳在支架上')
+                selected=port_argument(req.get('serial_port',self.serial_port))
+                if self.host:self.preparation=None
+                if self.host and self.prepared_remote:
+                    self.backend=self.prepared_remote;self.prepared_remote=None
+                    self.backend.serial_port=selected
+                else:
+                    path=self.data/(time.strftime('%Y%m%dT%H%M%S')+'-'+uuid.uuid4().hex[:8])
+                    self.backend=Remote(self.host,Journal(path),selected,self.eeprom_only,self.auto_install) if self.host else Demo(path)
                 self.expired=False
             if not self.backend:raise CalibrationError('请先开始标定')
             if self.expired:raise CalibrationError('页面心跳已中断，会话已结束；请刷新后重连并核验断力')
@@ -150,7 +201,10 @@ class App:
                     self.expired=True
                     if isinstance(self.backend,Remote):self.backend.close_pipe()
                 raise
-            finally:self.last=time.monotonic()
+            finally:
+                self.last=time.monotonic()
+                if isinstance(self.backend,Remote) and self.backend.setup_result:
+                    self.preparation=self.backend.setup_result
     def watchdog(self):
         while True:
             time.sleep(1)
@@ -164,7 +218,7 @@ class App:
     def report(self):
         with self.lock:
             journal=self.backend.journal if self.backend else None
-            return dict(mode='hardware' if self.host else 'demo',host=self.host,result=self.result,
+            return dict(mode='hardware' if self.host else 'demo',host=self.host,result=self.result,preparation=self.preparation,
                         events=[json.loads(s) for s in (journal.path/'journal.jsonl').read_text().splitlines()] if journal and (journal.path/'journal.jsonl').exists() else [])
 
 def handler(app):
@@ -180,7 +234,7 @@ def handler(app):
         def do_GET(self):
             if not self.safe_host():return self.send(403,dict(error='Host refused'))
             path=unquote(urlsplit(self.path).path)
-            if path=='/api/info':return self.send(200,dict(csrf=app.csrf,motion_token=app.motion_token,mode='hardware' if app.host else 'demo',host=app.host,serial_port=app.serial_port,eeprom_only=app.eeprom_only,active=bool(app.backend and not app.expired),state=app.result))
+            if path=='/api/info':return self.send(200,dict(csrf=app.csrf,motion_token=app.motion_token,mode='hardware' if app.host else 'demo',host=app.host,serial_port=app.serial_port,eeprom_only=app.eeprom_only,auto_install=app.auto_install,preparation=app.preparation,active=bool(app.backend and not app.expired),state=app.result))
             if path=='/api/report':return self.send(200,app.report())
             root=(HERE/'static').resolve();p=(root/('index.html' if path=='/' else path.lstrip('/'))).resolve()
             if not p.is_relative_to(root) or not p.is_file():return self.send(404,dict(error='Not found'))
@@ -195,18 +249,19 @@ def handler(app):
                 if not isinstance(req,dict):raise CalibrationError('请求格式错误')
                 self.send(200,dict(ok=True,result=app.request(req)))
             except Exception as exc:self.send(400,dict(ok=False,error=str(exc),motion_token=app.motion_token,
-                state=getattr(exc,'state',None),active=bool(app.backend and not app.expired)))
+                state=getattr(exc,'state',None),preparation=app.preparation,active=bool(app.backend and not app.expired)))
     return Handler
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     g=p.add_mutually_exclusive_group();g.add_argument('--demo',action='store_true');g.add_argument('--ssh')
     p.add_argument('--port',type=int,default=8795);p.add_argument('--data',type=Path,default=Path.home()/'.microduck-calibrator')
-    p.add_argument('--serial-port',choices=('/dev/serial0','/dev/ttyS2'),default='/dev/serial0')
+    p.add_argument('--serial-port',type=port_argument,default='auto',help='auto 自动发现，或指定板端 /dev 串口路径')
+    p.add_argument('--no-install-deps',action='store_true',help='只检查依赖，不自动安装板端缺少的依赖')
     p.add_argument('--eeprom-only',action='store_true',help='只写舵机 EEPROM 零位，保留备份日志，不读写机器人标定配置文件')
     args=p.parse_args()
     if args.ssh and not re.fullmatch(r'[a-z_][a-z0-9_-]*@[a-zA-Z0-9][a-zA-Z0-9.-]*',args.ssh):p.error('--ssh must be user@hostname or user@IPv4')
-    app=App(args.ssh,args.data,args.serial_port,args.eeprom_only);server=ThreadingHTTPServer(('127.0.0.1',args.port),handler(app))
+    app=App(args.ssh,args.data,args.serial_port,args.eeprom_only,not args.no_install_deps);server=ThreadingHTTPServer(('127.0.0.1',args.port),handler(app))
     threading.Thread(target=app.watchdog,daemon=True).start()
     print(f'http://127.0.0.1:{server.server_port}/ — '+('HARDWARE: '+args.ssh if args.ssh else 'DEMO, no robot connected'),flush=True)
     def interrupted(*_):raise KeyboardInterrupt

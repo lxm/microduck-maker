@@ -47,7 +47,7 @@ def main():
     for relative, digest in snapshot['files'].items():
         require(hashlib.sha256((CAL / relative).read_bytes()).hexdigest() == digest,
                 f'Published runtime differs from source snapshot: {relative}')
-    print('PASS: original calibration runtime and 11 upstream reference hashes', flush=True)
+    print('PASS: published calibration source snapshot and 11 upstream reference hashes', flush=True)
 
     for file in ROOT.rglob('*.py'):
         if '.git' not in file.parts:

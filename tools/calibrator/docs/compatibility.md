@@ -5,8 +5,8 @@
 ## 舵机和系统
 
 - 15 颗 HD1910：10–14、20–24、30–34；型号、ID、单圈 mode 4、EEPROM 锁、温度、电压和断力状态均须通过原有核验。
-- 串口 1 Mbps，入口允许 `/dev/serial0` 或 `/dev/ttyS2`；需要板端串口独占和 `fuser`。
-- Linux、systemd、Python 3.10+、pyserial（如 Debian/Ubuntu 的 `python3-serial`）以及 `psmisc` 提供的 `fuser`。依赖需在部署环境预先准备，工具不自动安装。
+- 串口 1 Mbps，网页默认 `--serial-port auto`，允许板载 UART、USB/ACM 与稳定设备别名；维护时需要串口独占和 `fuser`。
+- Linux、systemd 和 Python 3.10+ 需预装。pyserial 与 `psmisc` 提供的 fuser 缺少时由网页的“检查环境与发现串口”自动准备。首次下载需板端能访问 PyPI/系统软件源；Debian/Ubuntu 上缺少 venv 时补齐 `python3-venv`。
 - 电脑用 SSH 密钥登录；板端允许通过 `sudo -n python3` 运行维护代理。运行 `agent.py --check` 的环境同样须能读 robotd 状态。
 
 ## robotd 状态与服务
@@ -28,6 +28,14 @@ robotd
 必须只有正常 `robotd` 服务工作，不能同时运行 `robotd-kissqy-test`。代理只暂停实际运行的已知服务，获得串口独占后才进入维护；结束时先断力、恢复 RAM 参数，再按原流程恢复服务。未列出的其他串口使用者会由 `fuser` 检查拒绝。
 
 ## 路径与配置
+
+环境准备只枚举设备节点、读取运行时端口提示和检查/安装依赖，不打开任何 UART，不停止控制服务。自动模式优先使用 robotd 提示；没有提示时只在唯一候选下自动选择，多候选要求人工选择。设备的不同别名按真实路径合并。进入维护前重新发现，并沿用代理中所选串口与 robotd 串口的一致性检查。
+
+串口描述与 USB 元数据使用 [pySerial 的 list_ports 接口](https://pyserial.readthedocs.io/en/latest/tools.html#serial-tools-list-ports)，并补充枚举板载 UART 与稳定别名节点。
+
+已有可用 pyserial 时使用现有解释器；缺少时使用 `/opt/robot/microduck-calibrator/venv/` 内固定的 `pyserial==3.5`。venv Python 会用于发现和实际维护代理，避免“安装到了一个 Python，运行时却用了另一个”。不使用全局 pip 或 `--break-system-packages`；系统依赖由 apt-get 安装。安装过程写入电脑记录目录的 `setup-stderr.log`。
+
+加 `--no-install-deps` 可关闭自动安装；已有系统/独立环境可以继续使用，缺少依赖则报错并保留原控制服务。非 apt 系统需预装 venv 和 fuser，或自行在板端准备 pyserial；不自动升级 Python 本体。
 
 | 路径 | 用途 |
 |---|---|

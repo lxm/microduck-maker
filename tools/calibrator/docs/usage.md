@@ -9,7 +9,7 @@
 ### Zero 3W（仅 EEPROM 模式）
 
 ```sh
-./run.sh --ssh radxa@robot.local --serial-port /dev/ttyS2 --eeprom-only
+./run.sh --ssh radxa@robot.local --eeprom-only
 ```
 
 此模式继续把手动摆正的机械零位写进所选舵机 EEPROM，使该位置读数为 2048；不读取或写入 TOML、旧机 JSON 等机器人标定配置文件。原始寄存器与操作日志仍完整备份。断力检查使用现有 `robot.busStatus` 的新鲜 native 反馈；串口只在用户进入标定、停止原控制服务并确认独占后打开。结束时先断力核验，再恢复原服务。
@@ -34,11 +34,11 @@
 ./run.sh --ssh user@robot.local
 ```
 
-需电脑已有 SSH 密钥登录、远端 `sudo -n python3`、pyserial、systemd 与 fuser。只启动网页不连接串口；点“连接并进入标定”才上传维护代理到远端 `/tmp/duck-calibrator-<hash>-<random>/` 并启动会话。不是 robotd 升级或永久安装服务。
+需电脑已有 SSH 密钥登录、远端 Python 3.10+、`sudo -n python3` 与 systemd。启动网页不连接串口；先点击“检查环境与发现串口”，自动检查/准备 pyserial、fuser 并列出串口。多候选时明确选择；默认 auto 优先匹配 robotd 端口。准备过程不停止控制服务，失败不会进入标定。点“连接并进入标定”后才进行维护；准备与代理上传至 `/tmp/duck-calibrator-<hash>-<random>/`。这不会升级 robotd 或安装常驻服务。离线环境可加 `--no-install-deps`，详见 [连接说明](../README.md#连接实机)。
 
 ## 操作
 
-1. 先按手柄 Select，确认断力。将躯干固定在支架上，腿和头部留出空间。机械零位不适合落地承重。
+1. 先完成环境检查并选择串口，再按手柄 Select，确认断力。将躯干固定在支架上，腿和头部留出空间。机械零位不适合落地承重。
 2. 进入标定后工具确认 15 个反馈新鲜、全断力，备份原值，暂停手柄、padd、updaterd、robotd，独占串口。标定期间手柄 Select 不可用；使用本页“全部断力”，通信异常则托稳后关主电源。
 3. 选 ID，看高亮关节。参照其两侧结构和装配标记手动摆到 **机械 0°**，其余断力关节可随意放松。3D 的 0°、HOME、±10° 按钮只改参考画面，不发动作。
 4. 保持这颗不动，点“采样当前机械零位”。采样 20 次、约 0.8 秒，波动不超过 4 计数。预览偏移变化，30 秒内点击“保存这一颗零位”。保存只写它的 EEPROM 31–32，然后锁回；其余零位不变。
@@ -59,7 +59,7 @@
 
 ## 悬空交替踏步脚本与日志
 
-`run-gait-test.sh` 是电脑侧入口，`gait_test.py` 包含计划、实机维护端、SSH 心跳、离线模拟和日志。需要同目录的 `core.py`、`storage.py`、`agent.py`、`limit_probe.py`。不升级固件或安装常驻服务，实机程序临时上传到 `/tmp/duck-gait-test-<随机>/`。
+`run-gait-test.sh` 是电脑侧入口，`gait_test.py` 包含计划、实机维护端、SSH 心跳、离线模拟和日志。需要同目录的 `core.py`、`storage.py`、`agent.py`、`limit_probe.py`、`board_setup.py`。不升级固件或安装常驻服务，实机程序临时上传到 `/tmp/duck-gait-test-<随机>/`。
 
 先固定躯干、双腿完全悬空，给连杆留出空间，Select 断力，手离开关节。结束现有网页标定会话后，在电脑交互终端执行：
 
@@ -81,7 +81,7 @@
 - `summary.json`：是否完成、是否确认全断力/恢复服务、各关节最大跟随误差和最低电压。
 - `plan.json`、`stderr.log`：实际计划与远端错误。`load_raw`、`current_raw` 是未换算的寄存器原始字，不能视为实测电流或力矩。
 
-**Zero 本机直跑**：将这五个 Python 文件放在同一个目录，在已登录 Zero 的交互终端执行 `sudo python3 /目录/gait_test.py --onboard --supported`。该模式直接运行板端维护循环，不需要电脑进程、二次 SSH 或 stdin 心跳。仅 Ctrl+C、SIGTERM/SIGHUP、终端关闭、反馈异常和超时会请求退出；普通回车不会取消。终端必须保持打开，不能用 `nohup`、后台运行或重定向 stdin。通过 sudo 启动时，默认日志写到原登录用户的 `~/.microduck-gait-tests/` 下，每次新建时间和随机标识目录。其他运动、限幅、校验、备份、断力和恢复流程与电脑模式相同。上传或 `--onboard --plan` 只准备/查看程序，不启动动作。
+**Zero 本机直跑**：将这六个 Python 文件放在同一个目录，在已登录 Zero 的交互终端执行 `sudo python3 /目录/gait_test.py --onboard --supported`。该模式直接运行板端维护循环，不需要电脑进程、二次 SSH 或 stdin 心跳。仅 Ctrl+C、SIGTERM/SIGHUP、终端关闭、反馈异常和超时会请求退出；普通回车不会取消。终端必须保持打开，不能用 `nohup`、后台运行或重定向 stdin。通过 sudo 启动时，默认日志写到原登录用户的 `~/.microduck-gait-tests/` 下，每次新建时间和随机标识目录。其他运动、限幅、校验、备份、断力和恢复流程与电脑模式相同。上传或 `--onboard --plan` 只准备/查看程序，不启动动作。
 
 只看计划：`./run-gait-test.sh --plan`。离线演练：`./run-gait-test.sh --demo`，采用虚拟时间和模拟跟随，不连接机器人，也不能验证实机精度。较小幅度可用 `--lift-deg 8 --cycles 1`；更大的膝幅度允许到 `--lift-deg 15`（髋 10°、踝 5°），总计划始终检查现有关节范围。日志目录可用 `--log-dir /绝对路径/新目录` 指定，已有目录拒绝覆盖。
 
@@ -133,7 +133,7 @@ ssh -t user@robot.local sudo duck-zero
 
 先结束网页标定会话、Select 断力，将躯干固定、双腿悬空、头颈嘴留出空间。脚本会展示本轮参数，输入 `ZERO` 才开始。若已经确认准备好，可加 `--supported` 直接开始。归零和保持过程中按回车或 Ctrl+C 结束，随后核验全断力并恢复原服务；手柄在此期间暂停。
 
-源文件是 `zero.py`，与 `agent.py`、`core.py`、`storage.py`、`limit_probe.py` 放在同一目录，在板端用 `sudo python3 zero.py` 运行，依赖树莓派现有 pyserial。`sudo duck-zero --check` 只读检查 robotd 反馈和全断力状态，**不停止服务、不打开串口、不发送动作**。离线模拟：`python3 zero.py --demo --supported --hold-seconds 1`。
+源文件是 `zero.py`，与 `agent.py`、`core.py`、`storage.py`、`limit_probe.py`、`board_setup.py` 放在同一目录，在板端用 `sudo python3 zero.py` 运行，依赖树莓派现有 pyserial。`sudo duck-zero --check` 只读检查 robotd 反馈和全断力状态，**不停止服务、不打开串口、不发送动作**。离线模拟：`python3 zero.py --demo --supported --hold-seconds 1`。
 
 脚本在树莓派本机每轮约100毫秒加总线事务耗时推进，不依赖网页心跳。身体临时 P5/D20、扭矩上限最多681，嘴 P10/D20、最多300，均不提高进入会话前原有的更低上限；可选 `--torque-limit 300`。速度默认3°/秒，可选 `--speed 1` 至 `5`；所有目标为舵机内部2048，不重写EEPROM，不叠加软件零位偏移。现有身体标定文件只核验EEPROM一致，嘴部文件还定义开合端点。
 

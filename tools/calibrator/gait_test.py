@@ -388,7 +388,7 @@ def remote(args,logs):
         logs.emit(dict(event='stop_controls_ready',keyboard_enter=keyboard_enabled,signals=['SIGINT','SIGTERM','SIGHUP'],pending_tty_input_discarded=keyboard_enabled))
         logs.line('Uploading temporary maintenance program; Enter or Ctrl+C requests STOP.')
         subprocess.run(['ssh',*opts,args.ssh,'mkdir','-m','700',dest],check=True,timeout=25,stdin=subprocess.DEVNULL)
-        subprocess.run(['scp',*opts,*[str(here/n) for n in ('gait_test.py','core.py','storage.py','agent.py','limit_probe.py')],args.ssh+':'+dest+'/'],check=True,timeout=40,stdin=subprocess.DEVNULL)
+        subprocess.run(['scp',*opts,*[str(here/n) for n in ('gait_test.py','core.py','storage.py','agent.py','limit_probe.py','board_setup.py')],args.ssh+':'+dest+'/'],check=True,timeout=40,stdin=subprocess.DEVNULL)
         if stop.is_set(): raise CalibrationError('cancelled before robot access: '+str(stop.reason))
         flags=['--worker','--supported','--serial-port',args.serial_port,'--lift-deg',str(args.lift_deg),
                '--cycles',str(args.cycles),'--speed',str(args.speed),'--torque-limit',str(args.torque_limit),

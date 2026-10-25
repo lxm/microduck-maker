@@ -4,11 +4,44 @@ const ids=[10,11,12,13,14,20,21,22,23,24,30,31,32,33,34];
 const names=['右髋转向','右髋侧摆','右髋俯仰','右膝','右踝','左髋转向','左髋侧摆','左髋俯仰','左膝','左踝','颈部俯仰','头部俯仰','头部转向','头部侧摆','嘴部'];
 let selected=13,pose='zero',state=null,busy=false,active=false,sessionStarted=false,view,requestSequence=0;
 const info=await (await fetch('/api/info')).json();
+let preparation=info.preparation,preparing=false,setupMessage='';
+$('connection').hidden=info.mode!=='hardware';
+if(info.auto_install===false)$('dependency-note').textContent='自动安装已关闭。检查主板已有依赖并发现串口；此步骤不停止控制服务、不打开串口。';
 $('mode').textContent=info.mode==='demo'?'模拟演示 · 未连接实机':'实机模式 · '+info.host;
 $('enter').textContent=info.mode==='demo'?'开始模拟标定':'连接并进入标定';
 $('notice').textContent=info.mode==='demo'?'模拟模式：所有读数与使能均为模拟，不连接小鸭。':(info.eeprom_only?'手动标定：零位 → 2048，保存到舵机 EEPROM；自动找限位：只测量，不写 EEPROM。保留备份日志，不读写 TOML。':'')+'进入后会核验断力、备份零位，并暂停手柄与 robotd；请在支架上操作。';
 if(info.active&&info.state?.servos){state=info.state;active=true;sessionStarted=true;}
 function current(){return state?.servos?.find(x=>x.id===selected);}
+function renderConnection(){
+ if(info.mode!=='hardware')return;
+ const chosen=$('serial-port').value||info.serial_port||'auto';
+ $('prepare').disabled=busy||active||sessionStarted;
+ $('prepare').textContent=preparing?'正在检查与准备…':'检查环境与发现串口';
+ const choices=$('serial-port');choices.replaceChildren();
+ const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='请选择舵机总线串口';choices.append(placeholder);
+ const auto=document.createElement('option');auto.value='auto';auto.textContent='自动选择（优先使用 robotd 串口）';
+ auto.disabled=Boolean(preparation?.ready&&(!preparation.ports.length||(preparation.ports.length>1&&!preparation.runtime_port)));
+ choices.append(auto);
+ for(const p of preparation?.ports||[]){const o=document.createElement('option');o.value=p.device;o.textContent=p.device+(p.runtime?' · robotd 当前串口':'')+(p.description?' · '+p.description:'');choices.append(o);}
+ if(chosen!=='auto'&&!Array.from(choices.options).some(o=>o.value===chosen)){
+  const alias=(preparation?.ports||[]).find(p=>p.aliases.includes(chosen));
+  choices.value=alias?.device||'';
+ }else choices.value=chosen==='auto'&&auto.disabled?'':chosen;
+ choices.disabled=busy||active||sessionStarted;
+ $('connection-status').textContent=preparing?'正在通过 SSH 检查环境；首次安装可能需要几分钟，控制服务继续运行。':setupMessage||
+  (preparation?.ready?`板端依赖就绪 · 发现 ${preparation.ports.length} 个串口${preparation.installed?.length?' · 已安装 '+preparation.installed.join('、'):''}。`+
+   (preparation.ports.length>1&&!preparation.runtime_port?(choices.value?'已选择 '+choices.value+'。':'请明确选择舵机总线串口。'):'进入标定前会再次核对串口。'):'尚未检查主板环境。');
+}
+async function prepareBoard(){
+ if(busy||active)return;
+ busy=preparing=true;setupMessage='';preparation=null;render();$('error').hidden=true;
+ try{
+  const response=await fetch('/api/action',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':info.csrf},body:JSON.stringify({action:'prepare'})});
+  const data=await response.json();if(!data.ok)throw Error(data.error);
+  preparation=data.result;
+ }catch(e){setupMessage='环境准备失败；控制服务未停止。'+e.message;$('error').textContent=e.message;$('error').hidden=false;}
+ finally{busy=preparing=false;render();}
+}
 function zeroRunning(){return ['arming','moving'].includes(state?.zero_check?.phase);}
 function probeRunning(){return active&&['arming','seeking','returning'].includes(state?.limit_probe?.phase);}
 for(const [i,id] of ids.entries()){const o=document.createElement('option');o.value=id;o.textContent=`ID${id} · ${names[i]}`;$('probe-joint').append(o);}
@@ -29,6 +62,7 @@ function renderProbe(){
  for(const sample of p?.samples||[]){const tr=document.createElement('tr');for(const value of [sample.round,sample.position_raw,sample.from_start_deg.toFixed(3),sample.goal_error_counts,sample.voltage.toFixed(1)+' V',sample.temperature+' °C']){const td=document.createElement('td');td.textContent=value;tr.append(td);}$('probe-readings').append(tr);}
 }
 function render(){
+ renderConnection();
  $('joints').replaceChildren();
  ids.forEach((id,i)=>{
   if([10,20,30].includes(id)){const h=document.createElement('div');h.className='group-title';h.textContent=id===10?'右腿 / RIGHT':id===20?'左腿 / LEFT':'头颈 / HEAD';$('joints').append(h);}
@@ -48,7 +82,7 @@ function render(){
  $('apply').disabled=busy||!active||!pending||pose!=='zero';
  $('hold').disabled=busy||!active||held||!saved||!$('clear').checked;
  $('release').disabled=busy||!active||!held;$('undo').disabled=busy||!active||held||!saved;
- $('enter').disabled=busy||active||!$('supported').checked;
+ $('enter').disabled=busy||active||!$('supported').checked||(info.mode==='hardware'&&(!preparation?.ready||!$('serial-port').value));
  $('finish').disabled=busy||!sessionStarted;$('relax').disabled=!sessionStarted;
  $('zero-stop').disabled=!sessionStarted;
  $('zero-all').disabled=busy||!active||!state?.zero_inspection_supported||zeroRunning()||probeRunning()||!$('zero-clear').checked;
@@ -87,6 +121,7 @@ async function action(name,extra={},quiet=false){
  try{
   const resp=await fetch('/api/action',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':info.csrf},body:JSON.stringify({action:name,motion_token:info.motion_token,...extra})});
   const data=await resp.json();if(sequence!==requestSequence)return;if(data.motion_token)info.motion_token=data.motion_token;
+  if(Object.hasOwn(data,'preparation'))preparation=data.preparation;
   if(!data.ok){if(data.state?.servos&&data.active){state=data.state;active=true;sessionStarted=true;recovered=true;}throw Error(data.error);}
   info.motion_token=data.result.motion_token;
   if(data.result.closed){active=false;sessionStarted=false;state={...state,held:data.result.all_torque_off?[]:state?.held,pending:null};$('live').textContent=data.result.all_torque_off?'已结束 · 全部断力已核验':'已结束 · 断力未核验';if(data.result.error)throw Error(data.result.error);}
@@ -101,7 +136,9 @@ $('probe-joint').onchange=()=>selectJoint(Number($('probe-joint').value));
 for(const id of ['probe-direction','probe-travel','probe-speed','probe-output','probe-repeats'])$(id).onchange=()=>{$('probe-clear').checked=false;render();};
 $('probe-start').onclick=()=>action('probe',{id:selected,direction:Number($('probe-direction').value),travel_deg:Number($('probe-travel').value),speed_deg_s:Number($('probe-speed').value),torque_limit:Number($('probe-output').value),repeats:Number($('probe-repeats').value),confirmed:$('probe-clear').checked});
 $('probe-stop').onclick=()=>action('relax');
-$('enter').onclick=()=>action('enter',{supported:$('supported').checked});
+$('prepare').onclick=prepareBoard;
+$('serial-port').onchange=render;
+$('enter').onclick=()=>action('enter',{supported:$('supported').checked,serial_port:$('serial-port').value||info.serial_port});
 $('sample').onclick=()=>action('sample',{id:selected});
 $('closed').onclick=()=>action('sample',{id:34,endpoint:'closed'});
 $('open').onclick=()=>action('sample',{id:34,endpoint:'open'});
