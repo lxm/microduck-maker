@@ -166,7 +166,7 @@ class Maintenance:
             return self.enter()
         if not self.session:raise CalibrationError('尚未进入标定会话')
         if action=='status':self.session.advance_zero()
-        elif action=='zero':self.session.start_zero(req.get('confirmed'))
+        elif action=='zero':self.session.start_zero(req.get('confirmed'),torque_limit=600,direct=True)
         elif action=='sample':self.session.sample(req.get('id'),0,req.get('endpoint'))
         elif action=='apply':self.session.apply(req.get('token'))
         elif action=='undo':self.session.undo(req.get('id'))

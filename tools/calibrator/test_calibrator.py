@@ -279,6 +279,9 @@ class ZeroInspectionTests(unittest.TestCase):
             app.backend.session.mouth=None
             result=app.request(dict(action='zero',confirmed=True,motion_token=app.motion_token))
             self.assertEqual(result['zero_inspection_ids'],BODY_IDS)
+            self.assertEqual(result['zero_inspection_profile'],'direct-2048-600')
+            self.assertTrue(result['zero_check']['direct'])
+            self.assertEqual(set(result['zero_check']['torque_limits'].values()),{600})
             self.assertEqual(result['zero_check']['ids'],BODY_IDS)
             for _ in range(200):
                 self.clock+=.25;result=app.request(dict(action='status'))

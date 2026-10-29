@@ -69,7 +69,7 @@ async function prepareBoard(){
  }catch(e){setupMessage='环境准备失败；控制服务未停止。'+e.message;$('error').textContent=e.message;$('error').hidden=false;}
  finally{await finishSetupLog();busy=preparing=false;render();}
 }
-function bodyZeroSupported(){const supported=state?.zero_inspection_ids;return Array.isArray(supported)&&supported.length===zeroIds.length&&zeroIds.every(id=>supported.includes(id));}
+function bodyZeroSupported(){const supported=state?.zero_inspection_ids;return state?.zero_inspection_profile==='direct-2048-600'&&Array.isArray(supported)&&supported.length===zeroIds.length&&zeroIds.every(id=>supported.includes(id));}
 function zeroRunning(){return ['arming','moving'].includes(state?.zero_check?.phase);}
 function selectJoint(id){selected=id;$('clear').checked=false;if(id===34)pose='zero';render();view?.set(selected,pose,true);}
 function render(){
@@ -98,9 +98,9 @@ function render(){
  $('zero-stop').disabled=!sessionStarted;
  $('zero-all').disabled=busy||!active||!bodyZeroSupported()||zeroRunning()||!$('zero-clear').checked;
  const z=state?.zero_check;
- $('zero-status').textContent=!active?'进入标定后可用 · 归零仅包含身体与头颈 14 颗，嘴部 ID34 不参与。':!bodyZeroSupported()?'请结束旧会话并重新连接，加载不含嘴部的 14 颗归零功能。':!z?'就绪 · 身体与头颈 14 颗使用已保存零位；不依赖嘴部标定，不改写 EEPROM。':
- z.phase==='arming'?`正在逐颗接入保持 ${z.armed} / ${z.ids?.length||zeroIds.length} · 可随时全部断力`:
- z.phase==='moving'?`正在缓慢归零 ${z.progress}% · 距零位最大 ${z.max_error_deg.toFixed(2)}°`:
+ $('zero-status').textContent=!active?'进入标定后可用 · 归零仅包含身体与头颈 14 颗，嘴部 ID34 不参与。':!bodyZeroSupported()?'请结束旧会话并重新连接，加载直接回2048、扭矩上限600的归零功能。':!z?'就绪 · 14 颗直接回2048；扭矩上限600，沿用原有P/D；不含嘴部，不改写EEPROM。':
+ z.phase==='arming'?`正在接入原有P/D保持 ${z.armed} / ${z.ids?.length||zeroIds.length} · 可随时全部断力`:
+ z.phase==='moving'?`已向 ${z.commanded||0} / ${zeroIds.length} 颗发送2048 · 到位进度 ${z.progress}% · 最大偏差 ${z.max_error_deg.toFixed(2)}°`:
  z.phase==='holding'?`ID ${(z.ids||zeroIds).join("、")} 已回零并保持 · 实测最大误差 ${z.max_error_deg.toFixed(2)}°`:
  z.phase==='failed'?`归零未完成：${z.error} · 请核对断力状态`:'归零已停止 · 再次开始需要重新勾选确认';
  if(zeroRunning())for(const id of ['sample','closed','open','apply','hold','release','undo'])$(id).disabled=true;

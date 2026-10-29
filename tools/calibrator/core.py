@@ -151,6 +151,7 @@ class Session:
     def status(self):
         return dict(all_torque_off=not self.held,held=sorted(self.held),fault=self.fault,verified_at=self.verified_at,completed=self.completed,pending=self.pending,
             zero_check=copy.deepcopy(self.zero_check),zero_inspection_supported=True,zero_inspection_ids=list(BODY_IDS),
+            zero_inspection_profile='direct-2048-600',
             mouth_closed=self.mouth_closed,servos=[dict(id=sid,name=NAMES[sid],
                 position=word(self.current[str(sid)],56),offset_raw=word(self.current[str(sid)],31),
                 angle_deg=(2048-word(self.current[str(sid)],56))*360/4096,
@@ -309,6 +310,9 @@ class Session:
     def refresh(self):
         self.current=self.checked_snapshot()
         for sid in self.held:
+            # A direct 2048 target can legitimately be far from current feedback.
+            # Arrival/progress deadlines replace the hold-error trip while moving.
+            if self.zero_running() and self.zero_check.get('direct') and sid in BODY_IDS:continue
             r=self.current[str(sid)]
             if abs(circular(word(r,56)-word(r,42)))>46:
                 raise CalibrationError(f'ID{sid} 保持偏差超过4°；'+self.following_detail(sid))
@@ -330,7 +334,7 @@ class Session:
         if self.zero_running():
             raise CalibrationError('正在归零，请先全部断力，再进行单关节操作')
 
-    def start_zero(self,confirmed=False,*,torque_limit=300,speed_deg_s=5,wait_for_feedback=False):
+    def start_zero(self,confirmed=False,*,torque_limit=300,speed_deg_s=5,wait_for_feedback=False,direct=False):
         self.require_idle()
         if confirmed is not True:
             raise CalibrationError('请确认所有零位已核对、躯干已固定且手已离开所有关节')
@@ -338,6 +342,8 @@ class Session:
             raise CalibrationError('归零扭矩上限需100—681')
         if type(speed_deg_s) not in (int,float) or not math.isfinite(speed_deg_s) or not 1<=speed_deg_s<=5:
             raise CalibrationError('归零速度需1—5°/秒')
+        if type(direct) is not bool or (direct and torque_limit>600):
+            raise CalibrationError('直接归零的扭矩上限不得超过600')
         selected=list(BODY_IDS)
         now=self.checked_snapshot()
         self.validate_zero_range(now)
@@ -352,8 +358,10 @@ class Session:
         caps={str(s):min(torque_limit,word(now[str(s)],48)) for s in selected}
         if any(v<100 for v in caps.values()):raise CalibrationError('现有扭矩上限不足100，请先检查舵机参数')
         self.zero_check=dict(phase='arming',ids=selected,armed=0,progress=0,targets={str(s):2048 for s in selected},
-            max_error_deg=max(abs(word(r,56)-2048)*360/4096 for r in (now[str(s)] for s in selected)),speed_deg_s=speed_deg_s,
-            torque_limits=caps,waiting_for=[])
+            max_error_deg=max(abs(word(r,56)-2048)*360/4096 for r in (now[str(s)] for s in selected)),speed_deg_s=None if direct else speed_deg_s,
+            torque_limits=caps,waiting_for=[],direct=direct,commanded=0,
+            gains={str(s):self.initial[str(s)][50:52] if direct else [5,20] for s in selected})
+        self._zero_direct_watch={}
         self._zero_feedback=wait_for_feedback;self._zero_wait_since=None
         self._zero_started=time.monotonic();self._zero_last=self._zero_started
         self._zero_distance=max(1,max(abs(word(r,56)-2048) for r in (now[str(s)] for s in selected)))
@@ -382,6 +390,40 @@ class Session:
         self.current[str(sid)][40]=1
         self.current[str(sid)][42:44]=list(int(target).to_bytes(2,'little'))
 
+    def advance_direct_zero(self):
+        z=self.zero_check;selected=z['ids']
+        # One target per heartbeat keeps OFF requests serviceable between IDs.
+        # Every servo receives 2048 once; there is no host-side target ramp.
+        if z['commanded']<len(selected):
+            sid=selected[z['commanded']]
+            error=abs(word(self.current[str(sid)],56)-2048)
+            self.zero_goal(sid,2048)
+            now=time.monotonic()
+            self._zero_direct_watch[sid]=dict(sent_at=now,improved_at=now,best_error=error)
+            z['commanded']+=1
+            self.refresh();self.validate_zero_range(self.current)
+        now=time.monotonic()
+        for sid,watch in self._zero_direct_watch.items():
+            error=abs(word(self.current[str(sid)],56)-2048)
+            if error<=12:
+                watch['improved_at']=now
+            else:
+                if error<=watch['best_error']-2:
+                    watch['best_error']=error;watch['improved_at']=now
+                if now-watch['sent_at']>15:
+                    raise CalibrationError(f'ID{sid} 直接归零15秒仍未到位；'+self.following_detail(sid))
+                if now-watch['improved_at']>5:
+                    raise CalibrationError(f'ID{sid} 直接归零连续5秒未接近2048；'+self.following_detail(sid))
+        remaining=max(abs(word(self.current[str(s)],56)-2048) for s in selected)
+        z['progress']=min(99,round(100*(1-min(1,remaining/self._zero_distance))))
+        z['max_error_deg']=remaining*360/4096
+        settled=z['commanded']==len(selected) and remaining<=12
+        self._zero_settled=self._zero_settled+1 if settled else 0
+        if self._zero_settled>=3:
+            z['phase']='holding';z['progress']=100
+            self.save('zero-held',dict(registers=self.current,inspection=z))
+        return self.status()
+
     def advance_zero(self):
         if not self.zero_running():return self.refresh()
         try:
@@ -394,7 +436,8 @@ class Session:
             if z['phase']=='arming':
                 sid=selected[z['armed']];row=self.current[str(sid)]
                 position=word(row,56)
-                for addr,data in [(48,z['torque_limits'][str(sid)].to_bytes(2,'little')),(50,[5]),(51,[20])]:
+                p,d=z['gains'][str(sid)]
+                for addr,data in [(48,z['torque_limits'][str(sid)].to_bytes(2,'little')),(50,[p]),(51,[d])]:
                     write_checked(self.bus,sid,addr,data,holding=True)
                     row[addr:addr+len(data)]=list(data)
                 latest=word(read(self.bus,sid,56,2),0)
@@ -404,6 +447,8 @@ class Session:
                 z['armed']+=1
                 if z['armed']==len(selected):
                     z['phase']='moving';self._zero_last=time.monotonic()
+            elif z.get('direct'):
+                return self.advance_direct_zero()
             else:
                 now=time.monotonic()
                 if self._zero_feedback:

@@ -54,7 +54,7 @@ class Demo:
             self.session=Session(self.bus,self.journal.save,lambda *_:None,dict(schema=1,id=34,mode=4,eeprom_offset_raw=0,closed_raw=2048,open_raw=1700))
         elif not self.session:raise CalibrationError('请先开始模拟会话')
         elif action=='status':self.session.advance_zero()
-        elif action=='zero':self.session.start_zero(req.get('confirmed'))
+        elif action=='zero':self.session.start_zero(req.get('confirmed'),torque_limit=600,direct=True)
         elif action=='sample':
             if req.get('id')==34 and 34 not in self.session.held:
                 # Only demo has artificial hand positioning. No hardware endpoint
