@@ -1,6 +1,7 @@
 import {createView} from './view.js';
 const $=id=>document.getElementById(id);
 const ids=[10,11,12,13,14,20,21,22,23,24,30,31,32,33,34];
+const zeroIds=ids.filter(id=>id!==34);
 const names=['右髋转向','右髋侧摆','右髋俯仰','右膝','右踝','左髋转向','左髋侧摆','左髋俯仰','左膝','左踝','颈部俯仰','头部俯仰','头部转向','头部侧摆','嘴部'];
 let selected=13,pose='zero',state=null,busy=false,active=false,sessionStarted=false,view,requestSequence=0;
 const info=await (await fetch('/api/info')).json();
@@ -68,6 +69,7 @@ async function prepareBoard(){
  }catch(e){setupMessage='环境准备失败；控制服务未停止。'+e.message;$('error').textContent=e.message;$('error').hidden=false;}
  finally{await finishSetupLog();busy=preparing=false;render();}
 }
+function bodyZeroSupported(){const supported=state?.zero_inspection_ids;return Array.isArray(supported)&&supported.length===zeroIds.length&&zeroIds.every(id=>supported.includes(id));}
 function zeroRunning(){return ['arming','moving'].includes(state?.zero_check?.phase);}
 function selectJoint(id){selected=id;$('clear').checked=false;if(id===34)pose='zero';render();view?.set(selected,pose,true);}
 function render(){
@@ -94,12 +96,12 @@ function render(){
  $('enter').disabled=busy||active||!$('supported').checked||(info.mode==='hardware'&&(!preparation?.ready||!$('serial-port').value));
  $('finish').disabled=busy||!sessionStarted;$('relax').disabled=!sessionStarted;
  $('zero-stop').disabled=!sessionStarted;
- $('zero-all').disabled=busy||!active||!state?.zero_inspection_supported||zeroRunning()||!$('zero-clear').checked;
+ $('zero-all').disabled=busy||!active||!bodyZeroSupported()||zeroRunning()||!$('zero-clear').checked;
  const z=state?.zero_check;
- $('zero-status').textContent=!active?'进入标定后可用；无需在本次会话重新标定所有关节。':!state?.zero_inspection_supported?'请先结束旧会话，再重新连接以使用全部回零功能。':!z?(info.eeprom_only&&!state?.completed?.['34']?'仅 EEPROM 模式：身体可逐颗标定；全部回零前需在本次会话完成嘴部闭合、张开两端点标定。':'就绪 · 归零只使用舵机已保存的零位，不改写标定。'):
- z.phase==='arming'?`正在逐颗接入保持 ${z.armed} / ${z.ids?.length||15} · 可随时全部断力`:
+ $('zero-status').textContent=!active?'进入标定后可用 · 归零仅包含身体与头颈 14 颗，嘴部 ID34 不参与。':!bodyZeroSupported()?'请结束旧会话并重新连接，加载不含嘴部的 14 颗归零功能。':!z?'就绪 · 身体与头颈 14 颗使用已保存零位；不依赖嘴部标定，不改写 EEPROM。':
+ z.phase==='arming'?`正在逐颗接入保持 ${z.armed} / ${z.ids?.length||zeroIds.length} · 可随时全部断力`:
  z.phase==='moving'?`正在缓慢归零 ${z.progress}% · 距零位最大 ${z.max_error_deg.toFixed(2)}°`:
- z.phase==='holding'?`ID ${(z.ids||ids).join("、")} 已回零并保持 · 实测最大误差 ${z.max_error_deg.toFixed(2)}°`:
+ z.phase==='holding'?`ID ${(z.ids||zeroIds).join("、")} 已回零并保持 · 实测最大误差 ${z.max_error_deg.toFixed(2)}°`:
  z.phase==='failed'?`归零未完成：${z.error} · 请核对断力状态`:'归零已停止 · 再次开始需要重新勾选确认';
  if(zeroRunning())for(const id of ['sample','closed','open','apply','hold','release','undo'])$(id).disabled=true;
  $('offsets').textContent=r?`EEPROM 原始值 ${r.initial_offset_raw} → 当前 ${r.offset_raw}。身体 2048 = 机械零位，方向 −1；程序不再叠加此偏移。方向、限位与 IMU 安装矩阵不在此工具内改动。`:'尚未读取零位';

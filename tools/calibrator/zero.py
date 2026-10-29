@@ -41,19 +41,19 @@ def run_inspection(maintenance,stop_requested,*,torque_limit=681,speed=3,hold_se
         output('备份：'+str(maintenance.journal.path))
         if not stop_requested():
             s.start_zero(True,torque_limit=torque_limit,speed_deg_s=speed,wait_for_feedback=True)
-            output('身体 P5/D20，嘴 P10/D20；本次扭矩上限：'+json.dumps(s.zero_check['torque_limits']))
+            output('身体与头颈 P5/D20，嘴部 ID34 不参与；本次扭矩上限：'+json.dumps(s.zero_check['torque_limits']))
         held_since=None;last_report=-1
         while not stop_requested():
             status=s.advance_zero()
             now=time.monotonic();z=status['zero_check']
             if z['phase']=='holding' and held_since is None:
                 held_since=now
-                output('15 颗目标均为 2048，已到位保持。实际角度：')
-                output('  '.join(f"ID{r['id']}={r['angle_deg']:+.2f}°" for r in status['servos']))
+                output('身体与头颈 14 颗目标均为 2048，已到位保持；嘴部未归零。实际角度：')
+                output('  '.join(f"ID{r['id']}={r['angle_deg']:+.2f}°" for r in status['servos'] if r['id'] in z['ids']))
                 output('保持期间按回车或 Ctrl+C 断力并恢复服务。')
             if now-last_report>=1:
                 pending=z.get('waiting_for')
-                text=(f"使能 {z['armed']}/15，归零 {z['progress']}%，"
+                text=(f"使能 {z['armed']}/{len(z['ids'])}，归零 {z['progress']}%，"
                     f"距零位最大偏差 {z['max_error_deg']:.2f}°")
                 if pending:text+='；暂停目标，等待跟随 ID '+','.join(map(str,pending))
                 if held_since is not None:text+=f'；最多继续保持 {max(0,int(hold_seconds-(now-held_since)))} 秒'
@@ -83,7 +83,7 @@ def main(argv=None):
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--check',action='store_true',help='只读检查 robotd 全断力状态，不停止服务、不打开串口')
     p.add_argument('--supported',action='store_true',help='确认躯干固定、双腿悬空、手已离开、零位已核对')
-    p.add_argument('--torque-limit',type=int,choices=(300,681),default=681,help='身体临时上限，默认681；不会超过进入前原值；嘴最多300')
+    p.add_argument('--torque-limit',type=int,choices=(300,681),default=681,help='身体临时上限，默认681；不会超过进入前原值；嘴部不参与')
     p.add_argument('--speed',type=int,choices=(1,2,3,4,5),default=3,help='归零速度，默认3°/秒')
     p.add_argument('--hold-seconds',type=float,default=120,help='到位后最多保持秒数，默认120，上限300')
     p.add_argument('--demo',action='store_true',help='仅模拟，无硬件或服务操作')
@@ -101,9 +101,9 @@ def main(argv=None):
     if not args.demo and not sys.stdin.isatty():
         p.error('实机操作需要交互终端；远程请用 ssh -t。不要后台运行或重定向标准输入。')
     print(('模拟：' if args.demo else '实机：')+
-        f'全部15颗缓慢回舵机2048并保持，身体P5/D20，上限最多{args.torque_limit}；嘴P10/D20，上限最多300。')
+        f'身体与头颈14颗缓慢回舵机2048并保持，P5/D20，上限最多{args.torque_limit}；嘴部ID34不参与。')
     print('只读现有零位，不写 EEPROM、不做 HOME、不启动模型。请先结束网页标定会话。')
-    print('躯干需固定在支架上，双腿悬空，头颈嘴有空间，手离开关节。手柄将暂停。')
+    print('躯干需固定在支架上，双腿悬空，头颈有空间，手离开关节。手柄将暂停。')
     if not args.supported:
         try:answer=input('已确认准备好请输入 ZERO 开始；其他输入退出：')
         except (EOFError,KeyboardInterrupt):return 130

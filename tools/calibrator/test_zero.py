@@ -3,7 +3,7 @@ import io
 import unittest
 from unittest.mock import Mock, patch
 
-from core import CalibrationError, FakeBus, IDS, Session, word
+from core import CalibrationError, FakeBus, IDS, BODY_IDS, Session, word
 import zero
 
 
@@ -25,7 +25,7 @@ class ZeroCliTests(unittest.TestCase):
 
     def arm(self):
         self.s.start_zero(True,torque_limit=681,speed_deg_s=3,wait_for_feedback=True)
-        for _ in IDS:self.tick()
+        for _ in BODY_IDS:self.tick()
 
     def test_cli_profile_preserves_eeprom_caps_mouth_and_restores_ram(self):
         original=copy.deepcopy(self.bus.rows);self.arm()
@@ -33,13 +33,15 @@ class ZeroCliTests(unittest.TestCase):
             self.tick()
             if not self.s.zero_running():break
         self.assertEqual(self.s.zero_check['phase'],'holding')
-        for sid in IDS:
+        for sid in BODY_IDS:
             self.assertEqual(word(self.bus.rows[sid],42),2048)
-            self.assertEqual(word(self.bus.rows[sid],48),300 if sid==34 else 681)
-            self.assertEqual(self.bus.rows[sid][50:52],[10 if sid==34 else 5,20])
+            self.assertEqual(word(self.bus.rows[sid],48),681)
+            self.assertEqual(self.bus.rows[sid][50:52],[5,20])
             self.assertEqual(self.bus.rows[sid][:40],original[sid][:40])
         self.assertFalse(any(a in (31,55) for _,a,_ in self.bus.writes))
         self.s.config_commit.assert_not_called()
+        self.assertEqual(self.bus.rows[34],original[34])
+        self.assertFalse(any(sid==34 for sid,_,_ in self.bus.writes))
         self.s.relax_all()
         self.assertTrue(all(r[40]==0 and r[48:52]==original[sid][48:52] for sid,r in self.bus.rows.items()))
 

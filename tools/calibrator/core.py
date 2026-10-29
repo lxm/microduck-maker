@@ -150,7 +150,7 @@ class Session:
 
     def status(self):
         return dict(all_torque_off=not self.held,held=sorted(self.held),fault=self.fault,verified_at=self.verified_at,completed=self.completed,pending=self.pending,
-            zero_check=copy.deepcopy(self.zero_check),zero_inspection_supported=True,
+            zero_check=copy.deepcopy(self.zero_check),zero_inspection_supported=True,zero_inspection_ids=list(BODY_IDS),
             mouth_closed=self.mouth_closed,servos=[dict(id=sid,name=NAMES[sid],
                 position=word(self.current[str(sid)],56),offset_raw=word(self.current[str(sid)],31),
                 angle_deg=(2048-word(self.current[str(sid)],56))*360/4096,
@@ -313,7 +313,7 @@ class Session:
             if abs(circular(word(r,56)-word(r,42)))>46:
                 raise CalibrationError(f'ID{sid} 保持偏差超过4°；'+self.following_detail(sid))
         if self.zero_check:
-            self.zero_check['max_error_deg']=max(abs(word(self.current[str(s)],56)-2048)*360/4096 for s in self.zero_check.get('ids',IDS))
+            self.zero_check['max_error_deg']=max(abs(word(self.current[str(s)],56)-2048)*360/4096 for s in self.zero_check.get('ids',BODY_IDS))
         return self.status()
 
     def following_detail(self,sid):
@@ -338,16 +338,18 @@ class Session:
             raise CalibrationError('归零扭矩上限需100—681')
         if type(speed_deg_s) not in (int,float) or not math.isfinite(speed_deg_s) or not 1<=speed_deg_s<=5:
             raise CalibrationError('归零速度需1—5°/秒')
-        selected=list(IDS)
+        selected=list(BODY_IDS)
         now=self.checked_snapshot()
-        m=self.mouth
-        if 34 in selected and (not m or m.get('closed_raw')!=2048 or not 1024<=m.get('open_raw',0)<=2032 or m.get('eeprom_offset_raw')!=word(now['34'],31)):
-            raise CalibrationError('嘴部闭合零位或配置未核验，不能全部归零')
         self.validate_zero_range(now)
+        # ID34 never receives a zero goal or torque-on. Release a prior manual
+        # mouth hold so the resulting inspection holds only the 14 body joints.
+        if 34 in self.held:
+            self.release(34)
+            now=self.checked_snapshot()
+            self.validate_zero_range(now)
         self.current=now;self.pending=None
-        # Never raise a lower pre-existing cap; mouth remains at the calibrated
-        # low-force inspection setting. No EEPROM or runtime config is changed.
-        caps={str(s):min(torque_limit,300 if s==34 else 681,word(now[str(s)],48)) for s in selected}
+        # Never raise a lower pre-existing cap. No EEPROM or config is changed.
+        caps={str(s):min(torque_limit,word(now[str(s)],48)) for s in selected}
         if any(v<100 for v in caps.values()):raise CalibrationError('现有扭矩上限不足100，请先检查舵机参数')
         self.zero_check=dict(phase='arming',ids=selected,armed=0,progress=0,targets={str(s):2048 for s in selected},
             max_error_deg=max(abs(word(r,56)-2048)*360/4096 for r in (now[str(s)] for s in selected)),speed_deg_s=speed_deg_s,
@@ -362,16 +364,15 @@ class Session:
         return self.status()
 
     def validate_zero_range(self,rows):
-        for sid in IDS:
+        for sid in BODY_IDS:
             raw=word(rows[str(sid)],56)
-            if sid==34:
-                valid=self.mouth['open_raw']-2<=raw<=self.mouth['closed_raw']+2
-            else:
-                angle=(2048-raw)*360/4096
-                valid=LIMITS[sid][0]<=angle<=LIMITS[sid][1]
+            angle=(2048-raw)*360/4096
+            valid=LIMITS[sid][0]<=angle<=LIMITS[sid][1]
             if not valid:raise CalibrationError(f'ID{sid} 当前超出关节范围，请断力后手动放回范围内再归零')
 
     def zero_goal(self,sid,target):
+        if type(sid) is not int or sid not in BODY_IDS:
+            raise CalibrationError("归零仅支持身体与头颈 14 颗，不包括嘴部 ID34")
         # RAM writes need no EEPROM delay. The full snapshot below must verify
         # the goal AND torque, including devices that suppress their write ACK.
         self.held.add(sid)
@@ -388,12 +389,12 @@ class Session:
                 raise CalibrationError('归零超时，请检查关节是否卡住或保持扭矩不足')
             self.refresh()
             z=self.zero_check
-            selected=z.get('ids',IDS)
+            selected=z.get('ids',BODY_IDS)
             self.validate_zero_range(self.current)
             if z['phase']=='arming':
                 sid=selected[z['armed']];row=self.current[str(sid)]
                 position=word(row,56)
-                for addr,data in [(48,z['torque_limits'][str(sid)].to_bytes(2,'little')),(50,[10 if sid==34 else 5]),(51,[20])]:
+                for addr,data in [(48,z['torque_limits'][str(sid)].to_bytes(2,'little')),(50,[5]),(51,[20])]:
                     write_checked(self.bus,sid,addr,data,holding=True)
                     row[addr:addr+len(data)]=list(data)
                 latest=word(read(self.bus,sid,56,2),0)

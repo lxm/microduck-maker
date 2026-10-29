@@ -80,7 +80,12 @@ class EepromOnlyTests(unittest.TestCase):
             s=Session(FakeBus(),journal.save,c.commit,c.mouth)
             self.assertIsNone(s.mouth)
             p=s.sample(13);s.apply(p['token'])
-            with self.assertRaisesRegex(CalibrationError,'嘴部'):s.start_zero(True)
+            before=copy.deepcopy(s.bus.rows[34]);s.bus.writes=[]
+            s.start_zero(True)
+            self.assertNotIn(34,s.zero_check['ids'])
+            self.assertIsNone(s.mouth)
+            self.assertEqual(s.bus.rows[34],before)
+            self.assertFalse(s.bus.writes)
 
     def test_mouth_endpoints_stay_in_session_and_journal(self):
         with tempfile.TemporaryDirectory() as d,patch('core.time.sleep'):

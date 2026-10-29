@@ -166,7 +166,7 @@ class ZeroInspectionTests(unittest.TestCase):
         return self.s.advance_zero()
     def arm(self):
         self.s.start_zero(True)
-        for _ in IDS:self.tick()
+        for _ in BODY_IDS:self.tick()
         self.assertEqual(self.s.zero_check['phase'],'moving')
     def test_confirm_required_no_goals_and_no_all_recalibration_requirement(self):
         for val in (False,None,1,'true'):
@@ -177,13 +177,13 @@ class ZeroInspectionTests(unittest.TestCase):
         self.assertFalse(self.bus.writes,'queueing must never send a goal')
     def test_current_position_preload_then_bounded_zero_no_eeprom_or_double_offset(self):
         initial=copy.deepcopy(self.bus.rows);self.arm()
-        for sid in IDS:
+        for sid in BODY_IDS:
             goals=[word(data,0) for s,a,data in self.bus.writes if s==sid and a==42]
             self.assertEqual(goals,[word(initial[sid],56)])
         while self.s.zero_running():self.tick()
         self.assertEqual(self.s.zero_check['phase'],'holding')
-        self.assertEqual(self.s.held,set(IDS))
-        for sid in IDS:
+        self.assertEqual(self.s.held,set(BODY_IDS))
+        for sid in BODY_IDS:
             row=self.bus.rows[sid]
             self.assertEqual(word(row,42),2048)
             self.assertEqual(word(row,56),2048)
@@ -191,6 +191,8 @@ class ZeroInspectionTests(unittest.TestCase):
             goals=[word(data,0) for s,a,data in self.bus.writes if s==sid and a==42]
             self.assertTrue(all(abs(b-a)<=12 for a,b in zip(goals,goals[1:])))
             self.assertEqual(word(row,48),300)
+        self.assertEqual(self.bus.rows[34],initial[34])
+        self.assertFalse(any(sid==34 for sid,_,_ in self.bus.writes))
         self.assertFalse(any(a in (31,55) for _,a,_ in self.bus.writes))
         self.persist.assert_not_called()
         self.s.relax_all()
@@ -235,13 +237,55 @@ class ZeroInspectionTests(unittest.TestCase):
         self.arm();self.clock+=181
         with self.assertRaisesRegex(CalibrationError,'超时'):self.tick()
         self.assertTrue(all(r[40]==0 for r in self.bus.rows.values()))
-    def test_out_of_range_or_bad_mouth_refuses_before_writes(self):
+    def test_body_out_of_range_refuses_before_writes(self):
         self.bus.rows[11][56:58]=list((3000).to_bytes(2,'little'))
         with self.assertRaisesRegex(CalibrationError,'ID11'):self.s.start_zero(True)
         self.assertFalse(self.bus.writes)
-        self.bus.rows[11][56:58]=list((2148).to_bytes(2,'little'));self.s.mouth['eeprom_offset_raw']=12
-        with self.assertRaisesRegex(CalibrationError,'嘴部'):self.s.start_zero(True)
+
+    def test_missing_or_invalid_mouth_is_excluded_from_motion_and_error(self):
+        for mouth in (None,{},dict(eeprom_offset_raw=12,closed_raw=100,open_raw=4000)):
+            with self.subTest(mouth=mouth):
+                self.bus=FakeBus(follow_goals=True)
+                self.bus.rows[34][56:58]=list((50).to_bytes(2,'little'))
+                original=copy.deepcopy(self.bus.rows[34])
+                self.s=Session(self.bus,lambda *_:None,Mock(),mouth)
+                self.arm()
+                for _ in range(300):
+                    self.tick()
+                    if not self.s.zero_running():break
+                self.assertEqual(self.s.zero_check['phase'],'holding')
+                self.assertEqual(self.s.zero_check['ids'],BODY_IDS)
+                self.assertEqual(set(self.s.zero_check['targets']),set(map(str,BODY_IDS)))
+                self.assertEqual(self.s.held,set(BODY_IDS))
+                self.assertEqual(self.s.zero_check['max_error_deg'],0)
+                self.assertEqual(self.bus.rows[34],original)
+                self.assertFalse(any(sid==34 for sid,_,_ in self.bus.writes))
+
+    def test_zero_goal_rejects_mouth_before_any_write(self):
+        with self.assertRaisesRegex(CalibrationError,"不包括嘴部"):self.s.zero_goal(34,2048)
         self.assertFalse(self.bus.writes)
+
+    def test_previous_mouth_hold_is_released_without_zero_goal_or_enable(self):
+        self.s.held.add(34);self.bus.rows[34][40]=1;self.s.current['34'][40]=1
+        self.s.start_zero(True)
+        self.assertNotIn(34,self.s.held)
+        self.assertEqual(self.bus.rows[34][40],0)
+        self.assertFalse(any(sid==34 and (addr==42 or (addr==40 and data==[1])) for sid,addr,data in self.bus.writes))
+        self.assertEqual(self.s.zero_check['ids'],BODY_IDS)
+
+    def test_http_action_in_demo_without_mouth_calibration_targets_body_only(self):
+        with tempfile.TemporaryDirectory() as d:
+            app=App(None,Path(d));app.request(dict(action='enter',supported=True))
+            app.backend.session.mouth=None
+            result=app.request(dict(action='zero',confirmed=True,motion_token=app.motion_token))
+            self.assertEqual(result['zero_inspection_ids'],BODY_IDS)
+            self.assertEqual(result['zero_check']['ids'],BODY_IDS)
+            for _ in range(200):
+                self.clock+=.25;result=app.request(dict(action='status'))
+                if result['zero_check']['phase']=='holding':break
+            self.assertEqual(result['held'],BODY_IDS)
+            self.assertFalse(any(sid==34 for sid,_,_ in app.backend.bus.writes))
+
     def test_single_joint_writes_blocked_during_motion(self):
         self.arm();before=len(self.bus.writes)
         for action in (lambda:self.s.sample(13),lambda:self.s.apply('x'),lambda:self.s.undo(13),lambda:self.s.hold(13),lambda:self.s.release(13)):

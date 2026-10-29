@@ -1,26 +1,26 @@
 {
-  "date": "2026-10-25",
-  "version": "0.3.0",
-  "description": "Published calibration source snapshot. v0.3.0 streams SSH preparation logs, removes automatic limit probing and selective horn centering, and automatically frames the selected joint for observation.",
+  "date": "2026-10-29",
+  "version": "0.3.1",
+  "description": "Published calibration source snapshot. v0.3.1 excludes mouth ID34 from zero inspection and removes its endpoint prerequisite while retaining body range, speed, feedback and shutdown protections.",
   "files": {
     "agent.py": "fed443e67a6371f6cdcbd5853e488b8d609852c3f1c2a1ec5682a8c76955f795",
     "board_setup.py": "a7c9a482b67a183c4b2414021280c8d099cba60b8a87a166c2c81d053ce2ab01",
-    "core.py": "d87ea96999f781eba0a4c494b16a211478213ad56071f5772cb807ada71f4506",
+    "core.py": "8df119a28c9604f50b8923a9e6fa18cb103c33a0f83719881e26584e4213d346",
     "gait_test.py": "98cad96d0bf4284ffa269b0c87c9cf17715dba9fd2f90df3428ad052af9117d9",
     "run-gait-test.sh": "6ea87b911126d4fe4359e9857ea3d8e45f4ccda1bea3c7bf621d58e0461ba879",
     "run.sh": "02123e9c563650b8794d45e683c39560ec11acbc9c19f5d8d291d1f324a90ca1",
     "server.py": "a87181fa5a276cb83e81772df08543b260b4acf1220cc4f8748e9f5d91039b1d",
     "static/app.css": "a8dec894229cae5a873a5c7bf9aa08018e3e65b7cd93f7c0f4ee9a4066e05b1a",
-    "static/app.js": "027da2d52a42e8ba4827c0b1a7901ad95d9ac51f85a5ff59ef041f20170cc8c0",
-    "static/index.html": "79de31d41d12a423eece6e676adadee78748ca7c5f5aabad2c13a0eee5f21e4e",
+    "static/app.js": "e843ae7f6e8dd623693ee7a9a6e908cae7a1a697f46a72e4d6391b8a0b5e3c93",
+    "static/index.html": "4a9aa9cc0d20a629dfce362eb72ba6a81ec76ba7011f635e6326cbcff63b0c8f",
     "static/view.js": "27df1e2394468c9ed832920362f80165b9aadc95b1ccebc6750b83c8934c38e1",
     "storage.py": "91afca9108fd50e66387ed1b52f5e5b9cdbf6ff66571b659191a434b3febb156",
     "test_board_setup.py": "05ea611e00f02a0d85f477760706182986a1302a01b59cb5018642c3e9192ddf",
-    "test_calibrator.py": "0bf42e178e990b00c7d0428031dc05de6fcba1f73c21890a98298ef2d98d81b4",
+    "test_calibrator.py": "30445a444d42a9ce5ae4d4b825f63a84c62370c8cceaf8d2a81126ee72197541",
     "test_gait_test.py": "514ac178604b384c3888598118d2ac542f5d83b4a26001588cac2f9227e6d830",
-    "test_serial_adapter.py": "23852220d9019ec1b5ecce2baadd545a4d35f2bd40a4ddb4299c132ff248d84f",
+    "test_serial_adapter.py": "7518fed02dd6274a392f61db3e0c4c658400009ac22ad060807c218bf7f7f3a6",
     "test_setup_log.py": "78203cf1b675c7c2da56ff936250d3c5b1271b0d0873cfe7c64810a0d4c92089",
-    "test_zero.py": "47d46e6d29c1896d4d99646a3a5347fcfa4d098c35c749b1cea98c07aadf2abb",
-    "zero.py": "997fb44547e7d106c8884a842a9093682b78476cd7eec3652ad143f9ad209637"
+    "test_zero.py": "2edb971a2aaa120e83245bfae4fbdacc0d252ef505e0670d72837001aae05938",
+    "zero.py": "4915c04ae79f6aa315768bb7a39cceed5968c07c9ceaaefa3e4a18a9f9982d12"
   }
 }
