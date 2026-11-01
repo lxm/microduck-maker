@@ -67,7 +67,7 @@ python3 scripts/validate.py
 - lxm 原创的标定界面、维护代理、脚本，以及装配对照的原创网页和提取代码采用 [MIT](LICENSE)。
 - 标定工具引用的 Kissqy 参考代码保留其**个人非商业使用许可**；其 3D 模型与 Three.js 分别保留上游模型许可、MIT 许可。
 - 装配工具的 CAD 衍生模型采用 **CC BY-NC-SA 4.0**，保留机械行者Robo、fanhao375 和 Pollen Robotics 的署名。
-- 零位标定支架的原始作者与模型许可待补充，其 STL 与模型截图不纳入软件 MIT 许可，详见该目录说明。
+- 零位标定支架来自交流群分享，暂无原始发布链接，作者与模型许可尚未确认；其 STL 与模型截图不纳入软件 MIT 许可，详见该目录说明。
 - 不同目录的许可范围见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。MIT 不覆盖上述单独授权的资源，不能将整个下载包理解为统一 MIT 授权。
 
 这是独立社区项目，与 Pollen Robotics、飞特及所引用社区项目无官方隶属或背书关系。现有 [microduck-servo-guide](https://github.com/lxm/microduck-servo-guide) 仓库和在线页面继续保留，新项目统一收录后续工具源码。

@@ -45,6 +45,6 @@
 
 ## 零位标定支架
 
-`tools/zero-fixture/stl/` 的 6 个打印模型及 `images/assembly-reference.png` 来自维护者提供的 `0位支架.stp`。STL 仅作网格化与平移，没有简化或配合修正；源文件与导出文件的哈希记录在该目录的 `manifest.json`。
+`tools/zero-fixture/stl/` 的 6 个打印模型及 `images/assembly-reference.png` 由交流群分享的 `0位支架.stp` 导出，维护者负责整理。目前没有可提供的原始发布链接，原始设计作者和模型许可尚未确认；该设计不署名为维护者原创，群内分享不代表已获开源授权。STL 仅作网格化与平移，没有简化或配合修正；源文件与导出文件的哈希记录在该目录的 `manifest.json`。
 
-原始设计作者、上游链接和模型许可尚待补充，不能根据同属 MicroDuck 项目就推断它与装配对照模型采用相同许可。上述几何模型和截图不纳入根目录 MIT 许可；具体来源状态见 [支架说明](tools/zero-fixture/README.md#来源与许可)。
+不能根据同属 MicroDuck 项目就推断它与装配对照模型采用相同许可。上述几何模型和截图不纳入根目录 MIT 许可，本项目不另行授予模型使用权。原作者或权利人可通过 [仓库 Issues](https://github.com/lxm/microduck-maker/issues) 联系维护者补充署名、明确许可或要求移除；具体来源状态见 [支架说明](tools/zero-fixture/README.md#来源与许可)。
