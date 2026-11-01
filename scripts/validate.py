@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import re
 import shutil
+import struct
 import subprocess
 import sys
 from urllib.parse import unquote, urlsplit
@@ -48,6 +49,22 @@ def main():
         require(hashlib.sha256((CAL / relative).read_bytes()).hexdigest() == digest,
                 f'Published runtime differs from source snapshot: {relative}')
     print('PASS: published calibration source snapshot and 11 upstream reference hashes', flush=True)
+
+    fixture = ROOT / 'tools/zero-fixture'
+    fixture_manifest = json.loads((fixture / 'manifest.json').read_text())
+    require(fixture_manifest['unit'] == 'mm', 'Fixture unit must be millimetres')
+    parts = fixture_manifest['files']
+    require(len(parts) == 6, 'Expected six zero-fixture print parts')
+    require({p['file'] for p in parts} == {str(p.relative_to(fixture)) for p in (fixture / 'stl').glob('*.stl')},
+            'Fixture STL file set differs from manifest')
+    for part in parts:
+        data = (fixture / part['file']).read_bytes()
+        require(hashlib.sha256(data).hexdigest() == part['sha256'], f'Fixture hash mismatch: {part["file"]}')
+        require(len(data) >= 84, f'Truncated fixture STL: {part["file"]}')
+        triangles = struct.unpack_from('<I', data, 80)[0]
+        require(triangles == part['triangles'] and len(data) == 84 + 50 * triangles,
+                f'Invalid binary STL size/count: {part["file"]}')
+    print('PASS: six zero-fixture STL hashes, units and triangle counts', flush=True)
 
     for file in ROOT.rglob('*.py'):
         if '.git' not in file.parts:

@@ -4,6 +4,8 @@
 
 [完整操作说明](docs/usage.md) · [实机兼容条件](docs/compatibility.md) · [来源与许可](../../THIRD_PARTY_NOTICES.md) · [返回工具目录](../README.md)
 
+配套 [零位标定支架 STL 与打印说明](../zero-fixture/README.md) 已单独收录。支架保留原设计，打印前请核对其已知配合问题；定位工装与允许关节运动的承重支架用途不同。
+
 ![单屏标定工作台，模拟模式](docs/images/workbench-demo.png)
 
 ## 功能

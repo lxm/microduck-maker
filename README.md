@@ -10,8 +10,9 @@
 |---|---|---|
 | 逐关节零位标定 | 单屏 3D 工作台、逐颗标定、回零 / HOME、保持与备份 | [tools/calibrator](tools/calibrator/) |
 | 舵机编号与装配对照 | 飞特 HD-1910 版的 15 颗舵机位置、编号与装配检查 | [tools/servo-guide](tools/servo-guide/) · [在线查看](https://lxm.github.io/microduck-servo-guide/) |
+| 零位标定支架 | 6 件 STL、装配参考与代打说明 | [tools/zero-fixture](tools/zero-fixture/) |
 
-当前发布包含这两个工具的源码、第三方资源、使用说明和离线验证程序。`firmware/` 先记录后续固件收录约定，**当前没有可刷写固件**。本仓库不包含标定支架的 STEP/STL 文件。
+仓库包含标定与装配工具的源码、第三方资源、使用说明和离线验证程序，以及零位标定支架的 STL 打印文件（不含 STEP）。支架保留原设计，已知配合问题和来源说明见其目录。`firmware/` 先记录后续固件收录约定，**当前没有可刷写固件**。
 
 ## 先体验标定工具
 
@@ -37,7 +38,8 @@ python3 server.py --demo
 microduck-maker/
 ├── tools/
 │   ├── calibrator/       # 标定网页、板端代理、测试与说明
-│   └── servo-guide/      # 3D 舵机编号与装配对照
+│   ├── servo-guide/      # 3D 舵机编号与装配对照
+│   └── zero-fixture/     # 零位标定支架 STL 与打印说明
 ├── firmware/             # 后续固件目录约定，暂不含固件
 ├── docs/                 # 项目维护与发布说明
 ├── scripts/              # 全仓库离线验证
@@ -65,6 +67,7 @@ python3 scripts/validate.py
 - lxm 原创的标定界面、维护代理、脚本，以及装配对照的原创网页和提取代码采用 [MIT](LICENSE)。
 - 标定工具引用的 Kissqy 参考代码保留其**个人非商业使用许可**；其 3D 模型与 Three.js 分别保留上游模型许可、MIT 许可。
 - 装配工具的 CAD 衍生模型采用 **CC BY-NC-SA 4.0**，保留机械行者Robo、fanhao375 和 Pollen Robotics 的署名。
+- 零位标定支架的原始作者与模型许可待补充，其 STL 与模型截图不纳入软件 MIT 许可，详见该目录说明。
 - 不同目录的许可范围见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。MIT 不覆盖上述单独授权的资源，不能将整个下载包理解为统一 MIT 授权。
 
 这是独立社区项目，与 Pollen Robotics、飞特及所引用社区项目无官方隶属或背书关系。现有 [microduck-servo-guide](https://github.com/lxm/microduck-servo-guide) 仓库和在线页面继续保留，新项目统一收录后续工具源码。

@@ -1,0 +1,97 @@
+{
+  "source_file": "0位支架.stp",
+  "source_sha256": "82129747cede703382a3bc89edd52dd43f25fbc8b3205666cf6cc56e33ddcdba",
+  "export_date": "2026-10-25",
+  "verified_date": "2026-11-01",
+  "unit": "mm",
+  "linear_deflection_mm": 0.05,
+  "angular_deflection_rad": 0.15,
+  "transform": "Translation only: XY bounding-box center to origin and minimum Z to zero; orientation unchanged.",
+  "known_overlap_05_06_mm3": 26.07673022266996,
+  "files": [
+    {
+      "file": "stl/01_竖向连接件.stl",
+      "quantity": 1,
+      "sha256": "c381bf66c78848a5b2692acc7a4ba4422e8c4f70f7ab5b1ca4cc6ae68420b48c",
+      "triangles": 16314,
+      "dimensions_mm": [
+        24.0,
+        35.945522,
+        105.393997
+      ],
+      "closed_edges": true,
+      "cad_volume_mm3": 27091.278977050406,
+      "mesh_signed_volume_mm3": 27090.725382285218
+    },
+    {
+      "file": "stl/02_顶部半框A.stl",
+      "quantity": 1,
+      "sha256": "f8572ff6b988e8788375270dd19535b011780f4a93def42342cccc78b67e56df",
+      "triangles": 33772,
+      "dimensions_mm": [
+        92.305885,
+        61.297146,
+        36.207072
+      ],
+      "closed_edges": true,
+      "cad_volume_mm3": 23158.091136060306,
+      "mesh_signed_volume_mm3": 23168.563223353496
+    },
+    {
+      "file": "stl/03_顶部半框B.stl",
+      "quantity": 1,
+      "sha256": "a5005cbde8b657094ba99c4acd4a5f65b757d26393a54474b8ad2ae83d252d8c",
+      "triangles": 27702,
+      "dimensions_mm": [
+        92.305885,
+        49.945522,
+        18.255084
+      ],
+      "closed_edges": true,
+      "cad_volume_mm3": 18525.185572529368,
+      "mesh_signed_volume_mm3": 18539.627145051665
+    },
+    {
+      "file": "stl/04_中部叉架.stl",
+      "quantity": 1,
+      "sha256": "6fc00f38cc01f7cbc95aa94a0cc534c6a465cd0284b1aaf4b7645ec7a2eb4896",
+      "triangles": 9990,
+      "dimensions_mm": [
+        51.63818,
+        70.000439,
+        46.004597
+      ],
+      "closed_edges": true,
+      "cad_volume_mm3": 14981.93849142893,
+      "mesh_signed_volume_mm3": 14984.108251939095
+    },
+    {
+      "file": "stl/05_下部长条.stl",
+      "quantity": 1,
+      "sha256": "a2c7474e5f04a683608418248e9991b3b8e4f34d31ae0695c4131d4a0dc81698",
+      "triangles": 712,
+      "dimensions_mm": [
+        15.0,
+        17.606354,
+        67.150002
+      ],
+      "closed_edges": true,
+      "cad_volume_mm3": 16194.688534361403,
+      "mesh_signed_volume_mm3": 16193.504898049054
+    },
+    {
+      "file": "stl/06_下部定位架.stl",
+      "quantity": 1,
+      "sha256": "9c2f4eecc25844bfc04608e0cb5fbe2d07430ddd8cd2309333ad301a54c72dcf",
+      "triangles": 3916,
+      "dimensions_mm": [
+        39.110188,
+        129.0,
+        74.438004
+      ],
+      "closed_edges": true,
+      "cad_volume_mm3": 58508.65480308366,
+      "mesh_signed_volume_mm3": 58507.345074783356
+    }
+  ]
+}
