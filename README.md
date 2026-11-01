@@ -8,7 +8,7 @@
 
 | 工具 | 用途 | 入口 |
 |---|---|---|
-| 逐关节零位标定 | 3D 参考、逐颗采样与保存零位、单独保持、备份与恢复 | [tools/calibrator](tools/calibrator/) |
+| 逐关节零位标定 | 单屏 3D 工作台、逐颗标定、回零 / HOME、保持与备份 | [tools/calibrator](tools/calibrator/) |
 | 舵机编号与装配对照 | 飞特 HD-1910 版的 15 颗舵机位置、编号与装配检查 | [tools/servo-guide](tools/servo-guide/) · [在线查看](https://lxm.github.io/microduck-servo-guide/) |
 
 当前发布包含这两个工具的源码、第三方资源、使用说明和离线验证程序。`firmware/` 先记录后续固件收录约定，**当前没有可刷写固件**。本仓库不包含标定支架的 STEP/STL 文件。
@@ -25,7 +25,9 @@ python3 server.py --demo
 
 打开 <http://127.0.0.1:8795/>。默认即为模拟模式，可以体验选关节、采样、保存和保持流程，不连接机器人。下载资源均包含在仓库中，不需要 npm 或在线 CDN。
 
-![逐关节标定工具的模拟界面](tools/calibrator/docs/images/demo.png)
+需要另一台电脑访问时，在启动命令后加 `--bind 0.0.0.0`，然后用浏览器打开 `http://服务电脑的IPv4地址:8795/`。具体步骤与连接排查见 [局域网访问说明](tools/calibrator/docs/usage.md#从另一台电脑访问)。
+
+![逐关节标定工具的模拟界面](tools/calibrator/docs/images/workbench-demo.png)
 
 实机标定还需要兼容的板端运行环境与 SSH。先读 [适用范围与连接方法](tools/calibrator/README.md#适用范围)，再按 [详细操作说明](tools/calibrator/docs/usage.md) 执行。机械零位和站立 HOME 是不同概念，3D 参考按钮只改变画面。
 
@@ -56,7 +58,7 @@ python3 scripts/validate.py
 
 验证包含标定工具及串口发现/依赖准备的离线测试、3D 引用文件哈希、网页静态资源，以及装配对照的网格、69 个装配变换和 15 个舵机编号。验证不连接机器人、不操作串口、不上传程序或改写实机。
 
-当前版本增加板端串口发现与依赖自动准备，离线测试通过不等同于跨机型实机验收。兼容条件及已知边界见各工具说明。贡献与发布方式见 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [发布说明](docs/releasing.md)。
+当前工作台增加单屏布局与回 HOME 操作；离线测试通过不等同于跨机型实机验收。兼容条件及已知边界见各工具说明。贡献与发布方式见 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [发布说明](docs/releasing.md)。
 
 ## 来源与许可
 

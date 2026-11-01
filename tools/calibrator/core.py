@@ -151,7 +151,7 @@ class Session:
     def status(self):
         return dict(all_torque_off=not self.held,held=sorted(self.held),fault=self.fault,verified_at=self.verified_at,completed=self.completed,pending=self.pending,
             zero_check=copy.deepcopy(self.zero_check),zero_inspection_supported=True,zero_inspection_ids=list(BODY_IDS),
-            zero_inspection_profile='direct-2048-600',
+            zero_inspection_profile='direct-2048-600',home_inspection_profile='home-600',
             mouth_closed=self.mouth_closed,servos=[dict(id=sid,name=NAMES[sid],
                 position=word(self.current[str(sid)],56),offset_raw=word(self.current[str(sid)],31),
                 angle_deg=(2048-word(self.current[str(sid)],56))*360/4096,
@@ -317,7 +317,7 @@ class Session:
             if abs(circular(word(r,56)-word(r,42)))>46:
                 raise CalibrationError(f'ID{sid} 保持偏差超过4°；'+self.following_detail(sid))
         if self.zero_check:
-            self.zero_check['max_error_deg']=max(abs(word(self.current[str(s)],56)-2048)*360/4096 for s in self.zero_check.get('ids',BODY_IDS))
+            self.zero_check['max_error_deg']=max(abs(word(self.current[str(s)],56)-self.zero_check['targets'][str(s)])*360/4096 for s in self.zero_check.get('ids',BODY_IDS))
         return self.status()
 
     def following_detail(self,sid):
@@ -334,7 +334,7 @@ class Session:
         if self.zero_running():
             raise CalibrationError('正在归零，请先全部断力，再进行单关节操作')
 
-    def start_zero(self,confirmed=False,*,torque_limit=300,speed_deg_s=5,wait_for_feedback=False,direct=False):
+    def start_zero(self,confirmed=False,*,torque_limit=300,speed_deg_s=5,wait_for_feedback=False,direct=False,pose='zero'):
         self.require_idle()
         if confirmed is not True:
             raise CalibrationError('请确认所有零位已核对、躯干已固定且手已离开所有关节')
@@ -344,7 +344,12 @@ class Session:
             raise CalibrationError('归零速度需1—5°/秒')
         if type(direct) is not bool or (direct and torque_limit>600):
             raise CalibrationError('直接归零的扭矩上限不得超过600')
+        if pose not in ('zero','home') or (pose=='home' and not direct):
+            raise CalibrationError('不支持的整体目标姿态')
         selected=list(BODY_IDS)
+        targets={str(s):round(2048-HOME[s]*4096/360) if pose=='home' else 2048 for s in selected}
+        if any(not LIMITS[s][0]<=(2048-targets[str(s)])*360/4096<=LIMITS[s][1] for s in selected):
+            raise CalibrationError('目标姿态超出关节范围')
         now=self.checked_snapshot()
         self.validate_zero_range(now)
         # ID34 never receives a zero goal or torque-on. Release a prior manual
@@ -357,19 +362,23 @@ class Session:
         # Never raise a lower pre-existing cap. No EEPROM or config is changed.
         caps={str(s):min(torque_limit,word(now[str(s)],48)) for s in selected}
         if any(v<100 for v in caps.values()):raise CalibrationError('现有扭矩上限不足100，请先检查舵机参数')
-        self.zero_check=dict(phase='arming',ids=selected,armed=0,progress=0,targets={str(s):2048 for s in selected},
-            max_error_deg=max(abs(word(r,56)-2048)*360/4096 for r in (now[str(s)] for s in selected)),speed_deg_s=None if direct else speed_deg_s,
+        self.zero_check=dict(phase='arming',pose=pose,ids=selected,armed=0,progress=0,targets=targets,
+            max_error_deg=max(abs(word(now[str(s)],56)-targets[str(s)])*360/4096 for s in selected),speed_deg_s=None if direct else speed_deg_s,
             torque_limits=caps,waiting_for=[],direct=direct,commanded=0,
             gains={str(s):self.initial[str(s)][50:52] if direct else [5,20] for s in selected})
         self._zero_direct_watch={}
         self._zero_feedback=wait_for_feedback;self._zero_wait_since=None
         self._zero_started=time.monotonic();self._zero_last=self._zero_started
-        self._zero_distance=max(1,max(abs(word(r,56)-2048) for r in (now[str(s)] for s in selected)))
+        self._zero_distance=max(1,max(abs(word(now[str(s)],56)-targets[str(s)]) for s in selected))
         self._zero_settled=0
-        self.save('zero-start',dict(registers=now,inspection=self.zero_check))
+        self.save('home-start' if pose=='home' else 'zero-start',dict(registers=now,inspection=self.zero_check))
         # Merely queue the operation. Each heartbeat performs a bounded step,
         # leaving the serial owner available to process OFF between steps.
         return self.status()
+
+    def start_home(self,confirmed=False):
+        # Fixed body targets only. The public endpoint accepts no custom angles.
+        return self.start_zero(confirmed,torque_limit=600,direct=True,pose='home')
 
     def validate_zero_range(self,rows):
         for sid in BODY_IDS:
@@ -391,37 +400,38 @@ class Session:
         self.current[str(sid)][42:44]=list(int(target).to_bytes(2,'little'))
 
     def advance_direct_zero(self):
-        z=self.zero_check;selected=z['ids']
+        z=self.zero_check;selected=z['ids'];targets=z['targets']
+        label='回HOME' if z.get('pose')=='home' else '直接归零'
         # One target per heartbeat keeps OFF requests serviceable between IDs.
-        # Every servo receives 2048 once; there is no host-side target ramp.
+        # Every servo receives its final target once; no host-side target ramp.
         if z['commanded']<len(selected):
             sid=selected[z['commanded']]
-            error=abs(word(self.current[str(sid)],56)-2048)
-            self.zero_goal(sid,2048)
+            error=abs(word(self.current[str(sid)],56)-targets[str(sid)])
+            self.zero_goal(sid,targets[str(sid)])
             now=time.monotonic()
             self._zero_direct_watch[sid]=dict(sent_at=now,improved_at=now,best_error=error)
             z['commanded']+=1
             self.refresh();self.validate_zero_range(self.current)
         now=time.monotonic()
         for sid,watch in self._zero_direct_watch.items():
-            error=abs(word(self.current[str(sid)],56)-2048)
+            error=abs(word(self.current[str(sid)],56)-targets[str(sid)])
             if error<=12:
                 watch['improved_at']=now
             else:
                 if error<=watch['best_error']-2:
                     watch['best_error']=error;watch['improved_at']=now
                 if now-watch['sent_at']>15:
-                    raise CalibrationError(f'ID{sid} 直接归零15秒仍未到位；'+self.following_detail(sid))
+                    raise CalibrationError(f'ID{sid} {label}15秒仍未到位；'+self.following_detail(sid))
                 if now-watch['improved_at']>5:
-                    raise CalibrationError(f'ID{sid} 直接归零连续5秒未接近2048；'+self.following_detail(sid))
-        remaining=max(abs(word(self.current[str(s)],56)-2048) for s in selected)
+                    raise CalibrationError(f'ID{sid} {label}连续5秒未接近{targets[str(sid)]}；'+self.following_detail(sid))
+        remaining=max(abs(word(self.current[str(s)],56)-targets[str(s)]) for s in selected)
         z['progress']=min(99,round(100*(1-min(1,remaining/self._zero_distance))))
         z['max_error_deg']=remaining*360/4096
         settled=z['commanded']==len(selected) and remaining<=12
         self._zero_settled=self._zero_settled+1 if settled else 0
         if self._zero_settled>=3:
             z['phase']='holding';z['progress']=100
-            self.save('zero-held',dict(registers=self.current,inspection=z))
+            self.save('home-held' if z.get('pose')=='home' else 'zero-held',dict(registers=self.current,inspection=z))
         return self.status()
 
     def advance_zero(self):
@@ -479,13 +489,13 @@ class Session:
                 self._zero_settled=self._zero_settled+1 if settled else 0
                 if self._zero_settled>=3:
                     z['phase']='holding';z['progress']=100
-                    self.save('zero-held',dict(registers=self.current,inspection=z))
-            z['max_error_deg']=max(abs(word(r,56)-2048)*360/4096 for r in (self.current[str(s)] for s in selected))
+                    self.save('home-held' if z.get('pose')=='home' else 'zero-held',dict(registers=self.current,inspection=z))
+            z['max_error_deg']=max(abs(word(self.current[str(s)],56)-z['targets'][str(s)])*360/4096 for s in selected)
             return self.status()
         except Exception as exc:
             self.zero_check['phase']='failed';self.zero_check['error']=str(exc)
             self.relax_all()
-            self.save('zero-failed',dict(inspection=self.zero_check,registers=self.current))
+            self.save('home-failed' if self.zero_check.get('pose')=='home' else 'zero-failed',dict(inspection=self.zero_check,registers=self.current))
             raise
 
 class FakeBus:

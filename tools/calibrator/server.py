@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Local-only calibration UI; simulation by default, explicit --ssh for the duck."""
+"""Calibration UI; loopback and simulation by default, explicit --bind/--ssh opt-ins."""
 import argparse
 import hashlib
+from ipaddress import IPv4Address
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import mimetypes
@@ -45,7 +46,7 @@ class Demo:
     def call(self,req):
         action=req.get('action')
         if action=='probe':raise CalibrationError('自动找限位已移除，请刷新页面')
-        if action=='zero' and ('ids' in req or 'detached_output' in req):
+        if action in ('zero','home') and any(k in req for k in ('ids','detached_output','targets','angles','pose')):
             raise CalibrationError('单独舵机对中已移除，请使用整体零位检查')
         if self.closed:raise CalibrationError('会话已结束，请刷新页面创建新会话')
         if action=='enter':
@@ -55,6 +56,7 @@ class Demo:
         elif not self.session:raise CalibrationError('请先开始模拟会话')
         elif action=='status':self.session.advance_zero()
         elif action=='zero':self.session.start_zero(req.get('confirmed'),torque_limit=600,direct=True)
+        elif action=='home':self.session.start_home(req.get('confirmed'))
         elif action=='sample':
             if req.get('id')==34 and 34 not in self.session.held:
                 # Only demo has artificial hand positioning. No hardware endpoint
@@ -221,7 +223,7 @@ class App:
     def request(self,req):
         action=req.get('action')
         if action=='probe':raise CalibrationError('自动找限位已移除，请刷新页面')
-        if action=='zero' and ('ids' in req or 'detached_output' in req):
+        if action in ('zero','home') and any(k in req for k in ('ids','detached_output','targets','angles','pose')):
             raise CalibrationError('单独舵机对中已移除，请使用整体零位检查')
         # Revoke queued/delayed activation requests BEFORE waiting for the UART
         # owner. Otherwise a slow zero-start HTTP request could arrive after OFF.
@@ -237,7 +239,7 @@ class App:
                 self.preparation=None
                 self.preparation=self.prepared_remote.prepare()
                 return self.preparation
-            if action in ('zero','hold') and req.get('motion_token')!=self.motion_token:
+            if action in ('zero','home','hold') and req.get('motion_token')!=self.motion_token:
                 raise CalibrationError('使能请求已被断力或会话切换取消，请重新确认后操作')
             if action=='enter':
                 if self.backend and not self.expired:raise CalibrationError('会话已存在，请先结束')
@@ -290,7 +292,12 @@ class App:
 def handler(app):
     class Handler(BaseHTTPRequestHandler):
         def log_message(self,*_):pass
-        def safe_host(self):return self.headers.get('Host')==f'127.0.0.1:{self.server.server_port}'
+        def safe_host(self):
+            # Match the actual local interface reached by this connection, even
+            # with a wildcard listener. Arbitrary DNS names remain disallowed.
+            address=self.connection.getsockname()[0]
+            authority=address if self.server.server_port==80 else f'{address}:{self.server.server_port}'
+            return self.headers.get_all('Host')==[authority]
         def send(self,code,data,kind='application/json; charset=utf-8'):
             if not isinstance(data,bytes):data=json.dumps(data,ensure_ascii=False).encode()
             self.send_response(code);self.send_header('Content-Type',kind);self.send_header('Content-Length',str(len(data)))
@@ -307,7 +314,7 @@ def handler(app):
             if not p.is_relative_to(root) or not p.is_file():return self.send(404,dict(error='Not found'))
             self.send(200,p.read_bytes(),mimetypes.guess_type(p)[0] or 'application/octet-stream')
         def do_POST(self):
-            if not self.safe_host() or self.headers.get('Origin')!=f'http://127.0.0.1:{self.server.server_port}' or self.headers.get('X-CSRF-Token')!=app.csrf or self.headers.get('Content-Type')!='application/json':return self.send(403,dict(error='Origin/token refused'))
+            if not self.safe_host() or self.headers.get('Origin')!=f'http://{self.headers.get("Host")}' or self.headers.get('X-CSRF-Token')!=app.csrf or self.headers.get('Content-Type')!='application/json':return self.send(403,dict(error='Origin/token refused'))
             if self.path!='/api/action':return self.send(404,dict(error='Not found'))
             try:
                 size=int(self.headers.get('Content-Length','0'))
@@ -322,15 +329,17 @@ def handler(app):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     g=p.add_mutually_exclusive_group();g.add_argument('--demo',action='store_true');g.add_argument('--ssh')
+    p.add_argument('--bind',type=IPv4Address,default=IPv4Address('127.0.0.1'),help='监听 IPv4 地址；0.0.0.0 允许局域网通过本机 IP 访问')
     p.add_argument('--port',type=int,default=8795);p.add_argument('--data',type=Path,default=Path.home()/'.microduck-calibrator')
     p.add_argument('--serial-port',type=port_argument,default='auto',help='auto 自动发现，或指定板端 /dev 串口路径')
     p.add_argument('--no-install-deps',action='store_true',help='只检查依赖，不自动安装板端缺少的依赖')
     p.add_argument('--eeprom-only',action='store_true',help='只写舵机 EEPROM 零位，保留备份日志，不读写机器人标定配置文件')
     args=p.parse_args()
     if args.ssh and not re.fullmatch(r'[a-z_][a-z0-9_-]*@[a-zA-Z0-9][a-zA-Z0-9.-]*',args.ssh):p.error('--ssh must be user@hostname or user@IPv4')
-    app=App(args.ssh,args.data,args.serial_port,args.eeprom_only,not args.no_install_deps);server=ThreadingHTTPServer(('127.0.0.1',args.port),handler(app))
+    app=App(args.ssh,args.data,args.serial_port,args.eeprom_only,not args.no_install_deps);server=ThreadingHTTPServer((str(args.bind),args.port),handler(app))
     threading.Thread(target=app.watchdog,daemon=True).start()
-    print(f'http://127.0.0.1:{server.server_port}/ — '+('HARDWARE: '+args.ssh if args.ssh else 'DEMO, no robot connected'),flush=True)
+    print(f'Listening on {args.bind}:{server.server_port} — '+('HARDWARE: '+args.ssh if args.ssh else 'DEMO, no robot connected'),flush=True)
+    print(f'http://{args.bind if not args.bind.is_unspecified else "127.0.0.1"}:{server.server_port}/'+(' (LAN: replace 127.0.0.1 with this computer\'s LAN IPv4 address)' if args.bind.is_unspecified else ''),flush=True)
     def interrupted(*_):raise KeyboardInterrupt
     signal.signal(signal.SIGTERM,interrupted)
     try:server.serve_forever()

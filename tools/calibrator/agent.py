@@ -159,7 +159,7 @@ class Maintenance:
     def handle(self,req):
         action=req.get('action')
         if action=='probe':raise CalibrationError('自动找限位已移除，请刷新页面')
-        if action=='zero' and ('ids' in req or 'detached_output' in req):
+        if action in ('zero','home') and any(k in req for k in ('ids','detached_output','targets','angles','pose')):
             raise CalibrationError('单独舵机对中已移除，请使用整体零位检查')
         if action=='enter':
             if req.get('supported') is not True:raise CalibrationError('先把小鸭固定在支架上，腿部留出空间')
@@ -167,6 +167,7 @@ class Maintenance:
         if not self.session:raise CalibrationError('尚未进入标定会话')
         if action=='status':self.session.advance_zero()
         elif action=='zero':self.session.start_zero(req.get('confirmed'),torque_limit=600,direct=True)
+        elif action=='home':self.session.start_home(req.get('confirmed'))
         elif action=='sample':self.session.sample(req.get('id'),0,req.get('endpoint'))
         elif action=='apply':self.session.apply(req.get('token'))
         elif action=='undo':self.session.undo(req.get('id'))

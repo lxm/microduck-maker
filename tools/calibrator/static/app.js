@@ -8,7 +8,7 @@ const info=await (await fetch('/api/info')).json();
 let preparation=info.preparation,preparing=false,setupMessage='';
 $('connection').hidden=info.mode!=='hardware';
 if(info.auto_install===false)$('dependency-note').textContent='自动安装已关闭。检查主板已有依赖并发现串口；此步骤不停止控制服务、不打开串口。';
-$('mode').textContent=info.mode==='demo'?'模拟演示 · 未连接实机':'实机模式 · '+info.host;
+$('mode').textContent=info.mode==='demo'?'模拟演示':'实机 · '+info.host;
 $('enter').textContent=info.mode==='demo'?'开始模拟标定':'连接并进入标定';
 $('notice').textContent=info.mode==='demo'?'模拟模式：所有读数与使能均为模拟，不连接小鸭。':(info.eeprom_only?'手动标定：零位 → 2048，保存到舵机 EEPROM。保留备份日志，不读写 TOML。':'')+'进入后会核验断力、备份零位，并暂停手柄与 robotd；请在支架上操作。';
 if(info.active&&info.state?.servos){state=info.state;active=true;sessionStarted=true;}
@@ -17,7 +17,7 @@ function renderConnection(){
  if(info.mode!=='hardware')return;
  const chosen=$('serial-port').value||info.serial_port||'auto';
  $('prepare').disabled=busy||active||sessionStarted;
- $('prepare').textContent=preparing?'正在检查与准备…':'检查环境与发现串口';
+ $('prepare').textContent=preparing?'正在检查…':'检查环境与串口';
  const choices=$('serial-port');choices.replaceChildren();
  const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='请选择舵机总线串口';choices.append(placeholder);
  const auto=document.createElement('option');auto.value='auto';auto.textContent='自动选择（优先使用 robotd 串口）';
@@ -44,14 +44,14 @@ async function readSetupLog(){
    const content=log.lines.join('\n');
    if(content&&element.textContent!==content){element.textContent=content;if(follow)element.scrollTop=element.scrollHeight;}
    $('setup-log-state').textContent=log.running?'进行中…':log.run?'已结束':'';
-   if(log.running&& !setupLogTimer){$('setup-log-panel').open=true;setupLogTimer=setInterval(readSetupLog,600);}
+   if(log.running&& !setupLogTimer){setupLogTimer=setInterval(readSetupLog,600);}
    if(!log.running&&!busy&&setupLogTimer){clearInterval(setupLogTimer);setupLogTimer=null;}
   }catch(e){$('setup-log-state').textContent='日志读取失败：'+e.message;}
  })();
  try{await setupLogRequest;}finally{setupLogRequest=null;}
 }
 function startSetupLog(){
- $('setup-log-panel').open=true;$('setup-log-state').textContent='正在连接…';
+ $('logs-dialog').showModal();$('setup-log-state').textContent='正在连接…';
  if(!setupLogTimer)setupLogTimer=setInterval(readSetupLog,600);
 }
 async function finishSetupLog(){
@@ -70,10 +70,13 @@ async function prepareBoard(){
  finally{await finishSetupLog();busy=preparing=false;render();}
 }
 function bodyZeroSupported(){const supported=state?.zero_inspection_ids;return state?.zero_inspection_profile==='direct-2048-600'&&Array.isArray(supported)&&supported.length===zeroIds.length&&zeroIds.every(id=>supported.includes(id));}
+function homeSupported(){return bodyZeroSupported()&&state?.home_inspection_profile==='home-600';}
 function zeroRunning(){return ['arming','moving'].includes(state?.zero_check?.phase);}
 function selectJoint(id){selected=id;$('clear').checked=false;if(id===34)pose='zero';render();view?.set(selected,pose,true);}
 function render(){
  renderConnection();
+ const focusedId=document.activeElement?.closest('#joints button')?.dataset.id;
+ const navScroll=[$('joints').scrollLeft,$('joints').scrollTop];
  $('joints').replaceChildren();
  ids.forEach((id,i)=>{
   if([10,20,30].includes(id)){const h=document.createElement('div');h.className='group-title';h.textContent=id===10?'右腿 / RIGHT':id===20?'左腿 / LEFT':'头颈 / HEAD';$('joints').append(h);}
@@ -82,11 +85,13 @@ function render(){
   const st=document.createElement('span');st.className='joint-state';st.textContent=state?.held?.includes(id)?'● 保持':state?.completed?.[id]?'✓':'○';if(state?.held?.includes(id))st.classList.add('amber');
   b.append(label,st);b.onclick=()=>selectJoint(id);$('joints').append(b);
  });
+ $('joints').scrollLeft=navScroll[0];$('joints').scrollTop=navScroll[1];
+ if(focusedId)$('joints').querySelector(`[data-id="${focusedId}"]`)?.focus({preventScroll:true});
  const r=current(),held=state?.held?.includes(selected),saved=Boolean(state?.completed?.[selected]),pending=state?.pending?.id===selected?state.pending:null;
  $('joint-title').textContent=`ID${selected} · ${names[ids.indexOf(selected)]}`;
  $('position').textContent=r?r.position:'—';$('torque').textContent=active?(held?'保持中':'断力'):'未连接';
  $('progress').textContent=`${Object.keys(state?.completed||{}).length} / 15`;
- $('instruction').textContent=selected===34?'嘴部单独记录自然闭合与舒适张开。不要挤压连杆或顶住机械终点；这里没有嘴部转轴动画。':`把${names[ids.indexOf(selected)]}按装配基准摆到机械 0°。只核对关节两侧结构，其他断力关节不用同时摆正。`;
+ $('instruction').textContent=selected===34?'依次采样自然闭嘴与舒适张开，不要顶住机械终点。':`手动将${names[ids.indexOf(selected)]}摆至机械 0°，其他断力关节不必同时摆正。`;
  $('body-sample').hidden=selected===34;$('mouth-sample').hidden=selected!==34;
  $('sample').disabled=$('closed').disabled=busy||!active||held;
  $('open').disabled=busy||!active||held||!state?.mouth_closed;
@@ -97,27 +102,34 @@ function render(){
  $('finish').disabled=busy||!sessionStarted;$('relax').disabled=!sessionStarted;
  $('zero-stop').disabled=!sessionStarted;
  $('zero-all').disabled=busy||!active||!bodyZeroSupported()||zeroRunning()||!$('zero-clear').checked;
- const z=state?.zero_check;
- $('zero-status').textContent=!active?'进入标定后可用 · 归零仅包含身体与头颈 14 颗，嘴部 ID34 不参与。':!bodyZeroSupported()?'请结束旧会话并重新连接，加载直接回2048、扭矩上限600的归零功能。':!z?'就绪 · 14 颗直接回2048；扭矩上限600，沿用原有P/D；不含嘴部，不改写EEPROM。':
- z.phase==='arming'?`正在接入原有P/D保持 ${z.armed} / ${z.ids?.length||zeroIds.length} · 可随时全部断力`:
- z.phase==='moving'?`已向 ${z.commanded||0} / ${zeroIds.length} 颗发送2048 · 到位进度 ${z.progress}% · 最大偏差 ${z.max_error_deg.toFixed(2)}°`:
- z.phase==='holding'?`ID ${(z.ids||zeroIds).join("、")} 已回零并保持 · 实测最大误差 ${z.max_error_deg.toFixed(2)}°`:
- z.phase==='failed'?`归零未完成：${z.error} · 请核对断力状态`:'归零已停止 · 再次开始需要重新勾选确认';
+ $('home-all').disabled=busy||!active||!homeSupported()||zeroRunning()||!$('zero-clear').checked;
+ const z=state?.zero_check,label=z?.pose==='home'?'HOME':'机械零位';
+ $('zero-status').textContent=!active?'进入标定后可操作；嘴部 ID34 不参与。':!homeSupported()?'请结束旧会话并重新连接，加载工作台姿态功能。':!z?'就绪 · 在支架上回零或回 HOME 并保持。':
+ z.phase==='arming'?`${label} · 正在接入保持 ${z.armed} / ${zeroIds.length}`:
+ z.phase==='moving'?`${label} · 已发送 ${z.commanded||0} / ${zeroIds.length} · ${z.progress}% · 最大偏差 ${z.max_error_deg.toFixed(2)}°`:
+ z.phase==='holding'?`${label} · 14 颗已到位并保持 · 最大误差 ${z.max_error_deg.toFixed(2)}°`:
+ z.phase==='failed'?`${label}未完成：${z.error} · 请核对断力状态`:'已停止 · 再次操作需重新勾选确认';
  if(zeroRunning())for(const id of ['sample','closed','open','apply','hold','release','undo'])$(id).disabled=true;
  $('offsets').textContent=r?`EEPROM 原始值 ${r.initial_offset_raw} → 当前 ${r.offset_raw}。身体 2048 = 机械零位，方向 −1；程序不再叠加此偏移。方向、限位与 IMU 安装矩阵不在此工具内改动。`:'尚未读取零位';
  $('preview').className='preview'+(pending?' ready':'');
  $('preview').textContent=pending?`已稳定采样：${pending.position} 计数\n零位偏移调整 ${(pending.correction_counts*360/4096).toFixed(2)}° · 30 秒内保持不动并保存${pending.mouth?'\n嘴部开度 '+((2048-pending.mouth.open_raw)*360/4096).toFixed(1)+'°':''}`:saved?'本次零位已保存。保持在刚标定的位置，可单独使能。':selected===34&&state?.mouth_closed?'闭嘴已采样，请手动张开后记录第二个端点。':'采样后显示零位改变量。';
  document.querySelectorAll('[data-pose]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.pose===pose));b.disabled=selected===34&&['positive','negative'].includes(b.dataset.pose);});
  $('ref-tag').textContent={zero:'机械零位 · 0°',home:'HOME · 仅供对照',positive:'当前关节 · +10°',negative:'当前关节 · −10°'}[pose];
- $('reference-note').textContent=pose==='home'?'HOME 是站立目标，不是机械零位。请切回“机械零位 0°”再采样保存。':'只需对齐选中关节两侧的结构关系；其余真实关节不用同时摆成图中的姿势。';
+ $('reference-note').textContent=pose==='home'?'HOME 为站立参考；采样保存需切回机械零位。':'对齐选中关节两侧结构，其余关节不必同时摆正。';
  if(pose!=='zero')$('sample').disabled=$('closed').disabled=$('open').disabled=true;
  if(state?.backup)$('backup').textContent='备份：'+state.backup;
- if(active&&state?.verified_at)$('live').textContent=`最近核验 ${new Date(state.verified_at*1000).toLocaleTimeString()} · ${state.held?.length||0} 颗保持 · ${zeroRunning()?'正在连续读取归零反馈':'页面每 3 秒读取'}`;
+ if(active&&state?.verified_at)$('live').textContent=`最近核验 ${new Date(state.verified_at*1000).toLocaleTimeString()} · ${state.held?.length||0} 颗保持 · ${zeroRunning()?'正在连续读取姿态反馈':'页面每 3 秒读取'}`;
  $('readings').replaceChildren();
- for(const row of state?.servos||[]){
-  const tr=document.createElement('tr');
-  const values=[`ID${row.id} · ${row.name}`,state.completed?.[row.id]?'已保存':'未修改',active?(state.held?.includes(row.id)?'● 保持中':'断力'):'非实时记录',Number.isFinite(row.angle_deg)?row.angle_deg.toFixed(2)+'°':'—',row.hold_position??'—',row.voltage?.toFixed(1)+' V',row.temperature+' °C'];
-  values.forEach((value,i)=>{const td=document.createElement('td');td.textContent=value;if(i===2&&state.held?.includes(row.id))td.className='amber';tr.append(td);});$('readings').append(tr);
+ for(const [index,id] of ids.entries()){
+  const row=state?.servos?.find(r=>r.id===id),held=active&&state?.held?.includes(id);
+  const card=document.createElement('div');card.className='reading'+(id===selected?' selected':'')+(!active?' inactive':'');card.setAttribute('role','listitem');
+  const parts=[['reading-name',`ID${id} · ${names[index]}`],['reading-state'+(held?' amber':''),active?(held?'●':'○'):'—'],
+   ['reading-value',active&&Number.isFinite(row?.angle_deg)?row.angle_deg.toFixed(1)+'°':'—'],
+   ['reading-target',active&&row?.hold_position!=null?'→ '+row.hold_position:'→ —'],
+   ['reading-health',active?`${row?.voltage?.toFixed(1)??'—'}V / ${row?.temperature??'—'}°`:'—V / —°']];
+  for(const [cls,value] of parts){const el=document.createElement('span');el.className=cls;el.textContent=value;card.append(el);}
+  card.title=`ID${id} · ${names[index]} · ${state?.completed?.[id]?'本次零位已保存':'本次未修改零位'} · ${active?(held?'保持中':'断力'):'无实时会话'}`;
+  $('readings').append(card);
  }
  $('overview-state').textContent=active?`${Object.keys(state?.completed||{}).length} 颗已保存 · ${state?.held?.length||0} 颗保持`:'没有实时会话 · 请勿把历史读数当作当前状态';
 }
@@ -125,7 +137,7 @@ async function action(name,extra={},quiet=false){
  let recovered=false;
  if(busy&&name!=='relax')return;const sequence=++requestSequence;busy=true;render();if(!quiet)$('error').hidden=true;
  if(name==='enter'&&info.mode==='hardware')startSetupLog();
- if(name==='zero'||name==='relax')$('zero-clear').checked=false;
+ if(['zero','home','relax'].includes(name))$('zero-clear').checked=false;
  try{
   const resp=await fetch('/api/action',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':info.csrf},body:JSON.stringify({action:name,motion_token:info.motion_token,...extra})});
   const data=await resp.json();if(sequence!==requestSequence)return;if(data.motion_token)info.motion_token=data.motion_token;
@@ -134,6 +146,7 @@ async function action(name,extra={},quiet=false){
   info.motion_token=data.result.motion_token;
   if(data.result.closed){active=false;sessionStarted=false;state={...state,held:data.result.all_torque_off?[]:state?.held,pending:null};$('live').textContent=data.result.all_torque_off?'已结束 · 全部断力已核验':'已结束 · 断力未核验';if(data.result.error)throw Error(data.result.error);}
   else{state=data.result;active=true;sessionStarted=true;}
+  if(name==='home'||name==='zero'){pose=name==='home'?'home':'zero';view?.set(selected,pose);view?.camera('three');}
   if(name==='apply'||name==='hold')$('clear').checked=false;
  }catch(e){if(sequence===requestSequence){$('error').textContent=e.message;$('error').hidden=false;if(quiet&&!recovered){active=false;$('live').textContent='连接/核验中断，状态未知；请托稳。';}}}
  finally{if(name==='enter'&&info.mode==='hardware')await finishSetupLog();if(sequence===requestSequence){busy=false;render();}}
@@ -151,7 +164,11 @@ $('release').onclick=()=>action('release',{id:selected});
 $('undo').onclick=()=>action('undo',{id:selected});
 $('relax').onclick=()=>action('relax');$('finish').onclick=()=>action('finish');
 $('zero-all').onclick=()=>action('zero',{confirmed:$('zero-clear').checked});
+$('home-all').onclick=()=>action('home',{confirmed:$('zero-clear').checked});
 $('zero-stop').onclick=()=>action('relax');
+$('logs-open').onclick=()=>$('logs-dialog').showModal();
+$('help-open').onclick=()=>$('help-dialog').showModal();
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());
 $('next').onclick=()=>{pose='zero';selectJoint(ids[(ids.indexOf(selected)+1)%ids.length]);};
 document.querySelectorAll('[data-pose]').forEach(b=>b.onclick=()=>{pose=b.dataset.pose;render();view?.set(selected,pose);});
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>view?.camera(b.dataset.view));

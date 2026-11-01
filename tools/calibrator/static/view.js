@@ -8,14 +8,14 @@ export async function createView(){
  const response=await fetch('./source/assets/duck-visual.bin');if(!response.ok)throw Error('模型资源不可用');
  const model=parseDuck(await response.arrayBuffer());
  const geometry=model.meshes.map(m=>{const g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(m.vertices,3));g.setAttribute('normal',new T.BufferAttribute(m.normals,3));g.setIndex(new T.BufferAttribute(m.indices,1));g.computeBoundingBox();return g;});
- const scene=new T.Scene();scene.background=new T.Color('#f7faf8');scene.add(new T.HemisphereLight(0xffffff,0x899e98,2.4));
+ const scene=new T.Scene();scene.background=new T.Color(getComputedStyle(element).getPropertyValue('--scene-background').trim()||'#f1f4f7');scene.add(new T.HemisphereLight(0xffffff,0x899e98,2.4));
  const key=new T.DirectionalLight(0xfff6e8,3);key.position.set(.5,-.5,.9);scene.add(key);
  const fill=new T.DirectionalLight(0xddefff,1.4);fill.position.set(-.4,.55,.3);scene.add(fill);
  const v=new DuckView();v.model=model;v.geometry=geometry;v.actual=v.build(false);scene.add(v.actual.root);
  const camera=new T.OrthographicCamera(-.3,.3,.3,-.3,.001,5);camera.up.set(0,0,1);
  const renderer=new T.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(2,devicePixelRatio));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;element.prepend(renderer.domElement);
  const controls=new OrbitControls(camera,renderer.domElement);controls.enablePan=false;controls.minZoom=.7;controls.maxZoom=4;
- const grid=new T.GridHelper(.7,28,0xc5d4cc,0xe2ebe5);grid.rotation.x=Math.PI/2;grid.position.z=-.001;scene.add(grid);
+ const grid=new T.GridHelper(.7,28,0xc3cdd9,0xdfe5ed);grid.rotation.x=Math.PI/2;grid.position.z=-.001;scene.add(grid);
  const originals=v.actual.servos.map(s=>s.material);v.actual.servos.forEach(s=>s.material=s.material.clone());
  let selected=13,target=new T.Vector3(0,0,.19),height=.48,viewname='auto',focusBox=new T.Box3();
  const directions={three:[.48,-.66,.2],right:[0,-.7,0],left:[0,.7,0],front:[.7,0,0]};
@@ -38,29 +38,27 @@ export async function createView(){
   for(const x of [focusBox.min.x,focusBox.max.x])for(const y of [focusBox.min.y,focusBox.max.y])for(const z of [focusBox.min.z,focusBox.max.z]){
    const point=new T.Vector3(x,y,z).sub(target);halfWidth=Math.max(halfWidth,Math.abs(point.dot(right)));halfHeight=Math.max(halfHeight,Math.abs(point.dot(up)));
   }
-  height=Math.max(.16,halfHeight*2.25,halfWidth*2.25/a);
+  height=Math.max(.16,halfHeight*2.4,halfWidth*2.4/a);
   camera.left=-height*a/2;camera.right=height*a/2;camera.top=height/2;camera.bottom=-height/2;camera.updateProjectionMatrix();draw();
  }
  function setCamera(name){
   if(name!=='auto'&&!directions[name])return;
   viewname=name;
   focusBox.setFromObject(v.actual.root);
-  if(name==='auto'){
-   focusBox.makeEmpty();const group=selected<20?10:selected<30?20:30;
-   v.actual.servos.forEach((mesh,i)=>{if(Math.floor(REFERENCE_IDS[i]/10)*10===group)focusBox.union(new T.Box3().setFromObject(mesh));});
-   focusBox.expandByScalar(.035);
-  }
+  // Direction follows the selected joint, framing always includes head to feet.
+  // A limb-only box cropped the head when calibrating a leg.
+  focusBox.expandByScalar(.01);
   target=focusBox.getCenter(new T.Vector3());camera.zoom=1;
   camera.position.copy(target).add(new T.Vector3(...(name==='auto'?preset().direction:directions[name])));
   controls.target.copy(target);controls.update();resize();
   document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===name)));
-  document.getElementById('camera-note').textContent=name==='auto'?'自动视角 · '+preset().label+' · 选择下一颗时自动切换':'手动视角 · 选择下一颗时恢复自动视角';
+  document.getElementById('camera-note').textContent=name==='auto'?'全身自动视角 · '+preset().label:'全身参考 · 选择下一颗时恢复自动视角';
  }
  function set(id,pose,automatic=false){
   selected=id;v.pose(v.actual,referencePose(pose,REFERENCE_IDS.indexOf(id)),[0,0,-1],0);
-  v.actual.servos.forEach((m,i)=>{m.material.copy(originals[i]);m.renderOrder=0;if(REFERENCE_IDS[i]===id){m.material.color.set('#dfae38');m.material.emissive?.set('#684900');m.material.emissiveIntensity=.35;m.material.depthTest=false;m.material.depthWrite=false;m.renderOrder=10;}});
+  v.actual.servos.forEach((m,i)=>{m.material.copy(originals[i]);m.renderOrder=0;if(REFERENCE_IDS[i]===id){m.material.color.set('#719bca');m.material.emissive?.set('#1d3654');m.material.emissiveIntensity=.25;m.material.depthTest=false;m.material.depthWrite=false;m.renderOrder=10;}});
   setCamera(automatic?'auto':viewname);
  }
- controls.addEventListener('change',draw);new ResizeObserver(resize).observe(element);set(13,'zero',true);
+ controls.addEventListener('change',resize);new ResizeObserver(resize).observe(element);set(13,'zero',true);
  return {set,camera:setCamera};
 }

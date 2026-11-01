@@ -377,6 +377,31 @@ class LifecycleTests(unittest.TestCase):
             self.assertEqual(a.backend.session.zero_check['phase'],'arming')
 
 class HttpTests(unittest.TestCase):
+    def test_wildcard_listener_requires_destination_host_matching_origin_and_token(self):
+        with tempfile.TemporaryDirectory() as d:
+            app=App(None,Path(d));server=ThreadingHTTPServer(('0.0.0.0',0),handler(app))
+            thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
+            try:
+                c=http.client.HTTPConnection('127.0.0.1',server.server_port)
+                authority=f'127.0.0.1:{server.server_port}'
+                c.request('GET','/api/info');r=c.getresponse();info=json.loads(r.read());self.assertEqual(r.status,200)
+                headers={'Host':authority,'Origin':f'http://{authority}','Content-Type':'application/json','X-CSRF-Token':info['csrf']}
+                with patch.object(app,'request',return_value={'accepted':True}) as request:
+                    c.request('POST','/api/action',body='{"action":"status"}',headers=headers)
+                    r=c.getresponse();self.assertEqual(r.status,200);self.assertTrue(json.loads(r.read())['ok'])
+                    request.assert_called_once_with({'action':'status'})
+                    for change in ({'Host':f'0.0.0.0:{server.server_port}'},
+                                   {'Host':f'192.0.2.1:{server.server_port}'},
+                                   {'Host':f'attacker.example:{server.server_port}','Origin':f'http://attacker.example:{server.server_port}'},
+                                   {'Origin':'http://192.0.2.1:8795'},
+                                   {'X-CSRF-Token':'invalid'}):
+                        with self.subTest(change=change):
+                            c.request('POST','/api/action',body='{}',headers={**headers,**change})
+                            r=c.getresponse();r.read();self.assertEqual(r.status,403)
+                    self.assertEqual(request.call_count,1)
+                c.close()
+            finally:server.shutdown();server.server_close();thread.join()
+
     def test_host_origin_token_and_path_protection(self):
         with tempfile.TemporaryDirectory() as d:
             app=App(None,Path(d));server=ThreadingHTTPServer(('127.0.0.1',0),handler(app));thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
