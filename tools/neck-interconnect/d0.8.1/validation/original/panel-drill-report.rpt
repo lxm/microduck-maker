@@ -1,0 +1,28 @@
+Drill report for MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96.kicad_pcb
+Created on 2026-11-01T21:20:04
+
+Copper Layer Stackup:
+    =============================================================
+    L1 :  F.Cu                      front
+    L2 :  B.Cu                      back
+
+
+Drill file 'MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-PTH.drl' contains
+    plated through holes:
+    =============================================================
+    T1  0.400mm  0.0157"  (66 holes))
+    T2  0.450mm  0.0177"  (72 holes))
+    T3  0.500mm  0.0197"  (18 holes))
+    T4  0.700mm  0.0276"  (72 holes))
+    T5  0.850mm  0.0335"  (36 holes))
+
+    Total plated holes count 264
+
+
+Drill file 'MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-NPTH.drl' contains
+    unplated through holes:
+    =============================================================
+    T1  0.550mm  0.0217"  (144 holes))
+    T2  2.000mm  0.0787"  (28 holes))
+
+    Total unplated holes count 172

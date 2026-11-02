@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "checks": {
+    "F.Cu_flash_centres_match_native": true,
+    "B.Cu_flash_centres_match_native": true,
+    "F.Mask_flash_centres_match_native": true,
+    "B.Mask_flash_centres_match_native": true,
+    "all_drill_centres_diameters_and_plating_match_native": true,
+    "required_layers_complete": true,
+    "two_copper_layers": true,
+    "nominal_edge_boundary_25p5_by_40": true,
+    "zip_integrity": true,
+    "zip_contents_match_verified_files": true
+  },
+  "flash_counts": {
+    "F.Cu": 43,
+    "B.Cu": 43,
+    "F.Mask": 25,
+    "B.Mask": 25
+  },
+  "drill_total": 47,
+  "nominal_routing_boundary_mm": [
+    0.0,
+    -40.0,
+    25.5,
+    0.0
+  ],
+  "coordinate_tolerance_mm": 0.001,
+  "analyzer_warning_triage": [],
+  "dimension_note": "Nominal routed single-board boundary 25.5x40mm; no rails, bridges or mouse-bite holes.",
+  "zip_sha256": "ff4348cac4f6e4bd35103ee4654f89d08e9b1006104cb5fbef09fc87076b6a3a",
+  "trust_summary": {
+    "high_confidence": "Actual exported Gerber flashes, mask openings, Excellon coordinates/diameters, native DRC and native unit parity cross-check",
+    "physical_validation_pending": "Original plug rear shape, wire diameter/cut length, actual case/mounting dimensions, operation and strength"
+  }
+}

@@ -1,0 +1,1724 @@
+{
+  "analyzer_type": "gerber",
+  "schema_version": "1.4.0",
+  "directory": "fabrication/D0_8_1_1oz_6up/gerbers",
+  "generator": "Pcbnew 10.0.6",
+  "layer_count": 2,
+  "board_dimensions": {
+    "width_mm": 94.55,
+    "height_mm": 96.05,
+    "area_mm2": 9081.5,
+    "source": "gbrjob"
+  },
+  "statistics": {
+    "gerber_files": 7,
+    "drill_files": 2,
+    "total_holes": 436,
+    "total_flashes": 1720,
+    "total_draws": 33183
+  },
+  "completeness": {
+    "found_layers": [
+      "B.Cu",
+      "B.Mask",
+      "B.SilkS",
+      "Edge.Cuts",
+      "F.Cu",
+      "F.Mask",
+      "F.SilkS"
+    ],
+    "expected_layers": [
+      "B.Cu",
+      "B.Mask",
+      "B.SilkS",
+      "Edge.Cuts",
+      "F.Cu",
+      "F.Mask",
+      "F.SilkS"
+    ],
+    "missing": [],
+    "extra": [],
+    "has_pth_drill": true,
+    "has_npth_drill": true,
+    "complete": true,
+    "source": "gbrjob"
+  },
+  "alignment": {
+    "aligned": false,
+    "issues": [
+      "Width varies by 15.0mm across copper/edge layers",
+      "Height varies by 15.0mm across copper/edge layers"
+    ],
+    "layer_extents": {
+      "B.Cu": {
+        "width": 79.499,
+        "height": 80.999
+      },
+      "B.Mask": {
+        "width": 89.5,
+        "height": 91.0
+      },
+      "B.SilkS": {
+        "width": 89.5,
+        "height": 91.0
+      },
+      "Edge.Cuts": {
+        "width": 94.5,
+        "height": 96.0
+      },
+      "F.Cu": {
+        "width": 79.499,
+        "height": 80.999
+      },
+      "F.Mask": {
+        "width": 89.5,
+        "height": 91.0
+      },
+      "F.SilkS": {
+        "width": 89.5,
+        "height": 92.286
+      },
+      "drill_NPTH": {
+        "width": 89.5,
+        "height": 91.0
+      },
+      "drill_PTH": {
+        "width": 77.75,
+        "height": 78.5
+      }
+    }
+  },
+  "drill_classification": {
+    "vias": {
+      "count": 138,
+      "tools": [
+        {
+          "diameter_mm": 0.4,
+          "count": 66
+        },
+        {
+          "diameter_mm": 0.45,
+          "count": 72
+        }
+      ]
+    },
+    "component_holes": {
+      "count": 298,
+      "tools": [
+        {
+          "diameter_mm": 0.5,
+          "count": 18
+        },
+        {
+          "diameter_mm": 0.55,
+          "count": 144,
+          "type": "NPTH"
+        },
+        {
+          "diameter_mm": 0.7,
+          "count": 72
+        },
+        {
+          "diameter_mm": 0.85,
+          "count": 36
+        },
+        {
+          "diameter_mm": 2.0,
+          "count": 28,
+          "type": "NPTH"
+        }
+      ]
+    },
+    "mounting_holes": {
+      "count": 0,
+      "tools": []
+    },
+    "classification_method": "x2_attributes"
+  },
+  "pad_summary": {
+    "smd_apertures": 0,
+    "via_apertures": 276,
+    "heatsink_apertures": 0,
+    "tht_holes": 298,
+    "smd_source": "x2_aperture_function",
+    "smd_ratio": 0.0
+  },
+  "trace_widths": {
+    "unique_widths_mm": [
+      0.3,
+      1.2,
+      2.4,
+      2.6,
+      3.0
+    ],
+    "min_trace_mm": 0.3,
+    "max_trace_mm": 3.0,
+    "width_count": 5,
+    "min_feature_mm": 0.3
+  },
+  "component_analysis": {
+    "total_unique": 80,
+    "front_side": 80,
+    "back_side": 0,
+    "component_refs": [
+      "MB1",
+      "TOOL1",
+      "U1_H1",
+      "U1_H2",
+      "U1_H3",
+      "U1_H4",
+      "U1_J1",
+      "U1_J2",
+      "U1_J3",
+      "U1_J4",
+      "U1_J5",
+      "U1_J6",
+      "U1_TP1",
+      "U1_TP2",
+      "U1_TP3",
+      "U2_H1",
+      "U2_H2",
+      "U2_H3",
+      "U2_H4",
+      "U2_J1",
+      "U2_J2",
+      "U2_J3",
+      "U2_J4",
+      "U2_J5",
+      "U2_J6",
+      "U2_TP1",
+      "U2_TP2",
+      "U2_TP3",
+      "U3_H1",
+      "U3_H2",
+      "U3_H3",
+      "U3_H4",
+      "U3_J1",
+      "U3_J2",
+      "U3_J3",
+      "U3_J4",
+      "U3_J5",
+      "U3_J6",
+      "U3_TP1",
+      "U3_TP2",
+      "U3_TP3",
+      "U4_H1",
+      "U4_H2",
+      "U4_H3",
+      "U4_H4",
+      "U4_J1",
+      "U4_J2",
+      "U4_J3",
+      "U4_J4",
+      "U4_J5",
+      "U4_J6",
+      "U4_TP1",
+      "U4_TP2",
+      "U4_TP3",
+      "U5_H1",
+      "U5_H2",
+      "U5_H3",
+      "U5_H4",
+      "U5_J1",
+      "U5_J2",
+      "U5_J3",
+      "U5_J4",
+      "U5_J5",
+      "U5_J6",
+      "U5_TP1",
+      "U5_TP2",
+      "U5_TP3",
+      "U6_H1",
+      "U6_H2",
+      "U6_H3",
+      "U6_H4",
+      "U6_J1",
+      "U6_J2",
+      "U6_J3",
+      "U6_J4",
+      "U6_J5",
+      "U6_J6",
+      "U6_TP1",
+      "U6_TP2",
+      "U6_TP3"
+    ],
+    "has_x2_data": true,
+    "pads_per_component": {
+      "MB1": 144,
+      "TOOL1": 4,
+      "U1_H1": 1,
+      "U1_H2": 1,
+      "U1_H3": 1,
+      "U1_H4": 1,
+      "U1_J1": 3,
+      "U1_J2": 3,
+      "U1_J3": 3,
+      "U1_J4": 3,
+      "U1_J5": 3,
+      "U1_J6": 3,
+      "U1_TP1": 1,
+      "U1_TP2": 1,
+      "U1_TP3": 1,
+      "U2_H1": 1,
+      "U2_H2": 1,
+      "U2_H3": 1,
+      "U2_H4": 1,
+      "U2_J1": 3,
+      "U2_J2": 3,
+      "U2_J3": 3,
+      "U2_J4": 3,
+      "U2_J5": 3,
+      "U2_J6": 3,
+      "U2_TP1": 1,
+      "U2_TP2": 1,
+      "U2_TP3": 1,
+      "U3_H1": 1,
+      "U3_H2": 1,
+      "U3_H3": 1,
+      "U3_H4": 1,
+      "U3_J1": 3,
+      "U3_J2": 3,
+      "U3_J3": 3,
+      "U3_J4": 3,
+      "U3_J5": 3,
+      "U3_J6": 3,
+      "U3_TP1": 1,
+      "U3_TP2": 1,
+      "U3_TP3": 1,
+      "U4_H1": 1,
+      "U4_H2": 1,
+      "U4_H3": 1,
+      "U4_H4": 1,
+      "U4_J1": 3,
+      "U4_J2": 3,
+      "U4_J3": 3,
+      "U4_J4": 3,
+      "U4_J5": 3,
+      "U4_J6": 3,
+      "U4_TP1": 1,
+      "U4_TP2": 1,
+      "U4_TP3": 1,
+      "U5_H1": 1,
+      "U5_H2": 1,
+      "U5_H3": 1,
+      "U5_H4": 1,
+      "U5_J1": 3,
+      "U5_J2": 3,
+      "U5_J3": 3,
+      "U5_J4": 3,
+      "U5_J5": 3,
+      "U5_J6": 3,
+      "U5_TP1": 1,
+      "U5_TP2": 1,
+      "U5_TP3": 1,
+      "U6_H1": 1,
+      "U6_H2": 1,
+      "U6_H3": 1,
+      "U6_H4": 1,
+      "U6_J1": 3,
+      "U6_J2": 3,
+      "U6_J3": 3,
+      "U6_J4": 3,
+      "U6_J5": 3,
+      "U6_J6": 3,
+      "U6_TP1": 1,
+      "U6_TP2": 1,
+      "U6_TP3": 1
+    },
+    "total_pads": 298
+  },
+  "net_analysis": {
+    "total_unique": 18,
+    "named_nets": 18,
+    "unnamed_nets": 0,
+    "power_nets": [],
+    "signal_nets": [
+      "/U1/DATA",
+      "/U1/GND",
+      "/U1/VBUS_SERVO",
+      "/U2/DATA",
+      "/U2/GND",
+      "/U2/VBUS_SERVO",
+      "/U3/DATA",
+      "/U3/GND",
+      "/U3/VBUS_SERVO",
+      "/U4/DATA",
+      "/U4/GND",
+      "/U4/VBUS_SERVO",
+      "/U5/DATA",
+      "/U5/GND",
+      "/U5/VBUS_SERVO",
+      "/U6/DATA",
+      "/U6/GND",
+      "/U6/VBUS_SERVO"
+    ],
+    "total_pins": 126
+  },
+  "gerbers": [
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Cu.gbl",
+      "layer_type": "B.Cu",
+      "units": "mm",
+      "aperture_count": 6,
+      "flash_count": 264,
+      "draw_count": 10584,
+      "region_count": 42,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-11-01T21:19:58+08:00",
+        "ProjectId": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96,4d696372-6f44-4756-936b-5f4e65636b5f,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Copper,L2,Bot",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "by_function": {
+          "ComponentPad": 3,
+          "ViaPad": 2,
+          "Conductor": 1
+        },
+        "by_function_flashes": {
+          "ComponentPad": 126,
+          "ViaPad": 138,
+          "Conductor": 0
+        },
+        "conductor_widths_mm": [
+          0.3
+        ],
+        "min_feature_mm": 0.3
+      },
+      "x2_component_count": 0,
+      "x2_net_count": 18,
+      "x2_pin_count": 126
+    },
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Mask.gbs",
+      "layer_type": "B.Mask",
+      "units": "mm",
+      "aperture_count": 5,
+      "flash_count": 298,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-11-01T21:19:58+08:00",
+        "ProjectId": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96,4d696372-6f44-4756-936b-5f4e65636b5f,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Soldermask,Bot",
+        "FilePolarity": "Negative"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 0.55
+      },
+      "x2_component_count": 80,
+      "x2_net_count": 0,
+      "x2_pin_count": 0
+    },
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Silkscreen.gbo",
+      "layer_type": "B.SilkS",
+      "units": "mm",
+      "aperture_count": 7,
+      "flash_count": 298,
+      "draw_count": 2844,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-11-01T21:19:58+08:00",
+        "ProjectId": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96,4d696372-6f44-4756-936b-5f4e65636b5f,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Legend,Bot",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 0.15
+      },
+      "x2_component_count": 80,
+      "x2_net_count": 0,
+      "x2_pin_count": 0
+    },
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-Edge_Cuts.gm1",
+      "layer_type": "Edge.Cuts",
+      "units": "mm",
+      "aperture_count": 1,
+      "flash_count": 0,
+      "draw_count": 260,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-11-01T21:19:58+08:00",
+        "ProjectId": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96,4d696372-6f44-4756-936b-5f4e65636b5f,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Profile,NP"
+      },
+      "aperture_analysis": {
+        "by_function": {
+          "Profile": 1
+        },
+        "by_function_flashes": {
+          "Profile": 0
+        },
+        "min_feature_mm": 0.05
+      }
+    },
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Cu.gtl",
+      "layer_type": "F.Cu",
+      "units": "mm",
+      "aperture_count": 9,
+      "flash_count": 264,
+      "draw_count": 15408,
+      "region_count": 66,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-11-01T21:19:58+08:00",
+        "ProjectId": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96,4d696372-6f44-4756-936b-5f4e65636b5f,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Copper,L1,Top",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "by_function": {
+          "ComponentPad": 3,
+          "ViaPad": 2,
+          "Conductor": 4
+        },
+        "by_function_flashes": {
+          "ComponentPad": 126,
+          "ViaPad": 138,
+          "Conductor": 0
+        },
+        "conductor_widths_mm": [
+          1.2,
+          2.4,
+          2.6,
+          3.0
+        ],
+        "min_feature_mm": 0.8
+      },
+      "x2_component_count": 0,
+      "x2_net_count": 18,
+      "x2_pin_count": 126
+    },
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Mask.gts",
+      "layer_type": "F.Mask",
+      "units": "mm",
+      "aperture_count": 5,
+      "flash_count": 298,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-11-01T21:19:58+08:00",
+        "ProjectId": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96,4d696372-6f44-4756-936b-5f4e65636b5f,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Soldermask,Top",
+        "FilePolarity": "Negative"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 0.55
+      },
+      "x2_component_count": 80,
+      "x2_net_count": 0,
+      "x2_pin_count": 0
+    },
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Silkscreen.gto",
+      "layer_type": "F.SilkS",
+      "units": "mm",
+      "aperture_count": 8,
+      "flash_count": 298,
+      "draw_count": 4087,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-11-01T21:19:58+08:00",
+        "ProjectId": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96,4d696372-6f44-4756-936b-5f4e65636b5f,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Legend,Top",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 0.13
+      },
+      "x2_component_count": 80,
+      "x2_net_count": 0,
+      "x2_pin_count": 0
+    }
+  ],
+  "drills": [
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-NPTH.drl",
+      "type": "NPTH",
+      "units": "mm",
+      "hole_count": 172,
+      "tools": {
+        "T1": {
+          "diameter_mm": 0.55,
+          "hole_count": 144,
+          "aper_function": "NonPlated,NPTH,ComponentDrill"
+        },
+        "T2": {
+          "diameter_mm": 2.0,
+          "hole_count": 28,
+          "aper_function": "NonPlated,NPTH,ComponentDrill"
+        }
+      },
+      "layer_span": [
+        1,
+        2
+      ],
+      "x2_attributes": {
+        "CreationDate": "2026-11-01T21:20:04+08:00",
+        "GenerationSoftware": "Kicad,Pcbnew,10.0.6",
+        "FileFunction": "NonPlated,1,2,NPTH"
+      }
+    },
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-PTH.drl",
+      "type": "PTH",
+      "units": "mm",
+      "hole_count": 264,
+      "tools": {
+        "T1": {
+          "diameter_mm": 0.4,
+          "hole_count": 66,
+          "aper_function": "Plated,PTH,ViaDrill"
+        },
+        "T2": {
+          "diameter_mm": 0.45,
+          "hole_count": 72,
+          "aper_function": "Plated,PTH,ViaDrill"
+        },
+        "T3": {
+          "diameter_mm": 0.5,
+          "hole_count": 18,
+          "aper_function": "Plated,PTH,ComponentDrill"
+        },
+        "T4": {
+          "diameter_mm": 0.7,
+          "hole_count": 72,
+          "aper_function": "Plated,PTH,ComponentDrill"
+        },
+        "T5": {
+          "diameter_mm": 0.85,
+          "hole_count": 36,
+          "aper_function": "Plated,PTH,ComponentDrill"
+        }
+      },
+      "layer_span": [
+        1,
+        2
+      ],
+      "x2_attributes": {
+        "CreationDate": "2026-11-01T21:20:04+08:00",
+        "GenerationSoftware": "Kicad,Pcbnew,10.0.6",
+        "FileFunction": "Plated,1,2,PTH"
+      }
+    }
+  ],
+  "drill_tools": {
+    "0.55mm": {
+      "diameter_mm": 0.55,
+      "count": 144,
+      "type": "NPTH"
+    },
+    "2.0mm": {
+      "diameter_mm": 2.0,
+      "count": 28,
+      "type": "NPTH"
+    },
+    "0.4mm": {
+      "diameter_mm": 0.4,
+      "count": 66,
+      "type": "PTH"
+    },
+    "0.45mm": {
+      "diameter_mm": 0.45,
+      "count": 72,
+      "type": "PTH"
+    },
+    "0.5mm": {
+      "diameter_mm": 0.5,
+      "count": 18,
+      "type": "PTH"
+    },
+    "0.7mm": {
+      "diameter_mm": 0.7,
+      "count": 72,
+      "type": "PTH"
+    },
+    "0.85mm": {
+      "diameter_mm": 0.85,
+      "count": 36,
+      "type": "PTH"
+    }
+  },
+  "job_file": {
+    "generator": "Pcbnew 10.0.6",
+    "vendor": "KiCad",
+    "creation_date": "2026-11-01T21:19:58+08:00",
+    "board_width_mm": 94.55,
+    "board_height_mm": 96.05,
+    "layer_count": 2,
+    "board_thickness_mm": 1.6,
+    "finish": "None",
+    "project_name": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96",
+    "design_rules": [
+      {
+        "layers": "Outer",
+        "PadToPad": 0.2,
+        "PadToTrack": 0.2,
+        "TrackToTrack": 0.2,
+        "MinLineWidth": 0.3,
+        "TrackToRegion": 0.25,
+        "RegionToRegion": 0.25
+      }
+    ],
+    "expected_files": [
+      {
+        "path": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Cu.gtl",
+        "function": "Copper,L1,Top",
+        "polarity": "Positive"
+      },
+      {
+        "path": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Cu.gbl",
+        "function": "Copper,L2,Bot",
+        "polarity": "Positive"
+      },
+      {
+        "path": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Silkscreen.gto",
+        "function": "Legend,Top",
+        "polarity": "Positive"
+      },
+      {
+        "path": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Silkscreen.gbo",
+        "function": "Legend,Bot",
+        "polarity": "Positive"
+      },
+      {
+        "path": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Mask.gts",
+        "function": "SolderMask,Top",
+        "polarity": "Negative"
+      },
+      {
+        "path": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Mask.gbs",
+        "function": "SolderMask,Bot",
+        "polarity": "Negative"
+      },
+      {
+        "path": "MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-Edge_Cuts.gm1",
+        "function": "Profile",
+        "polarity": "Positive"
+      }
+    ],
+    "stackup": [
+      {
+        "type": "Legend",
+        "name": "Top Silk Screen"
+      },
+      {
+        "type": "SolderPaste",
+        "name": "Top Solder Paste"
+      },
+      {
+        "type": "SolderMask",
+        "name": "Top Solder Mask"
+      },
+      {
+        "type": "Copper",
+        "name": "F.Cu"
+      },
+      {
+        "type": "Dielectric",
+        "name": "F.Cu/B.Cu",
+        "material": "FR4"
+      },
+      {
+        "type": "Copper",
+        "name": "B.Cu"
+      },
+      {
+        "type": "SolderMask",
+        "name": "Bottom Solder Mask"
+      },
+      {
+        "type": "SolderPaste",
+        "name": "Bottom Solder Paste"
+      },
+      {
+        "type": "Legend",
+        "name": "Bottom Silk Screen"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "detector": "analyze_gerbers",
+      "rule_id": "GR-002",
+      "category": "gerber_alignment",
+      "severity": "warning",
+      "confidence": "deterministic",
+      "evidence_source": "topology",
+      "summary": "Alignment: Width varies by 15.0mm across copper/edge layers",
+      "description": "Layer alignment issue: Width varies by 15.0mm across copper/edge layers",
+      "components": [],
+      "nets": [],
+      "pins": [],
+      "recommendation": "Re-export gerbers to ensure consistent layer alignment.",
+      "report_context": {
+        "section": "Gerber Alignment",
+        "impact": "Layer misregistration",
+        "standard_ref": ""
+      },
+      "stages": [
+        "pre_fab"
+      ],
+      "finding_id": "gerber:GR-002:c04c8e1252a2"
+    },
+    {
+      "detector": "analyze_gerbers",
+      "rule_id": "GR-002",
+      "category": "gerber_alignment",
+      "severity": "warning",
+      "confidence": "deterministic",
+      "evidence_source": "topology",
+      "summary": "Alignment: Height varies by 15.0mm across copper/edge layers",
+      "description": "Layer alignment issue: Height varies by 15.0mm across copper/edge layers",
+      "components": [],
+      "nets": [],
+      "pins": [],
+      "recommendation": "Re-export gerbers to ensure consistent layer alignment.",
+      "report_context": {
+        "section": "Gerber Alignment",
+        "impact": "Layer misregistration",
+        "standard_ref": ""
+      },
+      "stages": [
+        "pre_fab"
+      ],
+      "finding_id": "gerber:GR-002:ee3ee5377704"
+    }
+  ],
+  "assessments": [],
+  "summary": {
+    "total_findings": 2,
+    "by_severity": {
+      "error": 0,
+      "warning": 2,
+      "info": 0
+    }
+  },
+  "trust_summary": {
+    "total_findings": 2,
+    "trust_level": "high",
+    "by_confidence": {
+      "deterministic": 2,
+      "heuristic": 0,
+      "datasheet_backed": 0
+    },
+    "by_evidence_source": {
+      "datasheet": 0,
+      "topology": 2,
+      "heuristic_rule": 0,
+      "symbol_footprint": 0,
+      "bom": 0,
+      "geometry": 0,
+      "api_lookup": 0
+    },
+    "provenance_coverage_pct": 0.0
+  },
+  "connectivity": [
+    {
+      "ref": "U1_J1",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U1_J1",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U1/DATA"
+    },
+    {
+      "ref": "U1_J1",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U1/VBUS_SERVO"
+    },
+    {
+      "ref": "U1_J2",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U1_J2",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U1/DATA"
+    },
+    {
+      "ref": "U1_J2",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U1/VBUS_SERVO"
+    },
+    {
+      "ref": "U1_J3",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U1_J3",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U1/DATA"
+    },
+    {
+      "ref": "U1_J3",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U1/VBUS_SERVO"
+    },
+    {
+      "ref": "U1_J4",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U1_J4",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U1/DATA"
+    },
+    {
+      "ref": "U1_J4",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U1/VBUS_SERVO"
+    },
+    {
+      "ref": "U1_J5",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U1_J5",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U1/DATA"
+    },
+    {
+      "ref": "U1_J5",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U1/VBUS_SERVO"
+    },
+    {
+      "ref": "U1_J6",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U1_J6",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U1/DATA"
+    },
+    {
+      "ref": "U1_J6",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U1/VBUS_SERVO"
+    },
+    {
+      "ref": "U1_TP1",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U1_TP2",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U1_TP3",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U2_J1",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U2_J1",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U2/DATA"
+    },
+    {
+      "ref": "U2_J1",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U2/VBUS_SERVO"
+    },
+    {
+      "ref": "U2_J2",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U2_J2",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U2/DATA"
+    },
+    {
+      "ref": "U2_J2",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U2/VBUS_SERVO"
+    },
+    {
+      "ref": "U2_J3",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U2_J3",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U2/DATA"
+    },
+    {
+      "ref": "U2_J3",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U2/VBUS_SERVO"
+    },
+    {
+      "ref": "U2_J4",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U2_J4",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U2/DATA"
+    },
+    {
+      "ref": "U2_J4",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U2/VBUS_SERVO"
+    },
+    {
+      "ref": "U2_J5",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U2_J5",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U2/DATA"
+    },
+    {
+      "ref": "U2_J5",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U2/VBUS_SERVO"
+    },
+    {
+      "ref": "U2_J6",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U2_J6",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U2/DATA"
+    },
+    {
+      "ref": "U2_J6",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U2/VBUS_SERVO"
+    },
+    {
+      "ref": "U2_TP1",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U2_TP2",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U2_TP3",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U3_J1",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U3_J1",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U3/DATA"
+    },
+    {
+      "ref": "U3_J1",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U3/VBUS_SERVO"
+    },
+    {
+      "ref": "U3_J2",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U3_J2",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U3/DATA"
+    },
+    {
+      "ref": "U3_J2",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U3/VBUS_SERVO"
+    },
+    {
+      "ref": "U3_J3",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U3_J3",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U3/DATA"
+    },
+    {
+      "ref": "U3_J3",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U3/VBUS_SERVO"
+    },
+    {
+      "ref": "U3_J4",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U3_J4",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U3/DATA"
+    },
+    {
+      "ref": "U3_J4",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U3/VBUS_SERVO"
+    },
+    {
+      "ref": "U3_J5",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U3_J5",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U3/DATA"
+    },
+    {
+      "ref": "U3_J5",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U3/VBUS_SERVO"
+    },
+    {
+      "ref": "U3_J6",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U3_J6",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U3/DATA"
+    },
+    {
+      "ref": "U3_J6",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U3/VBUS_SERVO"
+    },
+    {
+      "ref": "U3_TP1",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U3_TP2",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U3_TP3",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U4_J1",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U4_J1",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U4/DATA"
+    },
+    {
+      "ref": "U4_J1",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U4/VBUS_SERVO"
+    },
+    {
+      "ref": "U4_J2",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U4_J2",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U4/DATA"
+    },
+    {
+      "ref": "U4_J2",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U4/VBUS_SERVO"
+    },
+    {
+      "ref": "U4_J3",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U4_J3",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U4/DATA"
+    },
+    {
+      "ref": "U4_J3",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U4/VBUS_SERVO"
+    },
+    {
+      "ref": "U4_J4",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U4_J4",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U4/DATA"
+    },
+    {
+      "ref": "U4_J4",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U4/VBUS_SERVO"
+    },
+    {
+      "ref": "U4_J5",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U4_J5",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U4/DATA"
+    },
+    {
+      "ref": "U4_J5",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U4/VBUS_SERVO"
+    },
+    {
+      "ref": "U4_J6",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U4_J6",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U4/DATA"
+    },
+    {
+      "ref": "U4_J6",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U4/VBUS_SERVO"
+    },
+    {
+      "ref": "U4_TP1",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U4_TP2",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U4_TP3",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U5_J1",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U5_J1",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U5/DATA"
+    },
+    {
+      "ref": "U5_J1",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U5/VBUS_SERVO"
+    },
+    {
+      "ref": "U5_J2",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U5_J2",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U5/DATA"
+    },
+    {
+      "ref": "U5_J2",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U5/VBUS_SERVO"
+    },
+    {
+      "ref": "U5_J3",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U5_J3",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U5/DATA"
+    },
+    {
+      "ref": "U5_J3",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U5/VBUS_SERVO"
+    },
+    {
+      "ref": "U5_J4",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U5_J4",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U5/DATA"
+    },
+    {
+      "ref": "U5_J4",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U5/VBUS_SERVO"
+    },
+    {
+      "ref": "U5_J5",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U5_J5",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U5/DATA"
+    },
+    {
+      "ref": "U5_J5",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U5/VBUS_SERVO"
+    },
+    {
+      "ref": "U5_J6",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U5_J6",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U5/DATA"
+    },
+    {
+      "ref": "U5_J6",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U5/VBUS_SERVO"
+    },
+    {
+      "ref": "U5_TP1",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U5_TP2",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U5_TP3",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U6_J1",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U6_J1",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U6/DATA"
+    },
+    {
+      "ref": "U6_J1",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U6/VBUS_SERVO"
+    },
+    {
+      "ref": "U6_J2",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U6_J2",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U6/DATA"
+    },
+    {
+      "ref": "U6_J2",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U6/VBUS_SERVO"
+    },
+    {
+      "ref": "U6_J3",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U6_J3",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U6/DATA"
+    },
+    {
+      "ref": "U6_J3",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U6/VBUS_SERVO"
+    },
+    {
+      "ref": "U6_J4",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U6_J4",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U6/DATA"
+    },
+    {
+      "ref": "U6_J4",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U6/VBUS_SERVO"
+    },
+    {
+      "ref": "U6_J5",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U6_J5",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U6/DATA"
+    },
+    {
+      "ref": "U6_J5",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U6/VBUS_SERVO"
+    },
+    {
+      "ref": "U6_J6",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U6_J6",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/U6/DATA"
+    },
+    {
+      "ref": "U6_J6",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/U6/VBUS_SERVO"
+    },
+    {
+      "ref": "U6_TP1",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U6_TP2",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "U6_TP3",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    }
+  ],
+  "inputs": {
+    "source_files": [
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Cu.gbl",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Mask.gbs",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Silkscreen.gbo",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-Edge_Cuts.gm1",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Cu.gtl",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Mask.gts",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Silkscreen.gto",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-NPTH.drl",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-PTH.drl",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-job.gbrjob"
+    ],
+    "source_hashes": {
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Cu.gbl": "a24b371f494c3cf10ba07c6729a882c8ab5e62910faa67ab0757f1d42b2db2bc",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Mask.gbs": "e4b7611e3d92351cbcf8b2fc4dd1cd4aca9605ddcd320537d5e7b9e6b9bfb9e9",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Silkscreen.gbo": "256f92239a0dd766fd0814d7befb91127432a70ee91cbd51249c9c66371c6819",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-Edge_Cuts.gm1": "a50e83cd294342b41f16d488bd2f4274dca3514f26226f77b3fd6d2bdb78ef12",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Cu.gtl": "c3a0cf6bbfacb0628a8db5d3f5778f1f9ff43e0879c12ad85ed15b981957dc77",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Mask.gts": "77e17ad20cabf3f445fe7583cffd41a8c177bf440156d200173be1edfd307af7",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Silkscreen.gto": "c93a7256b0b7ccb6e5a1046ecedd1c64fb482d32b1a2461ad06e8580d046232f",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-NPTH.drl": "432bab71d4dad00c55ad6e5f3aff2a52f7e7721fed7a9a2edd224bca6c748f81",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-PTH.drl": "cd8428f5f9ea81ee93b389c9ed392b4190c2eb242042bac6a0becf8f3a819f1d",
+      "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-job.gbrjob": "fbf0a9ad7b2429b6c4ed9f68b7a4c6d3022d24046e0018c631d6b28a0dab672c"
+    },
+    "run_id": "20261101T132006Z-3a317a",
+    "config_hash": null,
+    "upstream_artifacts": {}
+  },
+  "compat": {
+    "minimum_consumer_version": "1.4.0",
+    "deprecated_fields": [],
+    "experimental_fields": []
+  },
+  "audience_summary": {
+    "designer": {
+      "total_findings": 2,
+      "by_severity": {
+        "error": 0,
+        "warning": 2,
+        "info": 0
+      },
+      "by_category": {
+        "gerber_alignment": 2
+      },
+      "top_issues": [
+        {
+          "detector": "analyze_gerbers",
+          "rule_id": "GR-002",
+          "category": "gerber_alignment",
+          "severity": "warning",
+          "confidence": "deterministic",
+          "evidence_source": "topology",
+          "summary": "Alignment: Width varies by 15.0mm across copper/edge layers",
+          "description": "Layer alignment issue: Width varies by 15.0mm across copper/edge layers",
+          "components": [],
+          "nets": [],
+          "pins": [],
+          "recommendation": "Re-export gerbers to ensure consistent layer alignment.",
+          "report_context": {
+            "section": "Gerber Alignment",
+            "impact": "Layer misregistration",
+            "standard_ref": ""
+          },
+          "stages": [
+            "pre_fab"
+          ],
+          "finding_id": "gerber:GR-002:c04c8e1252a2"
+        },
+        {
+          "detector": "analyze_gerbers",
+          "rule_id": "GR-002",
+          "category": "gerber_alignment",
+          "severity": "warning",
+          "confidence": "deterministic",
+          "evidence_source": "topology",
+          "summary": "Alignment: Height varies by 15.0mm across copper/edge layers",
+          "description": "Layer alignment issue: Height varies by 15.0mm across copper/edge layers",
+          "components": [],
+          "nets": [],
+          "pins": [],
+          "recommendation": "Re-export gerbers to ensure consistent layer alignment.",
+          "report_context": {
+            "section": "Gerber Alignment",
+            "impact": "Layer misregistration",
+            "standard_ref": ""
+          },
+          "stages": [
+            "pre_fab"
+          ],
+          "finding_id": "gerber:GR-002:ee3ee5377704"
+        }
+      ]
+    },
+    "reviewer": {
+      "total_findings": 2,
+      "by_category": {
+        "gerber_alignment": 2
+      },
+      "top_issues": [
+        {
+          "rule_id": "GR-002",
+          "severity": "warning",
+          "summary": "Alignment: Width varies by 15.0mm across copper/edge layers",
+          "recommendation": "Re-export gerbers to ensure consistent layer alignment.",
+          "category": "gerber_alignment"
+        },
+        {
+          "rule_id": "GR-002",
+          "severity": "warning",
+          "summary": "Alignment: Height varies by 15.0mm across copper/edge layers",
+          "recommendation": "Re-export gerbers to ensure consistent layer alignment.",
+          "category": "gerber_alignment"
+        }
+      ]
+    },
+    "manager": {
+      "risk_level": "low",
+      "blocker_count": 0,
+      "warning_count": 2,
+      "stage_readiness": {
+        "schematic": "pass",
+        "layout": "pass",
+        "pre_fab": "needs_review",
+        "bring_up": "pass"
+      },
+      "one_liner": "2 warnings across 1 category."
+    }
+  },
+  "capability_mode_ref": {
+    "source": "analysis/capability_mode.json",
+    "run_id": "20261101T132006Z-3a317a"
+  }
+}

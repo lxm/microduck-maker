@@ -1,0 +1,34 @@
+{
+  "revision": "D0.8.1",
+  "date": "2026-11-01",
+  "status": "ERC_DRC_PINMAP_TESTPOINTS_GERBER_QA_PASS",
+  "basis": "D0.8 PTH layout, known J1/J2 correction from D0.9, enlarged and labelled TP1/TP2/TP3",
+  "pending": "Real J5/J6 harness polarity, assembly dimensions and load/temperature verification",
+  "files": [
+    {
+      "path": "pcb/neck_D0.kicad_pcb",
+      "sha256": "eaf0f1f4aa939213fcfe8dba720f8bc751ba672af7ee3bc004ee5842885d6732",
+      "bytes": 181744
+    },
+    {
+      "path": "pcb/neck_D0.kicad_sch",
+      "sha256": "04416b6d5c74b0df6b26315c4aa4a3c38d5b35d90dd51cf2f8e87103625d9db6",
+      "bytes": 30449
+    },
+    {
+      "path": "pcb/neck_D0_8_1_no_servos.kicad_pcb",
+      "sha256": "15b971f2a95f362922b4e53fbeaf0e12e18bf2081713cb120e3f8b0a3a2a6b64",
+      "bytes": 181422
+    },
+    {
+      "path": "fabrication/D0_8_1_1oz_6up/MicroDuck_Neck_D0.8.1_1oz_6up_94.5x96_PINOUT_CHECK.zip",
+      "sha256": "0b42920c6dfeaee2d22d36d54cf0be31f56de8bd10e18e06a1ed1b46d6e7ab5f",
+      "bytes": 225082
+    },
+    {
+      "path": "fabrication/D0_8_1_1oz_single/MicroDuck_Neck_D0.8.1_1oz_single_25.5x40_PINOUT_CHECK.zip",
+      "sha256": "ff4348cac4f6e4bd35103ee4654f89d08e9b1006104cb5fbef09fc87076b6a3a",
+      "bytes": 41098
+    }
+  ]
+}

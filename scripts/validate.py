@@ -65,6 +65,7 @@ def main():
         require(triangles == part['triangles'] and len(data) == 84 + 50 * triangles,
                 f'Invalid binary STL size/count: {part["file"]}')
     print('PASS: six zero-fixture STL hashes, units and triangle counts', flush=True)
+    run(sys.executable, 'tools/neck-interconnect/scripts/validate.py')
 
     for file in ROOT.rglob('*.py'):
         if '.git' not in file.parts:

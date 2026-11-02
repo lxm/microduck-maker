@@ -1,0 +1,166 @@
+(footprint "OEM_WirePTH_P2mm_Pin1Right"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(descr "Three original crimp-wire conductors at 2mm pitch, through unchanged plated holes. Original AMP2.0 housing on servo side, fillets on outside.")
+	(property "Reference" "J1"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "60bc595c-dccc-4e2a-9019-94ac6c946983")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Value" "OEM_WirePTH_P2mm_Pin1Right"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "5821d27c-c0b9-43f9-8016-7ea08387faaa")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "da4e3b75-a160-42ff-a2d1-479761b9f6bf")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "641f771c-efa0-46c3-b458-2e15d8896afd")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "MPN" "NOT_IDENTIFIED_OEM_SUPPLIED"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "77de3301-489a-4472-8b53-68758a1d791b")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Manufacturer" "FEETECH supplied harness"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "45e79807-1448-41f2-9d47-2739a4910849")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "BOM Comments" "Reuse one original servo-supplied AMP2.0 plug with 3 factory wires per port. Trim/strip ends to original 0.70mm PTH; solder only outside. Original wire OD and plug seating need dry fit."
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "c69d3076-f997-4c8f-b3d5-0ffa80368a82")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Parts per Reference" "1"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "de6e39f3-a357-4c63-8c82-001b9cfee321")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Assembly Method" "Original AMP2.0 plug and 3 factory wires per port. Bare trimmed ends through original PTH, outside solder fillets; flush PCB."
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "57e33921-f72d-4089-aa25-dbb03ea6e62d")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr through_hole)
+	(duplicate_pad_numbers_are_jumpers no)
+	(fp_rect
+		(start -2.985 -0.985)
+		(end 2.985 0.985)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "27619a16-cd57-4400-853f-91bb2b6c37f6")
+	)
+	(fp_rect
+		(start -2.735 -0.735)
+		(end 2.735 0.735)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "643f0d4d-d604-49bb-ace0-4d593589fa44")
+	)
+	(pad "1" thru_hole circle
+		(at 2 0)
+		(size 1.2 1.2)
+		(drill 0.7)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "7eaa8971-2ab7-4eb2-9790-6a9467e0c808")
+	)
+	(pad "2" thru_hole circle
+		(at 0 0)
+		(size 1.2 1.2)
+		(drill 0.7)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "89738ac6-26dd-4d9b-926e-48c90e0bcca2")
+	)
+	(pad "3" thru_hole circle
+		(at -2 0)
+		(size 1.2 1.2)
+		(drill 0.7)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "d1596454-43ee-4ac0-8c2c-1ce699b1bcf3")
+	)
+	(embedded_fonts no)
+	(model "${KIPRJMOD}/models3d/OEM_Pigtail_J1.step"
+		(offset
+			(xyz 0 0 -0.04)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+)

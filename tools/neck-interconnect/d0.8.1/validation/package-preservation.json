@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "source_revision": "D0.8.1",
+  "date": "2026-11-02",
+  "byte_identical_file_count": 68,
+  "model_reference_only_changes": [
+    {
+      "path": "pcb/neck_D0.kicad_pcb",
+      "only_optional_servo_model_references_removed": true
+    },
+    {
+      "path": "pcb/Neck.pretty/CaseMount_Lower_AssemblyReference.kicad_mod",
+      "only_optional_servo_model_references_removed": true
+    },
+    {
+      "path": "pcb/Neck.pretty/CaseMount_Upper_AssemblyReference.kicad_mod",
+      "only_optional_servo_model_references_removed": true
+    },
+    {
+      "path": "fabrication/D0_8_1_1oz_single/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40.kicad_pcb",
+      "only_optional_servo_model_references_removed": true
+    }
+  ],
+  "all_fabrication_ZIPs_and_Gerbers_byte_identical": true,
+  "scope": "Source original files compared before publication. Only removable manufacturer servo3D references differ. No copper/pad/outline/hole/silk changes. Original report hashes refer to original source; packaged ERC/DRC separately rerun."
+}

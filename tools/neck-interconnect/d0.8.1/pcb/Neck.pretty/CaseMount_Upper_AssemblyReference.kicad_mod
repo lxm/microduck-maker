@@ -1,0 +1,94 @@
+(footprint "CaseMount_Upper_AssemblyReference"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(descr "D2 candidate clearance for manufacturer D1.6 pilot. Screw depth/type unverified. H1/H3 include reference-only assembly 3D models.")
+	(property "Reference" "H3"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "009db645-b516-476a-aa79-e1e911abab1c")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Value" "CaseMount_Upper_AssemblyReference"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "55304296-b028-4f10-b8f0-dc13525ffabf")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "ff89bdf0-405b-40ff-b256-287a293869cc")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "dc8f27cd-3f0e-442b-8bd8-809edabeb131")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "MPN" ""
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "723c5bec-fc76-4a9d-940a-2c1579fa1fe9")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Manufacturer" ""
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "41d9bab0-1677-4cda-9bb1-f552cd248ca2")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "BOM Comments" "Case pilot coordinates from STEP; fastener depth/type not validated. Reference servo 3D geometry is attached to H1/H3."
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "d97af1f0-236e-48ea-8c33-ddb01a5e9c5d")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr through_hole exclude_from_pos_files exclude_from_bom)
+	(duplicate_pad_numbers_are_jumpers no)
+	(pad "" np_thru_hole circle
+		(at 0 0)
+		(size 2 2)
+		(drill 2)
+		(layers "*.Cu" "*.Mask")
+		(uuid "d036d282-97cd-45d3-a6a1-83939504c747")
+	)
+	(embedded_fonts no)
+)

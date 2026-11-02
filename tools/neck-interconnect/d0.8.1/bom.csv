@@ -1,0 +1,5 @@
+Reference,Qty,Value,Footprint,MPN,Manufacturer,Chosen_Distributor,Datasheet,Validated,DNP,Notes
+"J1,J3",2,OEM_AMP2.0_3P_PIGTAIL,OEM_WirePTH_P2mm_Pin1Left,NOT_IDENTIFIED_OEM_SUPPLIED,FEETECH supplied harness,,,,,Reuse one original servo-supplied AMP2.0 plug with 3 factory wires per port. Trim/strip ends to original 0.70mm PTH; solder only outside. Original wire OD and plug seating need dry fit.
+"J2,J4",2,OEM_AMP2.0_3P_PIGTAIL,OEM_WirePTH_P2mm_Pin1Right,NOT_IDENTIFIED_OEM_SUPPLIED,FEETECH supplied harness,,,,,Reuse one original servo-supplied AMP2.0 plug with 3 factory wires per port. Trim/strip ends to original 0.70mm PTH; solder only outside. Original wire OD and plug seating need dry fit.
+J5,1,LOWER_BODY_HARNESS,CJT_A2007WV_3P,A2007WV-3P,CJT,,https://www.cjt.com/upload/A2007.pdf,,,External harness socket; mating compatibility and wire orientation require sample check.
+J6,1,HEAD_HARNESS,CJT_A2007WV_3P,A2007WV-3P,CJT,,https://www.cjt.com/upload/A2007.pdf,,,External harness socket; mating compatibility and wire orientation require sample check.

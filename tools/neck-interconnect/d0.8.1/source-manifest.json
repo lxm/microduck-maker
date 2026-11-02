@@ -1,0 +1,514 @@
+{
+  "revision": "D0.8.1",
+  "packaged_date": "2026-11-02",
+  "scheme": "OEM AMP2.0 housing and factory wires,trimmed and soldered through original PTH; no replacement female header",
+  "source": "Local D0_8_1-pinfix-testpoints-20261101 snapshot,2026-11-01",
+  "physical_status": "Prototype; external J5/J6 harness polarity, assembly dimensions and load temperature remain unverified",
+  "withheld": "D0.8.2 TH/SMT header trial is not included, pending terminal validation",
+  "source_files": [
+    {
+      "source_path": "pcb/neck_D0.kicad_pcb",
+      "published_path": "pcb/neck_D0.kicad_pcb",
+      "source_sha256": "eaf0f1f4aa939213fcfe8dba720f8bc751ba672af7ee3bc004ee5842885d6732",
+      "published_sha256": "35e8f38bb69ba4cabbce1ccea6b00b97a59206efc3cef559f37a123436baef74",
+      "change": "Only remove2 manufacturer servo reference model records; copper,pads,outline,holes andsilks unchanged."
+    },
+    {
+      "source_path": "pcb/neck_D0.kicad_pro",
+      "published_path": "pcb/neck_D0.kicad_pro",
+      "source_sha256": "0ae0408dcaf518ceb87512f032fd4a5b7d4765f35caea9b07325ba83efbb95ca",
+      "published_sha256": "0ae0408dcaf518ceb87512f032fd4a5b7d4765f35caea9b07325ba83efbb95ca",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/neck_D0.kicad_sch",
+      "published_path": "pcb/neck_D0.kicad_sch",
+      "source_sha256": "04416b6d5c74b0df6b26315c4aa4a3c38d5b35d90dd51cf2f8e87103625d9db6",
+      "published_sha256": "04416b6d5c74b0df6b26315c4aa4a3c38d5b35d90dd51cf2f8e87103625d9db6",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/neck_D0_8_1_no_servos.kicad_pcb",
+      "published_path": "pcb/neck_D0_8_1_no_servos.kicad_pcb",
+      "source_sha256": "15b971f2a95f362922b4e53fbeaf0e12e18bf2081713cb120e3f8b0a3a2a6b64",
+      "published_sha256": "15b971f2a95f362922b4e53fbeaf0e12e18bf2081713cb120e3f8b0a3a2a6b64",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/neck_D0_8_1_no_servos.kicad_pro",
+      "published_path": "pcb/neck_D0_8_1_no_servos.kicad_pro",
+      "source_sha256": "0ae0408dcaf518ceb87512f032fd4a5b7d4765f35caea9b07325ba83efbb95ca",
+      "published_sha256": "0ae0408dcaf518ceb87512f032fd4a5b7d4765f35caea9b07325ba83efbb95ca",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/neck_D0_8_1_bare_pcb_view.kicad_pcb",
+      "published_path": "pcb/neck_D0_8_1_bare_pcb_view.kicad_pcb",
+      "source_sha256": "8d7513daeb3cf00a8fecae2de5773cf4de862e027e56139a3258e92c074f5da4",
+      "published_sha256": "8d7513daeb3cf00a8fecae2de5773cf4de862e027e56139a3258e92c074f5da4",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/Neck.kicad_sym",
+      "published_path": "pcb/Neck.kicad_sym",
+      "source_sha256": "603c1c90f1f4c8790cba37d80444643897e5e55a891468d595a15ecccb926ca8",
+      "published_sha256": "603c1c90f1f4c8790cba37d80444643897e5e55a891468d595a15ecccb926ca8",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/sym-lib-table",
+      "published_path": "pcb/sym-lib-table",
+      "source_sha256": "b451650c739470422616113df0b5da075b6933c36a07d5a9798e08d8ca308d3e",
+      "published_sha256": "b451650c739470422616113df0b5da075b6933c36a07d5a9798e08d8ca308d3e",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/fp-lib-table",
+      "published_path": "pcb/fp-lib-table",
+      "source_sha256": "73a3e5dc85f76cefa999a6c8b21d3193acf2b3fc8fa79965da36f5c6b9d49b97",
+      "published_sha256": "73a3e5dc85f76cefa999a6c8b21d3193acf2b3fc8fa79965da36f5c6b9d49b97",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/pad-map.json",
+      "published_path": "pcb/pad-map.json",
+      "source_sha256": "6412c2240b8494e37d5e12d972694695b2d4e530fbe5867e76cea4fafeb35169",
+      "published_sha256": "6412c2240b8494e37d5e12d972694695b2d4e530fbe5867e76cea4fafeb35169",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/schematic_ids.json",
+      "published_path": "pcb/schematic_ids.json",
+      "source_sha256": "d2a37ee06c328a989b9611bd1a44b7657a3b4fa4516a7c0d8e73b7185d0bcae1",
+      "published_sha256": "d2a37ee06c328a989b9611bd1a44b7657a3b4fa4516a7c0d8e73b7185d0bcae1",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/Neck.pretty/CJT_A2007WV_3P.kicad_mod",
+      "published_path": "pcb/Neck.pretty/CJT_A2007WV_3P.kicad_mod",
+      "source_sha256": "389bfb61e7530570e04e2f837c8eae3ed86e503b0b20429ecedf9395d2e209e6",
+      "published_sha256": "389bfb61e7530570e04e2f837c8eae3ed86e503b0b20429ecedf9395d2e209e6",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/Neck.pretty/CaseMount_D2.kicad_mod",
+      "published_path": "pcb/Neck.pretty/CaseMount_D2.kicad_mod",
+      "source_sha256": "e9c3f2aa609412f5468ff3dc58ba2a2fddec01d74bd9dbbface2a6e74885dc34",
+      "published_sha256": "e9c3f2aa609412f5468ff3dc58ba2a2fddec01d74bd9dbbface2a6e74885dc34",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/Neck.pretty/CaseMount_Lower_AssemblyReference.kicad_mod",
+      "published_path": "pcb/Neck.pretty/CaseMount_Lower_AssemblyReference.kicad_mod",
+      "source_sha256": "e024dbaaff1f3a9af5b93f6e3c666b72e2c8a66b2ecd1d03d1d61121b4e1fb11",
+      "published_sha256": "ce985d093755798f6ea98efe55febbbce5759f351a878afdcb0bbaa1c410783d",
+      "change": "Remove optional manufacturer servo 3D reference records only; all board and pad geometry retained."
+    },
+    {
+      "source_path": "pcb/Neck.pretty/CaseMount_Upper_AssemblyReference.kicad_mod",
+      "published_path": "pcb/Neck.pretty/CaseMount_Upper_AssemblyReference.kicad_mod",
+      "source_sha256": "be482f1c4f8b554d2c208be66e9357545291a6d90a9b66f690224157b1eadb77",
+      "published_sha256": "11c6a7d89b3b15a66bdc3cd77ed968df4aec2143dc42439faaa4281df3c15fb5",
+      "change": "Remove optional manufacturer servo 3D reference records only; all board and pad geometry retained."
+    },
+    {
+      "source_path": "pcb/Neck.pretty/OEM_WirePTH_P2mm_Pin1Left.kicad_mod",
+      "published_path": "pcb/Neck.pretty/OEM_WirePTH_P2mm_Pin1Left.kicad_mod",
+      "source_sha256": "06d2bb603c22a2b9dac198526c1073a9f335cd3c3e894fdc906633010dd3a930",
+      "published_sha256": "06d2bb603c22a2b9dac198526c1073a9f335cd3c3e894fdc906633010dd3a930",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/Neck.pretty/OEM_WirePTH_P2mm_Pin1Right.kicad_mod",
+      "published_path": "pcb/Neck.pretty/OEM_WirePTH_P2mm_Pin1Right.kicad_mod",
+      "source_sha256": "bb55fd7accbb76deb53b2790fa966681daaa1673a4d8b696621a8e104a8ceac2",
+      "published_sha256": "bb55fd7accbb76deb53b2790fa966681daaa1673a4d8b696621a8e104a8ceac2",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/Neck.pretty/TP_PTH_1p8.kicad_mod",
+      "published_path": "pcb/Neck.pretty/TP_PTH_1p8.kicad_mod",
+      "source_sha256": "42ed1b2c550914bdac0a18abf1391c24b3b1dd25cedcb38ff998d1a58700bf42",
+      "published_sha256": "42ed1b2c550914bdac0a18abf1391c24b3b1dd25cedcb38ff998d1a58700bf42",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/models3d/OEM_Pigtail_J1.step",
+      "published_path": "pcb/models3d/OEM_Pigtail_J1.step",
+      "source_sha256": "ffeb4be1861b2ae80e57dde7ca5572c4c58bc4dd4e1c843fdb07ecad19fec2fd",
+      "published_sha256": "ffeb4be1861b2ae80e57dde7ca5572c4c58bc4dd4e1c843fdb07ecad19fec2fd",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/models3d/OEM_Pigtail_J2.step",
+      "published_path": "pcb/models3d/OEM_Pigtail_J2.step",
+      "source_sha256": "4345b221ca0c351aa3132fff54a6dc8281adb68767c9b6f89ac7fc7c588118ae",
+      "published_sha256": "4345b221ca0c351aa3132fff54a6dc8281adb68767c9b6f89ac7fc7c588118ae",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/models3d/OEM_Pigtail_J3.step",
+      "published_path": "pcb/models3d/OEM_Pigtail_J3.step",
+      "source_sha256": "7f278eabe37c149a3a25ea3737ebe8f9e04903527d2b0127f8b329cde549fb64",
+      "published_sha256": "7f278eabe37c149a3a25ea3737ebe8f9e04903527d2b0127f8b329cde549fb64",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/models3d/OEM_Pigtail_J4.step",
+      "published_path": "pcb/models3d/OEM_Pigtail_J4.step",
+      "source_sha256": "28dba057a6cd3523a8484da4bc5c84669387e3c98c69cac0356e023751f40ae0",
+      "published_sha256": "28dba057a6cd3523a8484da4bc5c84669387e3c98c69cac0356e023751f40ae0",
+      "change": "none"
+    },
+    {
+      "source_path": "pcb/models3d/A2007WV_3P.step",
+      "published_path": "pcb/models3d/A2007WV_3P.step",
+      "source_sha256": "cb4f446dfbaf85af586caf0678dc6a8384a243c18b4dea6f81435d2647945aae",
+      "published_sha256": "cb4f446dfbaf85af586caf0678dc6a8384a243c18b4dea6f81435d2647945aae",
+      "change": "none"
+    },
+    {
+      "source_path": "mechanical/KiCad_Neck_D0_8_1_PCB_only.step",
+      "published_path": "mechanical/KiCad_Neck_D0_8_1_PCB_only.step",
+      "source_sha256": "26e02cd5ee03779bc2c4fd6bc6a051906b545688d582ff95012c510b03ec3756",
+      "published_sha256": "26e02cd5ee03779bc2c4fd6bc6a051906b545688d582ff95012c510b03ec3756",
+      "change": "none"
+    },
+    {
+      "source_path": "docs/pcb-front.png",
+      "published_path": "docs/pcb-front.png",
+      "source_sha256": "521fe41b6e2ba1437ae3a31b518aec48ba0268b111d09a947b3e13c598a89003",
+      "published_sha256": "521fe41b6e2ba1437ae3a31b518aec48ba0268b111d09a947b3e13c598a89003",
+      "change": "none"
+    },
+    {
+      "source_path": "docs/pcb-back.png",
+      "published_path": "docs/pcb-back.png",
+      "source_sha256": "ca34c2cce3bc2ac254161159d4eac50ea2bfc4d31939a63ef22cc4fef88b7702",
+      "published_sha256": "ca34c2cce3bc2ac254161159d4eac50ea2bfc4d31939a63ef22cc4fef88b7702",
+      "change": "none"
+    },
+    {
+      "source_path": "docs/pinout-and-testpoints.md",
+      "published_path": "docs/pinout-and-testpoints.md",
+      "source_sha256": "ff141a01afad249ecbe19514087cda1243a21e6338d43369eaef25cb917b0cfd",
+      "published_sha256": "ff141a01afad249ecbe19514087cda1243a21e6338d43369eaef25cb917b0cfd",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_single/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40.kicad_pcb",
+      "published_path": "fabrication/D0_8_1_1oz_single/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40.kicad_pcb",
+      "source_sha256": "1f1638a35dda8a8e062658a15eee60117601abc3b3b6944593ab37effe92e571",
+      "published_sha256": "6330d34dfd9b1dedbc0d7dc9a5418087bd4e7e2a09cf8fd5edfad1653788db0d",
+      "change": "Remove optional manufacturer servo 3D reference records only; all board and pad geometry retained."
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_single/fp-lib-table",
+      "published_path": "fabrication/D0_8_1_1oz_single/fp-lib-table",
+      "source_sha256": "03e1eb3f3b491af86c34892bf24d53f92d40214b026216b72af2d95cc18a38c6",
+      "published_sha256": "03e1eb3f3b491af86c34892bf24d53f92d40214b026216b72af2d95cc18a38c6",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_single/下单参数.txt",
+      "published_path": "fabrication/D0_8_1_1oz_single/下单参数.txt",
+      "source_sha256": "0938130db211fe169e01e39b038bf01bd54bea24163af88085d440936d9e717c",
+      "published_sha256": "0938130db211fe169e01e39b038bf01bd54bea24163af88085d440936d9e717c",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_single/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40.kicad_pro",
+      "published_path": "fabrication/D0_8_1_1oz_single/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40.kicad_pro",
+      "source_sha256": "0ae0408dcaf518ceb87512f032fd4a5b7d4765f35caea9b07325ba83efbb95ca",
+      "published_sha256": "0ae0408dcaf518ceb87512f032fd4a5b7d4765f35caea9b07325ba83efbb95ca",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_single/MicroDuck_Neck_D0.8.1_1oz_single_25.5x40_PINOUT_CHECK.zip",
+      "published_path": "fabrication/D0_8_1_1oz_single/MicroDuck_Neck_D0.8.1_1oz_single_25.5x40_PINOUT_CHECK.zip",
+      "source_sha256": "ff4348cac4f6e4bd35103ee4654f89d08e9b1006104cb5fbef09fc87076b6a3a",
+      "published_sha256": "ff4348cac4f6e4bd35103ee4654f89d08e9b1006104cb5fbef09fc87076b6a3a",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Cu.gbl",
+      "published_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Cu.gbl",
+      "source_sha256": "52ffc7e30aed19338f51722181a01b5793d10383b3f7da462a54e0f83ad83a4a",
+      "published_sha256": "52ffc7e30aed19338f51722181a01b5793d10383b3f7da462a54e0f83ad83a4a",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Mask.gbs",
+      "published_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Mask.gbs",
+      "source_sha256": "b93c3a91374c10050ede15d3f3d0edb013298a3fc21d96d5eac44b32c185f6fb",
+      "published_sha256": "b93c3a91374c10050ede15d3f3d0edb013298a3fc21d96d5eac44b32c185f6fb",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Cu.gtl",
+      "published_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Cu.gtl",
+      "source_sha256": "5af88d5b4223134c44267ce7bd2aeb4169d1d0b3acec086fcf5c54f4452725d1",
+      "published_sha256": "5af88d5b4223134c44267ce7bd2aeb4169d1d0b3acec086fcf5c54f4452725d1",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-NPTH.drl",
+      "published_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-NPTH.drl",
+      "source_sha256": "b575bf35b233adf40e10e2eb64cb0cc5aeb7160883d1da648adb476dc4b03327",
+      "published_sha256": "b575bf35b233adf40e10e2eb64cb0cc5aeb7160883d1da648adb476dc4b03327",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-Edge_Cuts.gm1",
+      "published_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-Edge_Cuts.gm1",
+      "source_sha256": "89cf65de2b5037dcd42b7c8e93954a4a9d7e8ee7a18566c478dda21fb6424826",
+      "published_sha256": "89cf65de2b5037dcd42b7c8e93954a4a9d7e8ee7a18566c478dda21fb6424826",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-PTH.drl",
+      "published_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-PTH.drl",
+      "source_sha256": "c5b2aff070205935aac27090402e640d948b941834d01d2be70fc6155f578111",
+      "published_sha256": "c5b2aff070205935aac27090402e640d948b941834d01d2be70fc6155f578111",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Mask.gts",
+      "published_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Mask.gts",
+      "source_sha256": "9db2880771da977e18867cadb296d2e958837b4d8c194345cfd2aa73a90d4d54",
+      "published_sha256": "9db2880771da977e18867cadb296d2e958837b4d8c194345cfd2aa73a90d4d54",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-job.gbrjob",
+      "published_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-job.gbrjob",
+      "source_sha256": "51d68815a4e731e0c822b996baf616bc0ec3e4ab4ee51a0110ab5f5ae9523916",
+      "published_sha256": "51d68815a4e731e0c822b996baf616bc0ec3e4ab4ee51a0110ab5f5ae9523916",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Silkscreen.gbo",
+      "published_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Silkscreen.gbo",
+      "source_sha256": "3204d24b9661ced6c05e9065934f1ba7214b80954868603b49427aba62ce3104",
+      "published_sha256": "3204d24b9661ced6c05e9065934f1ba7214b80954868603b49427aba62ce3104",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Silkscreen.gto",
+      "published_path": "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Silkscreen.gto",
+      "source_sha256": "ad4be95bc822953541c4e5c990e76fcadc4cd00668bbd3185699d0be311a8ae8",
+      "published_sha256": "ad4be95bc822953541c4e5c990e76fcadc4cd00668bbd3185699d0be311a8ae8",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_6up/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96.kicad_pcb",
+      "published_path": "fabrication/D0_8_1_1oz_6up/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96.kicad_pcb",
+      "source_sha256": "0ec5a114c94bca384b111d596dae3cf03d8af8f4406fd8591ba77b9175883707",
+      "published_sha256": "0ec5a114c94bca384b111d596dae3cf03d8af8f4406fd8591ba77b9175883707",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_6up/下单参数.txt",
+      "published_path": "fabrication/D0_8_1_1oz_6up/下单参数.txt",
+      "source_sha256": "ef877c434a058e4a4b2a017cf580d88c87837a4e824b17f3d3b11b9e1cac90b1",
+      "published_sha256": "ef877c434a058e4a4b2a017cf580d88c87837a4e824b17f3d3b11b9e1cac90b1",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_6up/MicroDuck_Neck_D0.8.1_1oz_6up_94.5x96_PINOUT_CHECK.zip",
+      "published_path": "fabrication/D0_8_1_1oz_6up/MicroDuck_Neck_D0.8.1_1oz_6up_94.5x96_PINOUT_CHECK.zip",
+      "source_sha256": "0b42920c6dfeaee2d22d36d54cf0be31f56de8bd10e18e06a1ed1b46d6e7ab5f",
+      "published_sha256": "0b42920c6dfeaee2d22d36d54cf0be31f56de8bd10e18e06a1ed1b46d6e7ab5f",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_6up/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96.kicad_pro",
+      "published_path": "fabrication/D0_8_1_1oz_6up/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96.kicad_pro",
+      "source_sha256": "4a4f274465dd7d6218590092305a92b2c8df43c5e5bc949adcf220bce02e5c02",
+      "published_sha256": "4a4f274465dd7d6218590092305a92b2c8df43c5e5bc949adcf220bce02e5c02",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Cu.gbl",
+      "published_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Cu.gbl",
+      "source_sha256": "a24b371f494c3cf10ba07c6729a882c8ab5e62910faa67ab0757f1d42b2db2bc",
+      "published_sha256": "a24b371f494c3cf10ba07c6729a882c8ab5e62910faa67ab0757f1d42b2db2bc",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Cu.gtl",
+      "published_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Cu.gtl",
+      "source_sha256": "c3a0cf6bbfacb0628a8db5d3f5778f1f9ff43e0879c12ad85ed15b981957dc77",
+      "published_sha256": "c3a0cf6bbfacb0628a8db5d3f5778f1f9ff43e0879c12ad85ed15b981957dc77",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-PTH.drl",
+      "published_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-PTH.drl",
+      "source_sha256": "cd8428f5f9ea81ee93b389c9ed392b4190c2eb242042bac6a0becf8f3a819f1d",
+      "published_sha256": "cd8428f5f9ea81ee93b389c9ed392b4190c2eb242042bac6a0becf8f3a819f1d",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-NPTH.drl",
+      "published_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-NPTH.drl",
+      "source_sha256": "432bab71d4dad00c55ad6e5f3aff2a52f7e7721fed7a9a2edd224bca6c748f81",
+      "published_sha256": "432bab71d4dad00c55ad6e5f3aff2a52f7e7721fed7a9a2edd224bca6c748f81",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-Edge_Cuts.gm1",
+      "published_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-Edge_Cuts.gm1",
+      "source_sha256": "a50e83cd294342b41f16d488bd2f4274dca3514f26226f77b3fd6d2bdb78ef12",
+      "published_sha256": "a50e83cd294342b41f16d488bd2f4274dca3514f26226f77b3fd6d2bdb78ef12",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Mask.gbs",
+      "published_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Mask.gbs",
+      "source_sha256": "e4b7611e3d92351cbcf8b2fc4dd1cd4aca9605ddcd320537d5e7b9e6b9bfb9e9",
+      "published_sha256": "e4b7611e3d92351cbcf8b2fc4dd1cd4aca9605ddcd320537d5e7b9e6b9bfb9e9",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Silkscreen.gbo",
+      "published_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-B_Silkscreen.gbo",
+      "source_sha256": "256f92239a0dd766fd0814d7befb91127432a70ee91cbd51249c9c66371c6819",
+      "published_sha256": "256f92239a0dd766fd0814d7befb91127432a70ee91cbd51249c9c66371c6819",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Silkscreen.gto",
+      "published_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Silkscreen.gto",
+      "source_sha256": "c93a7256b0b7ccb6e5a1046ecedd1c64fb482d32b1a2461ad06e8580d046232f",
+      "published_sha256": "c93a7256b0b7ccb6e5a1046ecedd1c64fb482d32b1a2461ad06e8580d046232f",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-job.gbrjob",
+      "published_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-job.gbrjob",
+      "source_sha256": "fbf0a9ad7b2429b6c4ed9f68b7a4c6d3022d24046e0018c631d6b28a0dab672c",
+      "published_sha256": "fbf0a9ad7b2429b6c4ed9f68b7a4c6d3022d24046e0018c631d6b28a0dab672c",
+      "change": "none"
+    },
+    {
+      "source_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Mask.gts",
+      "published_path": "fabrication/D0_8_1_1oz_6up/gerbers/MicroDuck_Neck_D0_8_1_1oz_6up_94p5x96-F_Mask.gts",
+      "source_sha256": "77e17ad20cabf3f445fe7583cffd41a8c177bf440156d200173be1edfd307af7",
+      "published_sha256": "77e17ad20cabf3f445fe7583cffd41a8c177bf440156d200173be1edfd307af7",
+      "change": "none"
+    },
+    {
+      "source_path": "validation/delivery-manifest.json",
+      "published_path": "validation/original/delivery-manifest.json",
+      "source_sha256": "b6627cd29c5b8db95212dbe7d4fbee2856689db7adccdd6f98fd738bea6cf60f",
+      "published_sha256": "b6627cd29c5b8db95212dbe7d4fbee2856689db7adccdd6f98fd738bea6cf60f",
+      "change": "none"
+    },
+    {
+      "source_path": "validation/pinfix-drc.json",
+      "published_path": "validation/original/pinfix-drc.json",
+      "source_sha256": "8e996fd04f1bccf1bbd04923746eda21ac115d5473e7100ccea55b58010aa3c0",
+      "published_sha256": "8e996fd04f1bccf1bbd04923746eda21ac115d5473e7100ccea55b58010aa3c0",
+      "change": "none"
+    },
+    {
+      "source_path": "validation/erc.json",
+      "published_path": "validation/original/erc.json",
+      "source_sha256": "e350db99282af3ffd55bd3499e7d9ca8c481aafb188930d236510c8bad0e482a",
+      "published_sha256": "e350db99282af3ffd55bd3499e7d9ca8c481aafb188930d236510c8bad0e482a",
+      "change": "none"
+    },
+    {
+      "source_path": "validation/pinfix-verification.json",
+      "published_path": "validation/original/pinfix-verification.json",
+      "source_sha256": "ed7856c0550fd2b7448fd6dff0d7e390d714012c740ad5077bfae5f16a91d480",
+      "published_sha256": "ed7856c0550fd2b7448fd6dff0d7e390d714012c740ad5077bfae5f16a91d480",
+      "change": "none"
+    },
+    {
+      "source_path": "validation/single-fab-drc.json",
+      "published_path": "validation/original/single-fab-drc.json",
+      "source_sha256": "3d7a20808eb4cd2c8e9a5fdeb67292d2a42b20dd48f105f47ac843e12d6b18d0",
+      "published_sha256": "3d7a20808eb4cd2c8e9a5fdeb67292d2a42b20dd48f105f47ac843e12d6b18d0",
+      "change": "none"
+    },
+    {
+      "source_path": "validation/panel-drc.json",
+      "published_path": "validation/original/panel-drc.json",
+      "source_sha256": "dc2e8ce256e8f4d5495f565c62cb05a5c1305758bd3d35bb235d520610f0cf6a",
+      "published_sha256": "dc2e8ce256e8f4d5495f565c62cb05a5c1305758bd3d35bb235d520610f0cf6a",
+      "change": "none"
+    },
+    {
+      "source_path": "validation/single-fabrication-qa.json",
+      "published_path": "validation/original/single-fabrication-qa.json",
+      "source_sha256": "c558515e85ae28801371538367134cf25438e14dfdc8f79c8b3b96162d499ec4",
+      "published_sha256": "c558515e85ae28801371538367134cf25438e14dfdc8f79c8b3b96162d499ec4",
+      "change": "none"
+    },
+    {
+      "source_path": "validation/panel-fabrication-qa.json",
+      "published_path": "validation/original/panel-fabrication-qa.json",
+      "source_sha256": "f77ae841303c456131a0ec41d984989a6766a745e28265b0a06494659462d315",
+      "published_sha256": "f77ae841303c456131a0ec41d984989a6766a745e28265b0a06494659462d315",
+      "change": "none"
+    },
+    {
+      "source_path": "validation/panel-unit-parity.json",
+      "published_path": "validation/original/panel-unit-parity.json",
+      "source_sha256": "5ddd95a82b17f00200ff0757f39cfc232d8e27be2d2efb668645b3fd763ffc17",
+      "published_sha256": "5ddd95a82b17f00200ff0757f39cfc232d8e27be2d2efb668645b3fd763ffc17",
+      "change": "none"
+    },
+    {
+      "source_path": "validation/exported-port-legends.json",
+      "published_path": "validation/original/exported-port-legends.json",
+      "source_sha256": "3a3add60bd4f21ebd155ebb45ff0c77bc2bac019830179dc30f26cb6c75ad495",
+      "published_sha256": "3a3add60bd4f21ebd155ebb45ff0c77bc2bac019830179dc30f26cb6c75ad495",
+      "change": "none"
+    },
+    {
+      "source_path": "validation/single-gerber-analysis.json",
+      "published_path": "validation/original/single-gerber-analysis.json",
+      "source_sha256": "73455b73972a541b9da9b1a4a827f2eb2c5e28de705b725f717c93ceaea4228d",
+      "published_sha256": "73455b73972a541b9da9b1a4a827f2eb2c5e28de705b725f717c93ceaea4228d",
+      "change": "none"
+    },
+    {
+      "source_path": "validation/panel-gerber-analysis.json",
+      "published_path": "validation/original/panel-gerber-analysis.json",
+      "source_sha256": "1693c9d9d70952ad78b5fc7b5fbef20eb256f8e4ceb0f03b8f7cd70cb6c67180",
+      "published_sha256": "1693c9d9d70952ad78b5fc7b5fbef20eb256f8e4ceb0f03b8f7cd70cb6c67180",
+      "change": "none"
+    },
+    {
+      "source_path": "validation/panel-drill-report.rpt",
+      "published_path": "validation/original/panel-drill-report.rpt",
+      "source_sha256": "67dfc789ca6a207bb34cf3e40e4d5c8f831d51ce0efd5230ae516c8b390babe4",
+      "published_sha256": "67dfc789ca6a207bb34cf3e40e4d5c8f831d51ce0efd5230ae516c8b390babe4",
+      "change": "none"
+    },
+    {
+      "source_path": "validation/single-drill-report.rpt",
+      "published_path": "validation/original/single-drill-report.rpt",
+      "source_sha256": "94b617cb94ce089dcfc0de2585a90a9b24669e1592d0304d7e747d73697ea01b",
+      "published_sha256": "94b617cb94ce089dcfc0de2585a90a9b24669e1592d0304d7e747d73697ea01b",
+      "change": "none"
+    },
+    {
+      "source_path": "mechanical/panel-6up-geometry.json",
+      "published_path": "mechanical/panel-6up-geometry.json",
+      "source_sha256": "8e3a31340a0f85c01498a6bf0a094e440feaf4f1cfb018177bd6fb664a316de7",
+      "published_sha256": "8e3a31340a0f85c01498a6bf0a094e440feaf4f1cfb018177bd6fb664a316de7",
+      "change": "none"
+    },
+    {
+      "source_path": "mechanical/panel-6up-manufacturing-geometry.json",
+      "published_path": "mechanical/panel-6up-manufacturing-geometry.json",
+      "source_sha256": "75f44f94a78a833da2647f079f94b1a7ceb518ce970fde71658dd8682d50d69d",
+      "published_sha256": "75f44f94a78a833da2647f079f94b1a7ceb518ce970fde71658dd8682d50d69d",
+      "change": "none"
+    }
+  ]
+}

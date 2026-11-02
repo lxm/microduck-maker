@@ -1,0 +1,91 @@
+{
+  "status": "PASS",
+  "units": [
+    {
+      "unit": 1,
+      "pad_geometry_and_pin_nets_identical": true,
+      "signal_power_and_original_vias_identical_plus_one_GND_stitch": true,
+      "pads": 25,
+      "copper_items": 68
+    },
+    {
+      "unit": 2,
+      "pad_geometry_and_pin_nets_identical": true,
+      "signal_power_and_original_vias_identical_plus_one_GND_stitch": true,
+      "pads": 25,
+      "copper_items": 68
+    },
+    {
+      "unit": 3,
+      "pad_geometry_and_pin_nets_identical": true,
+      "signal_power_and_original_vias_identical_plus_one_GND_stitch": true,
+      "pads": 25,
+      "copper_items": 68
+    },
+    {
+      "unit": 4,
+      "pad_geometry_and_pin_nets_identical": true,
+      "signal_power_and_original_vias_identical_plus_one_GND_stitch": true,
+      "pads": 25,
+      "copper_items": 68
+    },
+    {
+      "unit": 5,
+      "pad_geometry_and_pin_nets_identical": true,
+      "signal_power_and_original_vias_identical_plus_one_GND_stitch": true,
+      "pads": 25,
+      "copper_items": 68
+    },
+    {
+      "unit": 6,
+      "pad_geometry_and_pin_nets_identical": true,
+      "signal_power_and_original_vias_identical_plus_one_GND_stitch": true,
+      "pads": 25,
+      "copper_items": 68
+    }
+  ],
+  "source_sha256": "eaf0f1f4aa939213fcfe8dba720f8bc751ba672af7ee3bc004ee5842885d6732",
+  "panel_sha256": "0ec5a114c94bca384b111d596dae3cf03d8af8f4406fd8591ba77b9175883707",
+  "duplicate_uuids": 0,
+  "expected_drill_counts": [
+    {
+      "type": "NPTH",
+      "diameter_mm": 0.55,
+      "count": 144
+    },
+    {
+      "type": "NPTH",
+      "diameter_mm": 2.0,
+      "count": 28
+    },
+    {
+      "type": "PTH",
+      "diameter_mm": 0.4,
+      "count": 66
+    },
+    {
+      "type": "PTH",
+      "diameter_mm": 0.45,
+      "count": 72
+    },
+    {
+      "type": "PTH",
+      "diameter_mm": 0.5,
+      "count": 18
+    },
+    {
+      "type": "PTH",
+      "diameter_mm": 0.7,
+      "count": 72
+    },
+    {
+      "type": "PTH",
+      "diameter_mm": 0.85,
+      "count": 36
+    }
+  ],
+  "drill_total": 436,
+  "trust_summary": {
+    "high_confidence": "Native single-board geometry and pin/net cross-comparison; no physical plug mating claim."
+  }
+}

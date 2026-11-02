@@ -1,0 +1,6 @@
+*.kicad_prl
+*.lck
+*.bak
+*-backups/
+.history/
+!d0.8.1/fabrication/**/*.zip

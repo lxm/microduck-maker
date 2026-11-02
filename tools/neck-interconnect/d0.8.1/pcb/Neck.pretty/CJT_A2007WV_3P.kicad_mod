@@ -1,0 +1,144 @@
+(footprint "CJT_A2007WV_3P"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(descr "CJT A2007WV-3P, 2mm pitch, 0.8mm recommended holes; D0 uses 0.85mm holes.")
+	(property "Reference" "J5"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "a1002701-c157-4add-a097-be3985682453")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Value" "CJT_A2007WV_3P"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "f9a8dde1-2222-4b5e-9886-0ff5a2c98a1b")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" "https://www.cjt.com/upload/A2007.pdf"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "6e94ca72-0353-4f8d-9be7-64e413b60fd5")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "2c317384-8e33-47e8-b554-33e3f90fc141")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "MPN" "A2007WV-3P"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "afad367f-d024-4ab2-a43a-aca5e6e7d638")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Manufacturer" "CJT"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "da5827ce-9d5e-4854-b79f-da9967ed6bbc")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "BOM Comments" "External harness socket; mating compatibility and wire orientation require sample check."
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "d2bfd796-18f0-40a0-b257-4e71295febb5")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr through_hole)
+	(duplicate_pad_numbers_are_jumpers no)
+	(fp_rect
+		(start -4.23 -2.049999)
+		(end 4.23 2.049999)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "2cf2a644-a0fd-4002-8b69-f4a04a6c2055")
+	)
+	(fp_rect
+		(start -3.98 -1.8)
+		(end 3.98 1.8)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "48dd67df-c46b-48fd-aacf-95fabe10c123")
+	)
+	(pad "1" thru_hole circle
+		(at -2 0)
+		(size 1.6 1.6)
+		(drill 0.85)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "5c397e32-d64b-493c-a1fe-c3a27ccd1a2e")
+	)
+	(pad "2" thru_hole circle
+		(at 0 0)
+		(size 1.6 1.6)
+		(drill 0.85)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "9984d218-1a6e-4ad1-ac71-e95c79383603")
+	)
+	(pad "3" thru_hole circle
+		(at 2 0)
+		(size 1.6 1.6)
+		(drill 0.85)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "852e6fe8-a3da-4c61-909b-b10c1a7f0839")
+	)
+	(embedded_fonts no)
+	(model "${KIPRJMOD}/models3d/A2007WV_3P.step"
+		(offset
+			(xyz 0 0 -0.04)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+)

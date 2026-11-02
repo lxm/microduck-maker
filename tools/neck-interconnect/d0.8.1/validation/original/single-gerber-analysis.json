@@ -1,0 +1,785 @@
+{
+  "analyzer_type": "gerber",
+  "schema_version": "1.4.0",
+  "directory": "fabrication/D0_8_1_1oz_single/gerbers",
+  "generator": "Pcbnew 10.0.6",
+  "layer_count": 2,
+  "board_dimensions": {
+    "width_mm": 25.55,
+    "height_mm": 40.05,
+    "area_mm2": 1023.3,
+    "source": "gbrjob"
+  },
+  "statistics": {
+    "gerber_files": 7,
+    "drill_files": 2,
+    "total_holes": 47,
+    "total_flashes": 186,
+    "total_draws": 5152
+  },
+  "completeness": {
+    "found_layers": [
+      "B.Cu",
+      "B.Mask",
+      "B.SilkS",
+      "Edge.Cuts",
+      "F.Cu",
+      "F.Mask",
+      "F.SilkS"
+    ],
+    "expected_layers": [
+      "B.Cu",
+      "B.Mask",
+      "B.SilkS",
+      "Edge.Cuts",
+      "F.Cu",
+      "F.Mask",
+      "F.SilkS"
+    ],
+    "missing": [],
+    "extra": [],
+    "has_pth_drill": true,
+    "has_npth_drill": true,
+    "complete": true,
+    "source": "gbrjob"
+  },
+  "alignment": {
+    "aligned": true,
+    "issues": [],
+    "layer_extents": {
+      "B.Cu": {
+        "width": 24.499,
+        "height": 38.999
+      },
+      "B.Mask": {
+        "width": 21.25,
+        "height": 36.5
+      },
+      "B.SilkS": {
+        "width": 23.005,
+        "height": 37.3
+      },
+      "Edge.Cuts": {
+        "width": 25.5,
+        "height": 40.0
+      },
+      "F.Cu": {
+        "width": 24.499,
+        "height": 38.999
+      },
+      "F.Mask": {
+        "width": 21.25,
+        "height": 36.5
+      },
+      "F.SilkS": {
+        "width": 22.043,
+        "height": 37.4
+      },
+      "drill_NPTH": {
+        "width": 16.0,
+        "height": 5.0
+      },
+      "drill_PTH": {
+        "width": 22.75,
+        "height": 36.5
+      }
+    }
+  },
+  "drill_classification": {
+    "vias": {
+      "count": 22,
+      "tools": [
+        {
+          "diameter_mm": 0.4,
+          "count": 10
+        },
+        {
+          "diameter_mm": 0.45,
+          "count": 12
+        }
+      ]
+    },
+    "component_holes": {
+      "count": 25,
+      "tools": [
+        {
+          "diameter_mm": 0.5,
+          "count": 3
+        },
+        {
+          "diameter_mm": 0.7,
+          "count": 12
+        },
+        {
+          "diameter_mm": 0.85,
+          "count": 6
+        },
+        {
+          "diameter_mm": 2.0,
+          "count": 4,
+          "type": "NPTH"
+        }
+      ]
+    },
+    "mounting_holes": {
+      "count": 0,
+      "tools": []
+    },
+    "classification_method": "x2_attributes"
+  },
+  "pad_summary": {
+    "smd_apertures": 0,
+    "via_apertures": 44,
+    "heatsink_apertures": 0,
+    "tht_holes": 25,
+    "smd_source": "x2_aperture_function",
+    "smd_ratio": 0.0
+  },
+  "trace_widths": {
+    "unique_widths_mm": [
+      0.3,
+      1.2,
+      2.4,
+      2.6,
+      3.0
+    ],
+    "min_trace_mm": 0.3,
+    "max_trace_mm": 3.0,
+    "width_count": 5,
+    "min_feature_mm": 0.3
+  },
+  "component_analysis": {
+    "total_unique": 13,
+    "front_side": 13,
+    "back_side": 0,
+    "component_refs": [
+      "H1",
+      "H2",
+      "H3",
+      "H4",
+      "J1",
+      "J2",
+      "J3",
+      "J4",
+      "J5",
+      "J6",
+      "TP1",
+      "TP2",
+      "TP3"
+    ],
+    "has_x2_data": true,
+    "pads_per_component": {
+      "H1": 1,
+      "H2": 1,
+      "H3": 1,
+      "H4": 1,
+      "J1": 3,
+      "J2": 3,
+      "J3": 3,
+      "J4": 3,
+      "J5": 3,
+      "J6": 3,
+      "TP1": 1,
+      "TP2": 1,
+      "TP3": 1
+    },
+    "total_pads": 25
+  },
+  "net_analysis": {
+    "total_unique": 3,
+    "named_nets": 3,
+    "unnamed_nets": 0,
+    "power_nets": [],
+    "signal_nets": [
+      "/DATA",
+      "/GND",
+      "/VBUS_SERVO"
+    ],
+    "total_pins": 21
+  },
+  "gerbers": [
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Cu.gbl",
+      "layer_type": "B.Cu",
+      "units": "mm",
+      "aperture_count": 6,
+      "flash_count": 43,
+      "draw_count": 1742,
+      "region_count": 5,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-11-01T21:19:54+08:00",
+        "ProjectId": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40,4d696372-6f44-4756-936b-5f4e65636b5f,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Copper,L2,Bot",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "by_function": {
+          "ComponentPad": 3,
+          "ViaPad": 2,
+          "Conductor": 1
+        },
+        "by_function_flashes": {
+          "ComponentPad": 21,
+          "ViaPad": 22,
+          "Conductor": 0
+        },
+        "conductor_widths_mm": [
+          0.3
+        ],
+        "min_feature_mm": 0.3
+      },
+      "x2_component_count": 0,
+      "x2_net_count": 3,
+      "x2_pin_count": 21
+    },
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Mask.gbs",
+      "layer_type": "B.Mask",
+      "units": "mm",
+      "aperture_count": 4,
+      "flash_count": 25,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-11-01T21:19:55+08:00",
+        "ProjectId": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40,4d696372-6f44-4756-936b-5f4e65636b5f,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Soldermask,Bot",
+        "FilePolarity": "Negative"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 1.2
+      },
+      "x2_component_count": 13,
+      "x2_net_count": 0,
+      "x2_pin_count": 0
+    },
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Silkscreen.gbo",
+      "layer_type": "B.SilkS",
+      "units": "mm",
+      "aperture_count": 6,
+      "flash_count": 25,
+      "draw_count": 474,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-11-01T21:19:55+08:00",
+        "ProjectId": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40,4d696372-6f44-4756-936b-5f4e65636b5f,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Legend,Bot",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 0.15
+      },
+      "x2_component_count": 13,
+      "x2_net_count": 0,
+      "x2_pin_count": 0
+    },
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-Edge_Cuts.gm1",
+      "layer_type": "Edge.Cuts",
+      "units": "mm",
+      "aperture_count": 1,
+      "flash_count": 0,
+      "draw_count": 16,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-11-01T21:19:55+08:00",
+        "ProjectId": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40,4d696372-6f44-4756-936b-5f4e65636b5f,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Profile,NP"
+      },
+      "aperture_analysis": {
+        "by_function": {
+          "Profile": 1
+        },
+        "by_function_flashes": {
+          "Profile": 0
+        },
+        "min_feature_mm": 0.05
+      }
+    },
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Cu.gtl",
+      "layer_type": "F.Cu",
+      "units": "mm",
+      "aperture_count": 9,
+      "flash_count": 43,
+      "draw_count": 2365,
+      "region_count": 9,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-11-01T21:19:54+08:00",
+        "ProjectId": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40,4d696372-6f44-4756-936b-5f4e65636b5f,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Copper,L1,Top",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "by_function": {
+          "ComponentPad": 3,
+          "ViaPad": 2,
+          "Conductor": 4
+        },
+        "by_function_flashes": {
+          "ComponentPad": 21,
+          "ViaPad": 22,
+          "Conductor": 0
+        },
+        "conductor_widths_mm": [
+          1.2,
+          2.4,
+          2.6,
+          3.0
+        ],
+        "min_feature_mm": 0.8
+      },
+      "x2_component_count": 0,
+      "x2_net_count": 3,
+      "x2_pin_count": 21
+    },
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Mask.gts",
+      "layer_type": "F.Mask",
+      "units": "mm",
+      "aperture_count": 4,
+      "flash_count": 25,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-11-01T21:19:55+08:00",
+        "ProjectId": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40,4d696372-6f44-4756-936b-5f4e65636b5f,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Soldermask,Top",
+        "FilePolarity": "Negative"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 1.2
+      },
+      "x2_component_count": 13,
+      "x2_net_count": 0,
+      "x2_pin_count": 0
+    },
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Silkscreen.gto",
+      "layer_type": "F.SilkS",
+      "units": "mm",
+      "aperture_count": 7,
+      "flash_count": 25,
+      "draw_count": 555,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-11-01T21:19:54+08:00",
+        "ProjectId": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40,4d696372-6f44-4756-936b-5f4e65636b5f,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Legend,Top",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 0.13
+      },
+      "x2_component_count": 13,
+      "x2_net_count": 0,
+      "x2_pin_count": 0
+    }
+  ],
+  "drills": [
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-NPTH.drl",
+      "type": "NPTH",
+      "units": "mm",
+      "hole_count": 4,
+      "tools": {
+        "T1": {
+          "diameter_mm": 2.0,
+          "hole_count": 4,
+          "aper_function": "NonPlated,NPTH,ComponentDrill"
+        }
+      },
+      "layer_span": [
+        1,
+        2
+      ],
+      "x2_attributes": {
+        "CreationDate": "2026-11-01T21:19:58+08:00",
+        "GenerationSoftware": "Kicad,Pcbnew,10.0.6",
+        "FileFunction": "NonPlated,1,2,NPTH"
+      }
+    },
+    {
+      "filename": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-PTH.drl",
+      "type": "PTH",
+      "units": "mm",
+      "hole_count": 43,
+      "tools": {
+        "T1": {
+          "diameter_mm": 0.4,
+          "hole_count": 10,
+          "aper_function": "Plated,PTH,ViaDrill"
+        },
+        "T2": {
+          "diameter_mm": 0.45,
+          "hole_count": 12,
+          "aper_function": "Plated,PTH,ViaDrill"
+        },
+        "T3": {
+          "diameter_mm": 0.5,
+          "hole_count": 3,
+          "aper_function": "Plated,PTH,ComponentDrill"
+        },
+        "T4": {
+          "diameter_mm": 0.7,
+          "hole_count": 12,
+          "aper_function": "Plated,PTH,ComponentDrill"
+        },
+        "T5": {
+          "diameter_mm": 0.85,
+          "hole_count": 6,
+          "aper_function": "Plated,PTH,ComponentDrill"
+        }
+      },
+      "layer_span": [
+        1,
+        2
+      ],
+      "x2_attributes": {
+        "CreationDate": "2026-11-01T21:19:58+08:00",
+        "GenerationSoftware": "Kicad,Pcbnew,10.0.6",
+        "FileFunction": "Plated,1,2,PTH"
+      }
+    }
+  ],
+  "drill_tools": {
+    "2.0mm": {
+      "diameter_mm": 2.0,
+      "count": 4,
+      "type": "NPTH"
+    },
+    "0.4mm": {
+      "diameter_mm": 0.4,
+      "count": 10,
+      "type": "PTH"
+    },
+    "0.45mm": {
+      "diameter_mm": 0.45,
+      "count": 12,
+      "type": "PTH"
+    },
+    "0.5mm": {
+      "diameter_mm": 0.5,
+      "count": 3,
+      "type": "PTH"
+    },
+    "0.7mm": {
+      "diameter_mm": 0.7,
+      "count": 12,
+      "type": "PTH"
+    },
+    "0.85mm": {
+      "diameter_mm": 0.85,
+      "count": 6,
+      "type": "PTH"
+    }
+  },
+  "job_file": {
+    "generator": "Pcbnew 10.0.6",
+    "vendor": "KiCad",
+    "creation_date": "2026-11-01T21:19:55+08:00",
+    "board_width_mm": 25.55,
+    "board_height_mm": 40.05,
+    "layer_count": 2,
+    "board_thickness_mm": 1.6,
+    "finish": "None",
+    "project_name": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40",
+    "design_rules": [
+      {
+        "layers": "Outer",
+        "PadToPad": 0.2,
+        "PadToTrack": 0.2,
+        "TrackToTrack": 0.2,
+        "MinLineWidth": 0.3,
+        "TrackToRegion": 0.25,
+        "RegionToRegion": 0.25
+      }
+    ],
+    "expected_files": [
+      {
+        "path": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Cu.gtl",
+        "function": "Copper,L1,Top",
+        "polarity": "Positive"
+      },
+      {
+        "path": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Cu.gbl",
+        "function": "Copper,L2,Bot",
+        "polarity": "Positive"
+      },
+      {
+        "path": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Silkscreen.gto",
+        "function": "Legend,Top",
+        "polarity": "Positive"
+      },
+      {
+        "path": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Silkscreen.gbo",
+        "function": "Legend,Bot",
+        "polarity": "Positive"
+      },
+      {
+        "path": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Mask.gts",
+        "function": "SolderMask,Top",
+        "polarity": "Negative"
+      },
+      {
+        "path": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Mask.gbs",
+        "function": "SolderMask,Bot",
+        "polarity": "Negative"
+      },
+      {
+        "path": "MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-Edge_Cuts.gm1",
+        "function": "Profile",
+        "polarity": "Positive"
+      }
+    ],
+    "stackup": [
+      {
+        "type": "Legend",
+        "name": "Top Silk Screen"
+      },
+      {
+        "type": "SolderPaste",
+        "name": "Top Solder Paste"
+      },
+      {
+        "type": "SolderMask",
+        "name": "Top Solder Mask"
+      },
+      {
+        "type": "Copper",
+        "name": "F.Cu"
+      },
+      {
+        "type": "Dielectric",
+        "name": "F.Cu/B.Cu",
+        "material": "FR4"
+      },
+      {
+        "type": "Copper",
+        "name": "B.Cu"
+      },
+      {
+        "type": "SolderMask",
+        "name": "Bottom Solder Mask"
+      },
+      {
+        "type": "SolderPaste",
+        "name": "Bottom Solder Paste"
+      },
+      {
+        "type": "Legend",
+        "name": "Bottom Silk Screen"
+      }
+    ]
+  },
+  "findings": [],
+  "assessments": [],
+  "summary": {
+    "total_findings": 0,
+    "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+    }
+  },
+  "trust_summary": {
+    "total_findings": 0,
+    "trust_level": "high",
+    "by_confidence": {
+      "deterministic": 0,
+      "heuristic": 0,
+      "datasheet_backed": 0
+    },
+    "by_evidence_source": {
+      "datasheet": 0,
+      "topology": 0,
+      "heuristic_rule": 0,
+      "symbol_footprint": 0,
+      "bom": 0,
+      "geometry": 0,
+      "api_lookup": 0
+    },
+    "provenance_coverage_pct": null
+  },
+  "connectivity": [
+    {
+      "ref": "J1",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "J1",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/DATA"
+    },
+    {
+      "ref": "J1",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/VBUS_SERVO"
+    },
+    {
+      "ref": "J2",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "J2",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/DATA"
+    },
+    {
+      "ref": "J2",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/VBUS_SERVO"
+    },
+    {
+      "ref": "J3",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "J3",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/DATA"
+    },
+    {
+      "ref": "J3",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/VBUS_SERVO"
+    },
+    {
+      "ref": "J4",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "J4",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/DATA"
+    },
+    {
+      "ref": "J4",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/VBUS_SERVO"
+    },
+    {
+      "ref": "J5",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "J5",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/DATA"
+    },
+    {
+      "ref": "J5",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/VBUS_SERVO"
+    },
+    {
+      "ref": "J6",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "J6",
+      "pin": "2",
+      "pin_name": "",
+      "net": "/DATA"
+    },
+    {
+      "ref": "J6",
+      "pin": "3",
+      "pin_name": "",
+      "net": "/VBUS_SERVO"
+    },
+    {
+      "ref": "TP1",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "TP2",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    },
+    {
+      "ref": "TP3",
+      "pin": "1",
+      "pin_name": "",
+      "net": ""
+    }
+  ],
+  "inputs": {
+    "source_files": [
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Cu.gbl",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Mask.gbs",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Silkscreen.gbo",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-Edge_Cuts.gm1",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Cu.gtl",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Mask.gts",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Silkscreen.gto",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-NPTH.drl",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-PTH.drl",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-job.gbrjob"
+    ],
+    "source_hashes": {
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Cu.gbl": "52ffc7e30aed19338f51722181a01b5793d10383b3f7da462a54e0f83ad83a4a",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Mask.gbs": "b93c3a91374c10050ede15d3f3d0edb013298a3fc21d96d5eac44b32c185f6fb",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-B_Silkscreen.gbo": "3204d24b9661ced6c05e9065934f1ba7214b80954868603b49427aba62ce3104",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-Edge_Cuts.gm1": "89cf65de2b5037dcd42b7c8e93954a4a9d7e8ee7a18566c478dda21fb6424826",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Cu.gtl": "5af88d5b4223134c44267ce7bd2aeb4169d1d0b3acec086fcf5c54f4452725d1",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Mask.gts": "9db2880771da977e18867cadb296d2e958837b4d8c194345cfd2aa73a90d4d54",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-F_Silkscreen.gto": "ad4be95bc822953541c4e5c990e76fcadc4cd00668bbd3185699d0be311a8ae8",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-NPTH.drl": "b575bf35b233adf40e10e2eb64cb0cc5aeb7160883d1da648adb476dc4b03327",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-PTH.drl": "c5b2aff070205935aac27090402e640d948b941834d01d2be70fc6155f578111",
+      "fabrication/D0_8_1_1oz_single/gerbers/MicroDuck_Neck_D0_8_1_1oz_single_25p5x40-job.gbrjob": "51d68815a4e731e0c822b996baf616bc0ec3e4ab4ee51a0110ab5f5ae9523916"
+    },
+    "run_id": "20261101T132006Z-3a317a",
+    "config_hash": null,
+    "upstream_artifacts": {}
+  },
+  "compat": {
+    "minimum_consumer_version": "1.4.0",
+    "deprecated_fields": [],
+    "experimental_fields": []
+  },
+  "capability_mode_ref": {
+    "source": "analysis/capability_mode.json",
+    "run_id": "20261101T132006Z-3a317a"
+  }
+}

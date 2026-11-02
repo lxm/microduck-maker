@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "checks": {
+    "F.Cu_flash_centres_match_native": true,
+    "B.Cu_flash_centres_match_native": true,
+    "F.Mask_flash_centres_match_native": true,
+    "B.Mask_flash_centres_match_native": true,
+    "all_drill_centres_diameters_and_plating_match_native": true,
+    "required_layers_complete": true,
+    "two_copper_layers": true,
+    "nominal_edge_boundary_94p5_by_96": true,
+    "zip_integrity": true,
+    "zip_contents_match_verified_files": true
+  },
+  "flash_counts": {
+    "F.Cu": 264,
+    "B.Cu": 264,
+    "F.Mask": 298,
+    "B.Mask": 298
+  },
+  "drill_total": 436,
+  "nominal_routing_boundary_mm": [
+    0.0,
+    -96.0,
+    94.5,
+    0.0
+  ],
+  "coordinate_tolerance_mm": 0.001,
+  "analyzer_warning_triage": [
+    {
+      "rule_id": "GR-002",
+      "disposition": "FALSE_POSITIVE",
+      "reason": "The 5mm tooling rails and 2mm perimeter routing gap intentionally contain no copper. Copper extents are 15mm smaller than panel extents; all actual copper/mask flashes and every drill coordinate match the native panel."
+    }
+  ],
+  "dimension_note": "gbrjob reports 94.55x96.05mm including 0.05mm Edge.Cuts stroke; nominal routed boundary is 94.5x96.0mm.",
+  "zip_sha256": "0b42920c6dfeaee2d22d36d54cf0be31f56de8bd10e18e06a1ed1b46d6e7ab5f",
+  "trust_summary": {
+    "high_confidence": "Actual exported Gerber flashes, mask openings, Excellon coordinates/diameters, native DRC and native unit parity cross-check",
+    "physical_validation_pending": "Original plug rear shape, wire diameter/cut length, actual case/mounting dimensions, operation and strength"
+  }
+}

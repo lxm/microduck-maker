@@ -1,0 +1,207 @@
+{
+  "status": "PASS",
+  "revision": "D0.8.1",
+  "board_sha256": "eaf0f1f4aa939213fcfe8dba720f8bc751ba672af7ee3bc004ee5842885d6732",
+  "view": "F.Cu front, tab LEFT, NECK text upright; rows top-to-bottom on screenshot",
+  "checks": {
+    "J2_physical_coordinate_net_map": true,
+    "J2_pin_numbers_and_nets": true,
+    "J2_F.Silkscreen_pin_labels": true,
+    "J2_F.Silkscreen_reference_present": true,
+    "J2_B.Silkscreen_pin_labels": true,
+    "J2_B.Silkscreen_reference_present": true,
+    "J5_physical_coordinate_net_map": true,
+    "J5_pin_numbers_and_nets": true,
+    "J5_F.Silkscreen_pin_labels": true,
+    "J5_F.Silkscreen_reference_present": true,
+    "J5_B.Silkscreen_pin_labels": true,
+    "J5_B.Silkscreen_reference_present": true,
+    "J6_physical_coordinate_net_map": true,
+    "J6_pin_numbers_and_nets": true,
+    "J6_F.Silkscreen_pin_labels": true,
+    "J6_F.Silkscreen_reference_present": true,
+    "J6_B.Silkscreen_pin_labels": true,
+    "J6_B.Silkscreen_reference_present": true,
+    "J4_physical_coordinate_net_map": true,
+    "J4_pin_numbers_and_nets": true,
+    "J4_F.Silkscreen_pin_labels": true,
+    "J4_F.Silkscreen_reference_present": true,
+    "J4_B.Silkscreen_pin_labels": true,
+    "J4_B.Silkscreen_reference_present": true,
+    "J1_physical_coordinate_net_map": true,
+    "J1_pin_numbers_and_nets": true,
+    "J1_F.Silkscreen_pin_labels": true,
+    "J1_F.Silkscreen_reference_present": true,
+    "J1_B.Silkscreen_pin_labels": true,
+    "J1_B.Silkscreen_reference_present": true,
+    "J3_physical_coordinate_net_map": true,
+    "J3_pin_numbers_and_nets": true,
+    "J3_F.Silkscreen_pin_labels": true,
+    "J3_F.Silkscreen_reference_present": true,
+    "J3_B.Silkscreen_pin_labels": true,
+    "J3_B.Silkscreen_reference_present": true,
+    "all_port_and_mount_pad_geometry_and_mask_openings_unchanged": true,
+    "outline_unchanged": true,
+    "VBUS_tracks_vias_unchanged": true,
+    "exactly_four_outer_pads_changed_at_J1_J2": true,
+    "TP1_pad_drill_net": true,
+    "TP1_5_ref_and_net_label": true,
+    "TP1_7_ref_and_net_label": true,
+    "TP3_pad_drill_net": true,
+    "TP3_5_ref_and_net_label": true,
+    "TP3_7_ref_and_net_label": true,
+    "TP2_pad_drill_net": true,
+    "TP2_5_ref_and_net_label": true,
+    "TP2_7_ref_and_net_label": true
+  },
+  "ports": [
+    {
+      "ref": "J2",
+      "x_mm": -6.7,
+      "top_to_bottom": [
+        [
+          39.25,
+          "GND"
+        ],
+        [
+          41.25,
+          "VBUS_SERVO"
+        ],
+        [
+          43.25,
+          "DATA"
+        ]
+      ]
+    },
+    {
+      "ref": "J5",
+      "x_mm": -13.25,
+      "top_to_bottom": [
+        [
+          28.0,
+          "DATA"
+        ],
+        [
+          30.0,
+          "VBUS_SERVO"
+        ],
+        [
+          32.0,
+          "GND"
+        ]
+      ]
+    },
+    {
+      "ref": "J6",
+      "x_mm": -13.25,
+      "top_to_bottom": [
+        [
+          18.0,
+          "DATA"
+        ],
+        [
+          20.0,
+          "VBUS_SERVO"
+        ],
+        [
+          22.0,
+          "GND"
+        ]
+      ]
+    },
+    {
+      "ref": "J4",
+      "x_mm": -6.7,
+      "top_to_bottom": [
+        [
+          6.75,
+          "GND"
+        ],
+        [
+          8.75,
+          "VBUS_SERVO"
+        ],
+        [
+          10.75,
+          "DATA"
+        ]
+      ]
+    },
+    {
+      "ref": "J1",
+      "x_mm": 6.7,
+      "top_to_bottom": [
+        [
+          39.25,
+          "DATA"
+        ],
+        [
+          41.25,
+          "VBUS_SERVO"
+        ],
+        [
+          43.25,
+          "GND"
+        ]
+      ]
+    },
+    {
+      "ref": "J3",
+      "x_mm": 6.7,
+      "top_to_bottom": [
+        [
+          6.75,
+          "DATA"
+        ],
+        [
+          8.75,
+          "VBUS_SERVO"
+        ],
+        [
+          10.75,
+          "GND"
+        ]
+      ]
+    }
+  ],
+  "changed_pad_nets": [
+    {
+      "ref": "J2",
+      "xy_mm": [
+        -6.7,
+        43.25
+      ],
+      "before": "/GND",
+      "after": "/DATA"
+    },
+    {
+      "ref": "J2",
+      "xy_mm": [
+        -6.7,
+        39.25
+      ],
+      "before": "/DATA",
+      "after": "/GND"
+    },
+    {
+      "ref": "J1",
+      "xy_mm": [
+        6.7,
+        39.25
+      ],
+      "before": "/GND",
+      "after": "/DATA"
+    },
+    {
+      "ref": "J1",
+      "xy_mm": [
+        6.7,
+        43.25
+      ],
+      "before": "/DATA",
+      "after": "/GND"
+    }
+  ],
+  "external_evidence": "J1/J2 correction per user physical error report dated 2026-10-30",
+  "physical_pinout_status": "J5/J6 harness pinout PENDING. No independent physical measurement; DRC validates only internal connectivity."
+}

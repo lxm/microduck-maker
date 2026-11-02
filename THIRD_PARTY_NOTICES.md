@@ -2,6 +2,10 @@
 
 仓库根目录 MIT 许可证适用于 lxm 原创界面、维护逻辑、脚本和说明，不覆盖本页列出的第三方代码、几何模型或 CAD 衍生资源。
 
+## 颈部连接板
+
+`tools/neck-interconnect/d0.8.1/` 是维护者整理的原创 PCB、简化板级接线模型和说明，适用根目录 MIT。原设计参考 HD-1910 厂家装配尺寸及 [CJT A2007 系列资料](https://www.cjt.com/upload/A2007.pdf)；本次不捆绑厂家舵机 CAD。原配胶壳／短线为简化示意模型，不指代供应商精确模型或替代件认证。来源清单、哈希、整理前后差异与实物待验证项见该目录的 [资料来源](tools/neck-interconnect/d0.8.1/docs/provenance.md)。
+
 ## 标定工具
 
 `tools/calibrator/` 收录现有 HD1910 标定工具的公开整理版本。原创的 Python 维护程序、外层 `static/app.js`、`view.js`、`app.css` 和 `index.html` 使用根目录 MIT 许可。

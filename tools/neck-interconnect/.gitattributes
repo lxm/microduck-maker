@@ -1,0 +1,5 @@
+# Keep archived CAD/manufacturing bytes stable for SHA-256 checks on every OS.
+d0.8.1/** -text
+# CAD exports contain intentional whitespace; review their recorded hashes.
+*.step -diff
+*.csv whitespace=cr-at-eol

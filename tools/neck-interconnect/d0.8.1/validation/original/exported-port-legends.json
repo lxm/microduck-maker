@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "package": "single",
+      "port_pin_and_reference_legends_checked": 60,
+      "missing_after_plot_and_mask_subtraction": []
+    },
+    {
+      "package": "6up",
+      "port_pin_and_reference_legends_checked": 360,
+      "missing_after_plot_and_mask_subtraction": []
+    }
+  ],
+  "scope": "Native coordinate-to-net legend check is separate; this checks actual plotted stroke presence at every label location."
+}

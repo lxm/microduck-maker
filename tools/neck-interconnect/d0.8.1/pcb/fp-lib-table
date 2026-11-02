@@ -1,0 +1,1 @@
+(fp_lib_table (version 7) (lib (name "Neck") (type "KiCad") (uri "${KIPRJMOD}/Neck.pretty") (options "") (descr "D0 provisional interfaces")))
