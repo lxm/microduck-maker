@@ -1,0 +1,17 @@
+{
+  "purpose": "Assembly reference images only; current manufacturing files remain D0.8.1 wire-PTH",
+  "files": [
+    {
+      "file": "cap-front.png",
+      "source_revision": "D0.11",
+      "source_file": "D0_11-7343-20261030/docs/cap-front.png",
+      "sha256": "9f85d8c1156213b023053e3f2347d3a3fe04dac0f0d0e2bf82030b4c59715436"
+    },
+    {
+      "file": "cap-back.png",
+      "source_revision": "D0.11",
+      "source_file": "D0_11-7343-20261030/docs/cap-back.png",
+      "sha256": "37fa2053167542133f3c14302e5394f194d86e60b732e470c49f8cd0c1b324ab"
+    }
+  ]
+}
