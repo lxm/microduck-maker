@@ -13,7 +13,15 @@
 | 零位标定支架 | 6 件 STL、装配参考与代打说明 | [tools/zero-fixture](tools/zero-fixture/) |
 | 颈部舵机连接板 | D0.8.1 原配胶壳短线焊接版：KiCad、板级 3D、单板／六联制造文件与接线说明 | [tools/neck-interconnect](tools/neck-interconnect/) |
 
-仓库包含标定与装配工具的源码、第三方资源、使用说明和离线验证程序，以及零位标定支架的 STL 打印文件（不含支架 STEP）、颈部连接板的可编辑 PCB 和板级 STEP。支架保留原设计，已知配合问题和来源说明见其目录。颈部板当前收录原配胶壳短线穿孔焊接版，替代端子试装版待验证后单独发布。[Orange Pi Zero 3W 固件](firmware/orangepi-zero3w/) 可通过 [GitHub Actions](https://github.com/lxm/microduck-maker/actions/workflows/orangepi-image.yml) 构建并下载完整的 Armbian 刷卡镜像。
+仓库包含标定与装配工具的源码、第三方资源、使用说明和离线验证程序，以及零位标定支架的 STL 打印文件（不含支架 STEP）、颈部连接板的可编辑 PCB 和板级 STEP。支架保留原设计，已知配合问题和来源说明见其目录。颈部板当前收录原配胶壳短线穿孔焊接版，替代端子试装版待验证后单独发布。
+
+## Orange Pi Zero 3W 固件
+
+基于 [kissqy/Microduck-kissqy（`d4d21c1`）](https://github.com/kissqy/Microduck-kissqy/tree/d4d21c1073d2c12ad2b5dfe3deb031030f7792ef)，保留原有机器人应用、模型和 ToF 源码，由 MicroDuck Maker 在 Armbian 26.8.1 上适配串口、HAT I²C 和音频。
+
+[下载完整刷卡镜像（.img.xz）](https://github.com/lxm/microduck-maker/releases/download/orangepi-zero3w-exp.1/Microduck_OrangePiZero3W_Experimental.img.xz) · [SHA-256 校验文件](https://github.com/lxm/microduck-maker/releases/download/orangepi-zero3w-exp.1/SHA256SUMS) · [刷卡与首次启动说明](firmware/orangepi-zero3w/)
+
+这是面向 Allwinner A733、1 GB、PCB V1.5 的实验镜像，已离线校验，尚未验证本发布镜像的实机启动。
 
 ## 先体验标定工具
 

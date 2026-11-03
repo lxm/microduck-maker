@@ -4,6 +4,12 @@
 
 This experimental BSP targets the Allwinner A733 Orange Pi Zero 3W. `make image` builds a flashable IMG/XZ from pinned Armbian, the existing application release and matching audio modules. Application code is unchanged. Audio compilation is a separate, explicit `make audio` target.
 
+## 下载镜像
+
+[下载完整刷卡镜像（.img.xz）](https://github.com/lxm/microduck-maker/releases/download/orangepi-zero3w-exp.1/Microduck_OrangePiZero3W_Experimental.img.xz) · [SHA-256 校验文件](https://github.com/lxm/microduck-maker/releases/download/orangepi-zero3w-exp.1/SHA256SUMS)
+
+基于 [kissqy/Microduck-kissqy（`d4d21c1`）](https://github.com/kissqy/Microduck-kissqy/tree/d4d21c1073d2c12ad2b5dfe3deb031030f7792ef)，保留原有机器人应用、模型和 ToF 源码，由 MicroDuck Maker 在 Armbian 26.8.1 上适配串口、HAT I²C 和音频。 用 Armbian Imager 将校验后的镜像写入备用 TF 卡；本发布镜像已离线校验，尚未上板启动验证。
+
 ## 固定基线
 
 - 实测硬件：1 GB、PCB V1.5；Armbian 26.8.1 / Debian 13，ARM64 内核 `6.6.98-vendor-sun60iw2`。
