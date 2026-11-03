@@ -154,8 +154,11 @@ def build(a):
     copy(a.tofd, 'opt/robot/tof-stage1/tofd')
     (payload/'opt/robot/tof-stage1/tofd').chmod(0o755)
     write('etc/sysusers.d/microduck.conf', 'g robot -\n')
-    for name in ('robotd.service', 'tofd.service'):
-        copy(ROOT/'config'/name, 'etc/systemd/system/'+name)
+    firmware = REPO/'microduck-hd1910/firmware'
+    for daemon, crate in (('robotd', 'robotd'), ('tofd', 'tof')):
+        unit = daemon + '.service'
+        copy(firmware/crate/'systemd'/unit, f'usr/lib/systemd/system/{unit}')
+        copy(ROOT/'config'/(daemon + '.conf'), f'etc/systemd/system/{unit}.d/10-orangepi.conf')
     copy(REPO/'microduck-hd1910/firmware/deploy/audio/aic3104-init.sh', 'usr/lib/microduck/aic3104-init.sh')
     copy(ROOT/'config/microduck-audio-init.service', 'etc/systemd/system/microduck-audio-init.service')
     wants = payload/'etc/systemd/system/multi-user.target.wants'; wants.mkdir(parents=True)

@@ -79,7 +79,7 @@ Linux 构建推荐安装 `kmod` 并传入 `REINDEX_MODULES=1`，直接对固定�
 
 首次登录沿用 Armbian 原机制，可使用 USB 有线网络或 HDMI 本地配置。仅有 Wi-Fi 时，构建参数 `WIFI_NETPLAN=/private/path/wifi.yaml` 可注入用户提供的有效 Netplan 配置；此时产物包含私有配网信息，勿作为公开镜像分发。没有另加账号/配网守护进程，SSH host key 由 Armbian 首次启动重新生成。新镜像首次登录和联网尚待上板验证。
 
-机器人服务不自动启动。完成首次登录后可执行 `sudo systemctl start robotd tofd` 进行只读检查；之后使用原中控完成本机标定及使能。摄像头保留 vendor IMX219 驱动，实拍待验。
+镜像从固定的 kissqy 提交原样安装 `robotd.service` 和 `tofd.service`，板级差异由 systemd 的 `10-orangepi.conf` 补充。它们指定实际的程序路径、舵机只读启动和 HAT I²C 参数，保留手动启动及现有 ToF 运行身份（root、robot 组）。原中控写入的 R17 配置可以覆盖初始的只读启动命令。机器人服务不自动启动。完成首次登录后可执行 `sudo systemctl start robotd tofd` 进行只读检查；之后使用原中控完成本机标定及使能。摄像头保留 vendor IMX219 驱动，实拍待验。
 
 ### 从源码更新构建输入
 
