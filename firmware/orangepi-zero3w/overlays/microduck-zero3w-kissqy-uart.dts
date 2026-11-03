@@ -1,0 +1,32 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/dts-v1/;
+/plugin/;
+
+/* A733 vendor uart-ng: serial alias chooses hardware instance; uartN_port
+ * chooses tty line. Keep serial0 -> physical UART0, register it as ttyS2.
+ * Requires CONFIG_AW_UART_NG=y and CONFIG_SERIAL_8250=n from the pinned image.
+ * This does not silence boot0/U-Boot, which run before Linux applies this DT.
+ */
+&uart0 {
+    uart0_port = <2>;
+    status = "okay";
+};
+&uart0_pins_active {
+    pins = "PB9", "PB10";
+    function = "uart0";
+};
+&uart0_pins_sleep {
+    pins = "PB9", "PB10";
+    function = "gpio_in";
+};
+
+/* Reserve tty line 2 for the HAT; physical UART2 is unused on this profile. */
+&uart2 { status = "disabled"; };
+
+/* Linux OF console fallback only. The boot script must also omit serial
+ * console=/earlyprintk/earlycon arguments. UART1 Bluetooth is untouched.
+ */
+&{/chosen} {
+    stdout-path = "";
+    linux,stdout-path = "";
+};

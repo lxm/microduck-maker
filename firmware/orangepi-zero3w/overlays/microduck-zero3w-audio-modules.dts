@@ -1,0 +1,113 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/dts-v1/;
+/plugin/;
+
+/* Requires the matching standalone machine and AIC3x I2C modules.
+ * CPU generates BCLK/LRCK; HAT supplies its codec's independent 12 MHz MCLK.
+ * Generic aic3x compatible preserves kissqy's existing mixer control names.
+ */
+&{/} {
+    hat_codec_mclk: hat-codec-mclk {
+        compatible = "fixed-clock";
+        #clock-cells = <0>;
+        clock-frequency = <12000000>;
+    };
+    hat_codec_3v3: hat-codec-3v3 {
+        compatible = "regulator-fixed";
+        regulator-name = "hat-codec-3v3";
+        regulator-min-microvolt = <3300000>;
+        regulator-max-microvolt = <3300000>;
+        regulator-always-on;
+    };
+    hat_codec_1v8: hat-codec-1v8 {
+        compatible = "regulator-fixed";
+        regulator-name = "hat-codec-1v8";
+        regulator-min-microvolt = <1800000>;
+        regulator-max-microvolt = <1800000>;
+        regulator-always-on;
+    };
+    microduck_sound: microduck-aic3104 {
+        compatible = "microduck,zero3w-aic3104";
+        soundcard-mach,name = "aic3104";
+        soundcard-mach,format = "i2s";
+        soundcard-mach,bitclock-master = <&microduck_cpu>;
+        soundcard-mach,frame-master = <&microduck_cpu>;
+        soundcard-mach,slot-num = <2>;
+        soundcard-mach,slot-width = <32>;
+        status = "okay";
+        microduck_cpu: soundcard-mach,cpu {
+            sound-dai = <&i2s0_plat>;
+            soundcard-mach,pll-fs = <1>;
+            /* Disable CPU MCLK output; PB4 remains free in both states. */
+            soundcard-mach,mclk-fs = <0>;
+        };
+        soundcard-mach,codec {
+            sound-dai = <&hat_aic3104>;
+            /* These two opt-in properties require the candidate patch. */
+            soundcard-mach,sysclk-frequency = <12000000>;
+            soundcard-mach,skip-tdm;
+        };
+    };
+};
+
+&twi0 {
+    #address-cells = <1>;
+    #size-cells = <0>;
+    hat_aic3104: codec@18 {
+        compatible = "ti,tlv320aic3x";
+        reg = <0x18>;
+        #sound-dai-cells = <0>;
+        clocks = <&hat_codec_mclk>;
+        IOVDD-supply = <&hat_codec_3v3>;
+        AVDD-supply = <&hat_codec_3v3>;
+        DRVDD-supply = <&hat_codec_3v3>;
+        DVDD-supply = <&hat_codec_1v8>;
+        status = "okay";
+    };
+};
+
+&pio {
+    hat_i2s0_pins: hat-i2s0-pins {
+        pins = "PB5", "PB6", "PB7", "PB8";
+        function = "gpio_in";
+    };
+    hat_i2s0_bclk: hat-i2s0-bclk {
+        pins = "PB5";
+        function = "i2s0_bclk";
+        drive-strength = <10>;
+        bias-disable;
+    };
+    hat_i2s0_lrck: hat-i2s0-lrck {
+        pins = "PB6";
+        function = "i2s0_lrck";
+        drive-strength = <10>;
+        bias-disable;
+    };
+    hat_i2s0_dout: hat-i2s0-dout {
+        pins = "PB7";
+        function = "i2s0_dout0";
+        drive-strength = <10>;
+        bias-disable;
+    };
+    hat_i2s0_din: hat-i2s0-din {
+        pins = "PB8";
+        function = "i2s0_din0";
+        bias-disable;
+    };
+};
+
+&i2s0_plat {
+    tdm-num = <0>;
+    tx-pin = <0>;
+    rx-pin = <0>;
+    pinctrl-used;
+    pinctrl-names = "default", "sleep";
+    pinctrl-0 = <&hat_i2s0_bclk &hat_i2s0_lrck &hat_i2s0_dout &hat_i2s0_din>;
+    pinctrl-1 = <&hat_i2s0_pins>;
+    status = "okay";
+};
+&i2s0_mach { status = "disabled"; };
+&ac101 { status = "disabled"; };
+
+/* Reserve PB7/PB8 for I2S, not the alternate TWI1 function. */
+&twi1 { status = "disabled"; };

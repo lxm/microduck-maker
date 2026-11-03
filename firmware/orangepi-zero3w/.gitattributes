@@ -1,0 +1,2 @@
+# Literal unified-diff syntax preserves upstream whitespace.
+audio/*.patch -whitespace

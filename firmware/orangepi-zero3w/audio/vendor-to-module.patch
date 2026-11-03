@@ -1,0 +1,91 @@
+--- a/snd_sunxi_mach.c
++++ b/snd_sunxi_mach.c
+@@ -28,7 +28,7 @@
+ #define CELL		"#sound-dai-cells"
+ #define PREFIX		"soundcard-mach,"
+ 
+-#define DRV_NAME	"sunxi-snd-mach"
++#define DRV_NAME	"microduck-aic3104"
+ 
+ static void asoc_simple_shutdown(struct snd_pcm_substream *substream)
+ {
+@@ -54,6 +54,7 @@
+ 	struct simple_dai_props *dai_props = simple_priv_to_props(priv, RTD_NUM(rtd));
+ 	struct asoc_simple_dai *dais = priv->dais;
+ 	unsigned int mclk = 0;
++	unsigned int codec_mclk;
+ 	unsigned int cpu_pll_clk;
+ 	unsigned int codec_fp;
+ 	unsigned int codec_pllin_clk, codec_pllout_clk;
+@@ -174,13 +175,14 @@
+ 	if (!(dais->slots && dais->slot_width))
+ 		return 0;
+ 
+-	/* for cpudai & codecdai mclk */
++	/* CPU MCLK can be disabled while the codec has its own oscillator. */
+ 	if (dai_props->mclk_fp[0] == 0 && dai_props->mclk_fp[1] == 0)
+ 		mclk = params_rate(params) * dai_props->mclk_fs;
+ 	else if (freq_point == 22579200)
+ 		mclk = dai_props->mclk_fp[0] * dai_props->mclk_fs;
+ 	else if (freq_point == 24576000)
+ 		mclk = dai_props->mclk_fp[1] * dai_props->mclk_fs;
++	codec_mclk = dai_props->codec_sysclk ? dai_props->codec_sysclk : mclk;
+ 	cpu_bclk_ratio = cpu_pll_clk / (params_rate(params) * dais->slot_width * dais->slots);
+ 	codec_bclk_ratio = codec_pllout_clk / (params_rate(params)
+ 			   * dais->slot_width * dais->slots);
+@@ -207,7 +209,7 @@
+ 	}
+ 	sunxi_adpt_rtd_codec_dai(rtd, i, codec_dai) {
+ 		if (codec_dai->driver->ops && codec_dai->driver->ops->set_sysclk) {
+-			ret = snd_soc_dai_set_sysclk(codec_dai, 0, mclk, SND_SOC_CLOCK_IN);
++			ret = snd_soc_dai_set_sysclk(codec_dai, 0, codec_mclk, SND_SOC_CLOCK_IN);
+ 			if (ret) {
+ 				SND_LOG_ERR("cadec_dai set sysclk(mclk) failed\n");
+ 				return ret;
+@@ -257,7 +259,8 @@
+ 		}
+ 	}
+ 	sunxi_adpt_rtd_codec_dai(rtd, i, codec_dai) {
+-		if (codec_dai->driver->ops && codec_dai->driver->ops->set_tdm_slot) {
++		if (!dai_props->codec_skip_tdm && codec_dai->driver->ops
++		    && codec_dai->driver->ops->set_tdm_slot) {
+ 			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0, 0, dais->slots,
+ 							dais->slot_width);
+ 			if (ret) {
+@@ -1175,7 +1178,7 @@
+ }
+ 
+ static const struct of_device_id snd_soc_sunxi_of_match[] = {
+-	{ .compatible = "allwinner," DRV_NAME, },
++	{ .compatible = "microduck,zero3w-aic3104", },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, snd_soc_sunxi_of_match);
+--- a/snd_sunxi_mach_utils.c
++++ b/snd_sunxi_mach_utils.c
+@@ -562,6 +562,13 @@
+ 		}
+ 	}
+ 
++	/* Optional per-link codec clock and ordinary stereo I2S mode. */
++	dai_props->codec_sysclk = 0;
++	snprintf(prop, sizeof(prop), "%ssysclk-frequency", prefix);
++	of_property_read_u32(codec, prop, &dai_props->codec_sysclk);
++	snprintf(prop, sizeof(prop), "%sskip-tdm", prefix);
++	dai_props->codec_skip_tdm = of_property_read_bool(codec, prop);
++
+ 	snprintf(prop, sizeof(prop), "%spll-fp", prefix);
+ 	ret = of_property_read_bool(codec, prop);
+ 	if (!ret) {
+--- a/snd_sunxi_mach_utils.h
++++ b/snd_sunxi_mach_utils.h
+@@ -118,6 +118,9 @@
+ 		struct snd_soc_codec_conf *codec_conf;
+ 		unsigned int mclk_fp[2];
+ 		unsigned int mclk_fs;
++		/* Independent codec oscillator; zero keeps the shared-clock default. */
++		unsigned int codec_sysclk;
++		bool codec_skip_tdm;
+ 		unsigned int cpu_pll_fs;
+ 		unsigned int codec_pll_fp[2];
+ 		unsigned int codec_pllin_mode;

@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/dts-v1/;
+/plugin/;
+
+/* HAT physical pins 3/5 = PB3/PB2. Leave UART and audio untouched. */
+&twi0 {
+    clock-frequency = <400000>;
+    twi_drv_used = <0>;
+    pinctrl-names = "default", "sleep";
+    pinctrl-0 = <&twi0_pins_default>;
+    pinctrl-1 = <&twi0_pins_sleep>;
+    status = "okay";
+};

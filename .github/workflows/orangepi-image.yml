@@ -1,0 +1,115 @@
+name: Orange Pi Zero 3W image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/orangepi-image.yml
+      - firmware/orangepi-zero3w/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: orangepi-image-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  image:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+        working-directory: firmware/orangepi-zero3w
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      CARGO_INCREMENTAL: '0'
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Install image and ToF build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y device-tree-compiler e2fsprogs kmod xz-utils make python3-venv build-essential pkg-config libudev-dev
+          rustup toolchain install 1.99.0 --profile minimal --target aarch64-unknown-linux-gnu
+          python3 -m venv .build/tools
+          .build/tools/bin/pip install cargo-zigbuild==0.23.4 ziglang==0.15.1
+          echo "$PWD/.build/tools/bin" >> "$GITHUB_PATH"
+          echo "CARGO_ZIGBUILD_ZIG_PATH=$(.build/tools/bin/python -c 'import pathlib,ziglang; print(pathlib.Path(ziglang.__file__).parent / "zig")')" >> "$GITHUB_ENV"
+
+      - name: Cache ToF compilation
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            firmware/orangepi-zero3w/.build/tofd-target
+          key: orangepi-tofd-${{ runner.os }}-${{ runner.arch }}-rust1.99-zig0.15.1-${{ hashFiles('firmware/orangepi-zero3w/upstream.rev', 'firmware/orangepi-zero3w/scripts/build_tofd.sh') }}
+          restore-keys: orangepi-tofd-${{ runner.os }}-${{ runner.arch }}-rust1.99-zig0.15.1-
+
+      - name: Verify and unpack existing audio modules
+        run: |
+          (cd audio/prebuilt && sha256sum --check SHA256SUMS)
+          mkdir -p .build/audio
+          tar --extract --gzip --no-same-owner --file audio/prebuilt/verified-audio-inputs.tar.gz --directory .build/audio
+          # build_image.py also checks module/source/index hashes against the base kernel.
+          # Do not call make audio: this workflow reuses the verified modules.
+
+      - name: Fetch pinned Armbian and boot0
+        run: make fetch
+
+      - name: Build existing ToF source
+        run: make tofd
+
+      - name: Build and verify complete IMG/XZ
+        run: make image REINDEX_MODULES=1
+
+      - name: Prepare download
+        run: |
+          mkdir -p .build/download
+          cp .build/image/release/*.img.xz .build/download/
+          cp .build/image/BUILD.json .build/image/validation/image-build.json .build/download/
+          cp .build/tofd-target/aarch64-unknown-linux-gnu/release/TOFD-BUILD.json .build/download/
+          cp .build/image/MODULES.json .build/download/
+          git rev-parse HEAD > .build/download/SOURCE-COMMIT.txt
+          cp upstream.rev .build/download/KISSQY-COMMIT.txt
+          (cd .build/download && sha256sum -- *.img.xz > SHA256SUMS)
+
+      - name: Upload flashable image and checksums
+        id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: orangepi-zero3w-img-${{ github.run_number }}-${{ github.run_attempt }}
+          path: firmware/orangepi-zero3w/.build/download/
+          include-hidden-files: true
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
+
+      - name: Download summary
+        env:
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        run: |
+          {
+            echo '### Orange Pi Zero 3W image'
+            printf '[Download IMG.XZ and checksums](%s)\n\n' "$ARTIFACT_URL"
+            echo 'Extract the artifact ZIP, verify SHA256SUMS, then flash the .img.xz.'
+            echo 'Audio modules and the control.43 application package are reused; ToF is built from source.'
+            echo 'No private Wi-Fi or login credentials are embedded; runtime calibration uses the original uncalibrated template.'
+            echo 'Offline filesystem, payload and compression checks passed; hardware boot testing is still required.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: orangepi-zero3w-diagnostics-${{ github.run_number }}-${{ github.run_attempt }}
+          path: |
+            firmware/orangepi-zero3w/.build/image/validation/
+            firmware/orangepi-zero3w/.build/image/BUILD.json
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7

@@ -1,0 +1,22 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/dts-v1/;
+/plugin/;
+// Pinned sun60iw2-ccu binding: APB_UART=46, PLL_PERI0_480M=5.
+
+/* Apply the shared APB-UART clock policy at both active platform consumers.
+ * platform_probe() applies assigned clocks before uart-ng caches uartclk.
+ * Identical policies keep UART0 (HAT) and UART1 (Bluetooth) consistent,
+ * regardless of probe order. Apply at boot; do not switch a live HCI clock.
+ */
+&uart0 {
+    assigned-clocks = <&ccu 46>;
+    assigned-clock-parents = <&ccu 5>;
+    assigned-clock-rates = <48000000>;
+    clock-frequency = <48000000>;
+};
+&uart1 {
+    assigned-clocks = <&ccu 46>;
+    assigned-clock-parents = <&ccu 5>;
+    assigned-clock-rates = <48000000>;
+    clock-frequency = <48000000>;
+};

@@ -1,0 +1,2 @@
+# Preserve the upstream tofd bus path while matching the A733 controller.
+SUBSYSTEM=="i2c-dev", KERNEL=="i2c-*", KERNELS=="2510000.twi", SYMLINK+="i2c-pihat"

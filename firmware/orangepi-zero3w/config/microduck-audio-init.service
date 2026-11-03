@@ -1,0 +1,8 @@
+[Unit]
+Description=Initialize HAT mixer using the existing application script
+After=sound.target systemd-modules-load.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /usr/lib/microduck/aic3104-init.sh
+RemainAfterExit=yes

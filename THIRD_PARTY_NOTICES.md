@@ -52,3 +52,7 @@
 `tools/zero-fixture/stl/` 的 6 个打印模型及 `images/assembly-reference.png` 由交流群分享的 `0位支架.stp` 导出，维护者负责整理。目前没有可提供的原始发布链接，原始设计作者和模型许可尚未确认；该设计不署名为维护者原创，群内分享不代表已获开源授权。STL 仅作网格化与平移，没有简化或配合修正；源文件与导出文件的哈希记录在该目录的 `manifest.json`。
 
 不能根据同属 MicroDuck 项目就推断它与装配对照模型采用相同许可。上述几何模型和截图不纳入根目录 MIT 许可，本项目不另行授予模型使用权。原作者或权利人可通过 [仓库 Issues](https://github.com/lxm/microduck-maker/issues) 联系维护者补充署名、明确许可或要求移除；具体来源状态见 [支架说明](tools/zero-fixture/README.md#来源与许可)。
+
+## Orange Pi Zero 3W 固件
+
+[板级适配](firmware/orangepi-zero3w/) 基于 Armbian 并复用 kissqy 的机器人发布包、ToF 和模型，按[上游许可范围](https://github.com/kissqy/Microduck-kissqy/blob/d4d21c1073d2c12ad2b5dfe3deb031030f7792ef/microduck-hd1910/LICENSE)分别授权。基础镜像和 boot0 的来源与哈希见 [profile.json](firmware/orangepi-zero3w/profile.json)。Linux 音频模块的源码版本、补丁和 GPL 许可见 [audio/](firmware/orangepi-zero3w/audio/)；这些第三方组件及其构建产物不适用本仓库根 MIT 许可。

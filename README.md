@@ -13,7 +13,7 @@
 | 零位标定支架 | 6 件 STL、装配参考与代打说明 | [tools/zero-fixture](tools/zero-fixture/) |
 | 颈部舵机连接板 | D0.8.1 原配胶壳短线焊接版：KiCad、板级 3D、单板／六联制造文件与接线说明 | [tools/neck-interconnect](tools/neck-interconnect/) |
 
-仓库包含标定与装配工具的源码、第三方资源、使用说明和离线验证程序，以及零位标定支架的 STL 打印文件（不含支架 STEP）、颈部连接板的可编辑 PCB 和板级 STEP。支架保留原设计，已知配合问题和来源说明见其目录。颈部板当前收录原配胶壳短线穿孔焊接版，替代端子试装版待验证后单独发布。`firmware/` 先记录后续固件收录约定，**当前没有可刷写固件**。
+仓库包含标定与装配工具的源码、第三方资源、使用说明和离线验证程序，以及零位标定支架的 STL 打印文件（不含支架 STEP）、颈部连接板的可编辑 PCB 和板级 STEP。支架保留原设计，已知配合问题和来源说明见其目录。颈部板当前收录原配胶壳短线穿孔焊接版，替代端子试装版待验证后单独发布。[Orange Pi Zero 3W 固件](firmware/orangepi-zero3w/) 可通过 [GitHub Actions](https://github.com/lxm/microduck-maker/actions/workflows/orangepi-image.yml) 构建并下载完整的 Armbian 刷卡镜像。
 
 ## 先体验标定工具
 
@@ -42,7 +42,7 @@ microduck-maker/
 │   ├── servo-guide/      # 3D 舵机编号与装配对照
 │   ├── zero-fixture/     # 零位标定支架 STL 与打印说明
 │   └── neck-interconnect/ # 颈部连接板、板级模型与接线／打板说明
-├── firmware/             # 后续固件目录约定，暂不含固件
+├── firmware/             # 按板型维护的固件源码与镜像构建说明
 ├── docs/                 # 项目维护与发布说明
 ├── scripts/              # 全仓库离线验证
 ├── .github/workflows/    # 自动校验

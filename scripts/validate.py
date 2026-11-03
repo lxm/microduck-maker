@@ -4,6 +4,7 @@ import ast
 import hashlib
 from html.parser import HTMLParser
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -33,6 +34,15 @@ class Links(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         self.links.extend(v for k, v in attrs if k in ('src', 'href') and v)
+
+
+def project_files(suffix):
+    # Firmware builds contain an external checkout, a toolchain and an image rootfs.
+    for root, dirs, files in os.walk(ROOT):
+        dirs[:] = [d for d in dirs if d not in {'.git', '.build'}]
+        for name in files:
+            if name.endswith(suffix):
+                yield Path(root) / name
 
 
 def main():
@@ -67,9 +77,8 @@ def main():
     print('PASS: six zero-fixture STL hashes, units and triangle counts', flush=True)
     run(sys.executable, 'tools/neck-interconnect/scripts/validate.py')
 
-    for file in ROOT.rglob('*.py'):
-        if '.git' not in file.parts:
-            ast.parse(file.read_text(), filename=str(file))
+    for file in project_files('.py'):
+        ast.parse(file.read_text(), filename=str(file))
     for file in (CAL / 'static').rglob('*.js'):
         content = file.read_text()
         subprocess.run(['node', '--check', '--input-type=module'],
@@ -86,9 +95,7 @@ def main():
             require((html.parent / unquote(url.path)).exists(), f'Missing HTML asset: {link}')
     require((CAL / 'static/source/assets/duck-visual.bin').stat().st_size > 1_000_000,
             'Display mesh is missing or a placeholder')
-    for md in ROOT.rglob('*.md'):
-        if '.git' in md.parts:
-            continue
+    for md in project_files('.md'):
         for target in re.findall(r'\]\(([^\s)]+)\)', md.read_text()):
             url = urlsplit(target)
             if url.scheme or url.netloc or not url.path:

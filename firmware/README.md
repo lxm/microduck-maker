@@ -1,6 +1,6 @@
 # 固件
 
-此目录用于后续收录 MicroDuck 固件源码、构建与发布资料。**当前版本没有固件、刷写脚本或预编译镜像。**
+[Orange Pi Zero 3W（Allwinner A733）](orangepi-zero3w/)：HD1910 HAT 的实验性底层适配，含设备树、驱动来源与完整 Armbian 镜像构建流程。[Actions 构建与下载](https://github.com/lxm/microduck-maker/actions/workflows/orangepi-image.yml)。
 
 新增固件时按 `firmware/<板型或组件>/` 分目录，每个目录至少说明：
 

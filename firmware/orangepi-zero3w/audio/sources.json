@@ -1,0 +1,16 @@
+{
+  "repository": "https://github.com/orangepi-xunlong/linux-orangepi",
+  "commit": "2ac08e8c7cdc28abbdc5c9a9dd812f887ae9c79f",
+  "files": {
+    "bsp/drivers/sound/adapter/snd_sunxi_adapter.h": {"sha256": "0e26feeee096e59f31c848be3d1e5ddc79a9e562370e3e8e8c380fb874807da6", "patched_sha256": "0e26feeee096e59f31c848be3d1e5ddc79a9e562370e3e8e8c380fb874807da6"},
+    "bsp/drivers/sound/common/snd_sunxi_common.h": {"sha256": "d630885104f8e2008b44b8d1bb44d8ee83c3bf2e377044014b3f4eec56473685", "patched_sha256": "d630885104f8e2008b44b8d1bb44d8ee83c3bf2e377044014b3f4eec56473685"},
+    "bsp/drivers/sound/common/snd_sunxi_jack.h": {"sha256": "d6d591add18bebfb75a03d8f9c1f257955daab133f0ef8d08fcd064b2ec7925c", "patched_sha256": "d6d591add18bebfb75a03d8f9c1f257955daab133f0ef8d08fcd064b2ec7925c"},
+    "bsp/drivers/sound/common/snd_sunxi_log.h": {"sha256": "57e13d5c11a863a755bdcf81f2a164592eb68a20a1758fdd0d10d533ad81a7d0", "patched_sha256": "57e13d5c11a863a755bdcf81f2a164592eb68a20a1758fdd0d10d533ad81a7d0"},
+    "bsp/drivers/sound/platform/snd_sunxi_mach.c": {"sha256": "9b371b5623af65526d950d40f7cdd36d37ae5746ce254db53b531db52c96fa86", "patched_sha256": "baf02a3e9e95114ca5640ad3a180f320828aae3ae1666377bcded3100fd5943c"},
+    "bsp/drivers/sound/platform/snd_sunxi_mach_utils.c": {"sha256": "4ee28854ad1db1c9828e901902af16a89f826f33f031ec7684f1916176339fbc", "patched_sha256": "b01a4d56cb0745e5377a9ad9066ba503d18e41bbbd6f10f6d251d923cc131702"},
+    "bsp/drivers/sound/platform/snd_sunxi_mach_utils.h": {"sha256": "06b1317179314270af03c0d2af1e2086b8c3f6f217b66cbb79bf38f24e096836", "patched_sha256": "068f8c97ab5a5f50913e6345bbf33996ce26a4c63934d5654dc186dd99e4a4f1"},
+    "sound/soc/codecs/tlv320aic3x-i2c.c": {"sha256": "0126062f9d5f910c4fea0e2421ebf5394c95aada66322ef6e84279b9ff361a8a", "patched_sha256": "0126062f9d5f910c4fea0e2421ebf5394c95aada66322ef6e84279b9ff361a8a"},
+    "sound/soc/codecs/tlv320aic3x.c": {"sha256": "baa5f64475af6caf584f0af9ae74a4abd75ea330ae547e4b0e7a620f495f02d6", "patched_sha256": "baa5f64475af6caf584f0af9ae74a4abd75ea330ae547e4b0e7a620f495f02d6"},
+    "sound/soc/codecs/tlv320aic3x.h": {"sha256": "688ef57731907961393f0c08eda66cf4d8e79c57f8886e1a8c2f74df023edf2d", "patched_sha256": "688ef57731907961393f0c08eda66cf4d8e79c57f8886e1a8c2f74df023edf2d"}
+  }
+}

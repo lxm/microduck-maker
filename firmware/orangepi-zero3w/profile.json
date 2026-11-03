@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "board": "Orange Pi Zero 3W",
+  "compatible": "xunlong,orangepi-zero3w",
+  "soc": "Allwinner A733",
+  "tested_ram_gib": 1,
+  "tested_pcb": "V1.5",
+  "status": "experimental",
+  "kernel": "6.6.98-vendor-sun60iw2",
+  "base_image": {
+    "name": "Armbian_26.8.1_Orangepizero3w_trixie_vendor_6.6.98_minimal.img",
+    "sha256": "d4bb7c8bd1bcf06908107ac803f6d6abdbf28d23d7f36e542e4c8e47077c0bcb",
+    "url": "https://mirrors.nju.edu.cn/armbian-releases/orangepizero3w/archive/Armbian_26.8.1_Orangepizero3w_trixie_vendor_6.6.98_minimal.img.xz",
+    "xz_sha256": "915054fed84758a78b09e0d5166f7e308c2185067faa77402031c6ad9366c632"
+  },
+  "base_dtb_sha256": "1eb1160f92dd1d566af920002583c67fbbb6eb35d190a62fb8f0bc1236bb74e1",
+  "boot0": {
+    "url": "https://raw.githubusercontent.com/armbian/build/17e3295e7d98ce7ae217437e919ce23b7ec28e21/packages/blobs/sunxi/sun60iw2/boot0_sdcard_orangepizero3w.fex",
+    "sha256": "5ec7f17be1f2f653496529f0b2cd19a18977d4d122d458969a7cd855ab6d35fb",
+    "bytes": 258048,
+    "offset": 8192
+  },
+  "application": {
+    "repository_path": "microduck-hd1910/firmware/console/updates/Microduck-Robotd-FT6-R17.tar.gz",
+    "sha256": "bcfd5c183c697b9c4e0fdbd563d995eda6a48331a7c49b9e76d20bd156c65cce",
+    "robotd_sha256": "da2bab2320554124e8925c3880962da535dc5b6a414f15dada0c5ca773218647"
+  },
+  "overlays": [
+    "microduck-zero3w-kissqy-uart",
+    "microduck-zero3w-uart48m-v2",
+    "microduck-zero3w-hat-i2c",
+    "microduck-zero3w-audio-modules"
+  ],
+  "headers_sha256": {
+    ".config": "307019f84788c2b6bf0d032eb4ef09ebeaedf9dff9840ef980a85525b6541c3d",
+    "Module.symvers": "36ff1c27f094cc746c151088f137a8309a5fca2531ecef17c896f2ef580f6bbe",
+    "include/generated/autoconf.h": "abcc6c44f0d5207ee5c082cb8d545991990b9c2de7eb150896d0ae266f830f64",
+    "include/generated/utsrelease.h": "e843e607f26c096b8876c21e113fe9b78aa2221bcfb4138fbfb07b9d5c45f66a"
+  }
+}
