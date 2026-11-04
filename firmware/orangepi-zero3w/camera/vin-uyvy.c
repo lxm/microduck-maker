@@ -45,7 +45,7 @@ int main(int argc,char **argv) {
     struct v4l2_format fmt={.type=type};struct v4l2_pix_format_mplane *pix=&fmt.fmt.pix_mp;
     pix->width=w;pix->height=h;pix->pixelformat=V4L2_PIX_FMT_NV12;pix->field=V4L2_FIELD_NONE;
     xioctl(fd,VIDIOC_S_FMT,&fmt,"set NV12 format");
-    if(pix->width!=w || pix->height!=h || pix->pixelformat!=V4L2_PIX_FMT_NV12 || pix->num_planes!=1 || (pix->plane_fmt[0].bytesperline && pix->plane_fmt[0].bytesperline!=w))return 3;
+    if(pix->width!=w || pix->height!=h || pix->pixelformat!=V4L2_PIX_FMT_NV12 || pix->num_planes!=1)return 3;
     struct v4l2_requestbuffers req={.count=4,.type=type,.memory=V4L2_MEMORY_MMAP};
     xioctl(fd,VIDIOC_REQBUFS,&req,"allocate capture buffers");
     void *maps[4];size_t lengths[4];
