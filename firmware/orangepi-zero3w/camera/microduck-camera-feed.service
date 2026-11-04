@@ -1,0 +1,12 @@
+[Unit]
+Description=Orange Pi IMX219 NV12 to UYVY camera
+PartOf=mediad.service
+Before=mediad.service
+[Service]
+User=mediad
+SupplementaryGroups=video
+ExecStartPre=+/sbin/modprobe imx219
+ExecStartPre=+/sbin/modprobe vin_v4l2
+ExecStartPre=+/sbin/modprobe v4l2loopback
+ExecStart=/usr/local/libexec/microduck-start-vin
+ExecStartPost=/bin/sh -ec 'for i in 1 2 3 4 5 6 7 8 9 10; do v4l2-ctl -d /dev/video42 --get-fmt-video 2>/dev/null | grep -q UYVY && exit 0; sleep 0.2; done; exit 1'

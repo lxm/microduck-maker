@@ -32,8 +32,10 @@ jobs:
 
       - name: Install image and ToF build tools
         run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android
           sudo apt-get update
-          sudo apt-get install -y device-tree-compiler e2fsprogs kmod xz-utils make python3-venv build-essential pkg-config libudev-dev
+          sudo apt-get install -y device-tree-compiler e2fsprogs kmod xz-utils make qemu-user-static binfmt-support python3-venv build-essential pkg-config libudev-dev
+          sudo update-binfmts --enable qemu-aarch64
           rustup toolchain install 1.99.0 --profile minimal --target aarch64-unknown-linux-gnu
           python3 -m venv .build/tools
           .build/tools/bin/pip install cargo-zigbuild==0.23.4 ziglang==0.15.1

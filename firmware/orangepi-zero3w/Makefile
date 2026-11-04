@@ -5,6 +5,7 @@ BASE_IMAGE ?= $(INPUTS)/Armbian_26.8.1_Orangepizero3w_trixie_vendor_6.6.98_minim
 BOOT0 ?= $(INPUTS)/boot0-1gb.fex
 MODULES ?= .build/audio
 TOFD ?= .build/tofd-target/aarch64-unknown-linux-gnu/release/tofd
+CAMERA ?= 1
 OUTPUT ?= .build/image
 KERNEL_HEADERS ?= .build/kernel/headers/linux-headers-6.6.98-vendor-sun60iw2
 BASE_MODULES ?= .build/kernel/modules/6.6.98-vendor-sun60iw2
@@ -34,8 +35,11 @@ tofd: upstream
 	sh scripts/build_tofd.sh
 
 image: upstream
+ifeq ($(CAMERA),1)
+	$(PYTHON) camera/fetch.py "$(INPUTS)/camera"
+endif
 	$(PYTHON) build_image.py --base-image "$(BASE_IMAGE)" --boot0 "$(BOOT0)" \
 	  --modules "$(MODULES)" --tofd "$(TOFD)" --output "$(OUTPUT)" \
 	  $(if $(APPLICATION),--application "$(APPLICATION)" --application-sha256 "$(APPLICATION_SHA256)") \
 	  $(if $(WIFI_NETPLAN),--wifi-netplan "$(WIFI_NETPLAN)") \
-	  $(if $(filter 1,$(REINDEX_MODULES)),--reindex-modules)
+	  $(if $(filter 1,$(CAMERA)),--camera-inputs "$(INPUTS)/camera" --reindex-modules,$(if $(filter 1,$(REINDEX_MODULES)),--reindex-modules))

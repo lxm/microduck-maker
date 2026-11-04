@@ -1,0 +1,8 @@
+[media]
+source="camera"
+quality="720p30"
+[duck_detector]
+enabled=true
+model="/opt/robot/detector/seed-duck-v1/duck_detect.onnx"
+hz=2.0
+threshold=0.35

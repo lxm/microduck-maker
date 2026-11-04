@@ -16,14 +16,14 @@ BOOT0_SHA='5ec7f17be1f2f653496529f0b2cd19a18977d4d122d458969a7cd855ab6d35fb'
 BOOT0_OFFSET=8192
 
 
-def build(base, payload, boot0, output):
+def build(base, payload, boot0, output, prepared_fs=None):
     global OUT,BASE,PAYLOAD,WORK,FS,IMAGE,LOG,BOOT0
     OUT=output;BASE=base;PAYLOAD=payload;BOOT0=boot0
     WORK=OUT/'work';WORK.mkdir(exist_ok=True)
     LOG=OUT/'validation';LOG.mkdir(exist_ok=True)
     FS=WORK/'rootfs.ext4'
     IMAGE=OUT/'release/Microduck_OrangePiZero3W_Experimental.img'
-    main()
+    main(prepared_fs)
 
 
 def tool(name):
@@ -61,7 +61,7 @@ def remote_stat(path):
     return output if 'Inode:' in output else None
 
 
-def main():
+def main(prepared_fs):
     if not BASE.is_file() or BASE.is_block_device():raise ValueError('Expected original regular IMG file')
     if IMAGE.exists():raise ValueError('Output IMG already exists; preserve or move it before rebuilding')
     assert digest(BASE)==EXPECTED,'Source image hash mismatch'
@@ -82,7 +82,10 @@ def main():
         offset=start*512
         assert offset==33554432 and header[450]==0x83
         src.seek(offset)
-        with FS.open('wb') as dest:shutil.copyfileobj(src,dest,4*1024*1024)
+        if prepared_fs:
+            prepared_fs.rename(FS)
+        else:
+            with FS.open('wb') as dest:shutil.copyfileobj(src,dest,4*1024*1024)
     logs=[command([tool('e2fsck'),'-f','-y',FS],allowed=(0,1)),command([tool('resize2fs'),FS,'4G'])]
     assert FS.stat().st_size==4294967296
     (LOG/'filesystem-resize.log').write_text('\n'.join(logs))
@@ -165,7 +168,7 @@ def main():
             'bootloader_rebuilt':False,'source_image_modified':False,'payload_roundtrip_files_verified':len(metadata),
             'filesystem_check':'passed','board_boot_test':'not_performed','wifi_connection_test':'not_performed',
             'component_hardware_tests':'see README; public firmware has not been booted',
-            'camera_test':'pending cable; vendor IMX219 module retained',
+            'camera_test':'IMX219 component tested on the board; new image unbooted' if prepared_fs else 'vendor module only',
             'inherited_ssh_host_keys_removed':removed,
             'sd_card_written':False,'contains_operator_provisioning':(PAYLOAD/'etc/netplan/30-microduck-wifi.yaml').exists()}
     (LOG/'image-build.json').write_text(json.dumps(record,indent=2)+'\n')

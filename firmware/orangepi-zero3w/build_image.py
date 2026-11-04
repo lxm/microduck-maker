@@ -106,6 +106,13 @@ def build(a):
     fs = work/'base.ext4'
     with a.base_image.open('rb') as src, fs.open('xb') as dst:
         src.seek(33554432); shutil.copyfileobj(src, dst, 4*1024*1024)
+    if a.camera_inputs:
+        if not a.reindex_modules:
+            raise ValueError('Camera images require --reindex-modules')
+        image_fs.command(['e2fsck', '-f', '-y', fs], allowed=(0,1))
+        subprocess.run(['resize2fs', str(fs), '4G'], check=True)
+        subprocess.run(['sudo', 'unshare', '--mount', '--propagation', 'private', '--pid', '--fork',
+                        ROOT/'camera/provision.sh', fs, a.camera_inputs, KERNEL], check=True)
     dtb = work/'base.dtb'; env = work/'armbianEnv.txt'
     run('debugfs', '-R', f'dump /boot/dtb-{KERNEL}/allwinner/sun60i-a733-orangepi-zero3w.dtb "{dtb}"', fs)
     run('debugfs', '-R', f'dump /boot/armbianEnv.txt "{env}"', fs)
@@ -170,14 +177,29 @@ def build(a):
         (payload/'etc/netplan/30-microduck-wifi.yaml').chmod(0o600)
     manifest = {'board': PROFILE['board'], 'kernel': KERNEL, 'application_archive_sha256': sha(bundle),
                 'upstream_commit': (ROOT/'upstream.rev').read_text().strip(),
-                'application_modified': False, 'modules': record['modules'], 'tofd_sha256': sha(a.tofd),
+                'imx219_webrtc': bool(a.camera_inputs), 'application_modified': False, 'modules': record['modules'], 'tofd_sha256': sha(a.tofd),
                 'audio_compiled_by_image_builder': False, 'robotd_autostart': False,
                 'hardware_tested_this_image': False, 'operator_wifi_included': bool(a.wifi_netplan),
                 'module_indexes_regenerated': a.reindex_modules, 'base_module_tree_sha256': base_tree_sha}
     write('etc/microduck/build.json', json.dumps(manifest, indent=2)+'\n')
     (a.output/'BUILD.json').write_text(json.dumps(manifest, indent=2)+'\n')
-    fs.unlink()
-    image_fs.build(a.base_image, payload, a.boot0, a.output)
+    if a.camera_inputs:
+        mediad = firmware/'mediad/systemd'
+        copy(mediad/'mediad.service', 'usr/lib/systemd/system/mediad.service')
+        copy(mediad/'sysusers.d/mediad.conf', 'usr/lib/sysusers.d/mediad.conf')
+        for source, target in {
+            '10-orangepi.conf': 'etc/systemd/system/mediad.service.d/10-orangepi.conf',
+            'microduck-camera-feed.service': 'etc/systemd/system/microduck-camera-feed.service',
+            'start-vin': 'usr/local/libexec/microduck-start-vin',
+            'vision.toml': 'etc/microduck/vision.toml',
+        }.items(): copy(ROOT/'camera'/source, target)
+        write('etc/modprobe.d/microduck-camera.conf', 'options v4l2loopback video_nr=42 exclusive_caps=1 card_label=MicroDuck-IMX219\n')
+        copy(a.camera_inputs/'duck_detect.onnx', 'opt/robot/detector/seed-duck-v1/duck_detect.onnx')
+        if 'microduck-vision/v4l2loopback.ko:' not in (indexes/'modules.dep').read_text():
+            raise ValueError('Camera loopback module missing from depmod index')
+    else:
+        fs.unlink()
+    image_fs.build(a.base_image, payload, a.boot0, a.output, prepared_fs=fs if a.camera_inputs else None)
     img = a.output/'release/Microduck_OrangePiZero3W_Experimental.img'
     print('Compressing and verifying image...', flush=True)
     run('xz', '-T2', '-6', '-k', img)
@@ -195,6 +217,7 @@ if __name__ == '__main__':
     p.add_argument('--application', type=Path, help='optional rebuilt application archive; otherwise use repository release')
     p.add_argument('--application-sha256')
     p.add_argument('--reindex-modules', action='store_true', help='run offline Linux depmod using existing audio modules; no compilation')
+    p.add_argument('--camera-inputs', type=Path, help='verified camera inputs from camera/fetch.py')
     p.add_argument('--wifi-netplan', type=Path, help='optional private Netplan file; never executed by the builder')
     args = p.parse_args()
     for key, value in vars(args).items():

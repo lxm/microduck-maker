@@ -1,0 +1,7 @@
+#!/usr/bin/python3
+import os, tomllib
+with open("/etc/microduck/vision.toml","rb") as config:
+    quality=tomllib.load(config)["media"]["quality"]
+geometry={"1080p30":("1920","1080","30"),"720p30":("1280","720","30")}
+program="/usr/local/libexec/microduck-vin-uyvy"
+os.execv(program,[program,*geometry[quality],"/dev/video42"])
