@@ -56,3 +56,7 @@
 ## Orange Pi Zero 3W 固件
 
 [板级适配](firmware/orangepi-zero3w/) 基于 Armbian 并复用 kissqy 的机器人发布包、ToF 和模型，按[上游许可范围](https://github.com/kissqy/Microduck-kissqy/blob/d4d21c1073d2c12ad2b5dfe3deb031030f7792ef/microduck-hd1910/LICENSE)分别授权。基础镜像和 boot0 的来源与哈希见 [profile.json](firmware/orangepi-zero3w/profile.json)。Linux 音频模块的源码版本、补丁和 GPL 许可见 [audio/](firmware/orangepi-zero3w/audio/)；这些第三方组件及其构建产物不适用本仓库根 MIT 许可。
+
+## 硅胶脚底翻模
+
+模具与预览图衍生自 Pollen Robotics 的 Microduck 脚底几何，使用 fanhao375 整理的左右脚底 STL。衍生模型遵循 CC BY-NC-SA 的署名、非商业和相同方式共享条件。改动及固定来源见[模具说明](tools/silicone-sole-mold/README.md#几何检查与来源)。
