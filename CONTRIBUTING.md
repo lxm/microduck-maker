@@ -5,6 +5,7 @@
 从仓库根目录运行：
 
 ```sh
+python3 -m pip install -r tools/servo-debug/requirements.txt
 python3 scripts/validate.py
 ```
 

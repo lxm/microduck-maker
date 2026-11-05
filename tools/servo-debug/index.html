@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>MicroDuck FD · 舵机调试工作台</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<header class="app-header">
+  <a class="brand" href="/" aria-label="MicroDuck FD 首页"><span class="logo">μ<span>↗</span></span><span><strong>MicroDuck <em>FD</em></strong><small>MAKER / 舵机调试工作台</small></span></a>
+  <span class="header-label">HD-1910 <span>/</span> 本地串口工具</span>
+  <span id="connection" class="connection" role="status">● 串口未连接</span>
+</header>
+<main>
+<aside aria-label="连接与设备">
+  <div class="aside-title">设备连接 <span>01 / CONNECT</span></div>
+  <section class="panel connection-panel"><h2>通信设置 <span class="tag">USB → TTL</span></h2><div class="body">
+    <div class="field"><label for="port">串口设备</label><select id="port"><option value="DEMO">演示设备（不连接硬件）</option></select></div>
+    <div class="field"><label for="baud">波特率 <span class="hint">bps</span></label><select id="baud"><option>1000000</option><option>500000</option><option>250000</option><option>128000</option><option>115200</option><option>76800</option><option>57600</option><option>38400</option></select></div>
+    <div class="serial-spec"><span>8 数据位</span><span>无校验</span><span>1 停止位</span></div>
+    <div class="buttons connect-actions"><button id="connect" class="primary" onclick="connectPort()">连接设备</button><button id="refresh" onclick="refreshPorts()" aria-label="刷新串口列表">刷新端口</button></div>
+    <p class="hint">URT-2 先接 USB，再给舵机供电。<br>未接硬件？选择「演示设备」体验。</p>
+  </div></section>
+  <section class="panel"><h2>总线设备 <span id="count" class="count">0 台</span></h2><div class="body scan-body">
+    <label class="field-label" for="start">搜索 ID 范围</label><div class="scan-range"><input aria-label="搜索起始 ID" id="start" type="number" min="0" max="253" value="0"><span>至</span><input aria-label="搜索结束 ID" id="end" type="number" min="0" max="253" value="35"><button id="search" onclick="scan()" disabled>搜索舵机</button></div>
+  </div><div id="servos" aria-label="已发现的舵机"><div class="empty"><span class="empty-mark">⌁</span>等待连接设备<small>连接后搜索，再选择一颗舵机</small></div></div></section>
+  <div class="release-box"><button id="unload" class="danger" onclick="unload()" disabled>全部已搜索舵机卸力</button><p class="hint">卸力前托住机身。关闭页面或连接<br>不会自动关闭舵机扭矩。</p></div>
+  <div class="aside-foot"><span class="local-dot"></span> 数据保存在本机 <span>非官方工具</span></div>
+</aside>
+<article>
+  <div class="workspace-heading"><div><div class="eyebrow">SERVO WORKBENCH</div><h1>舵机调试</h1><p>连接、观察、微调，让每一步都有反馈。</p></div><button class="text-button" onclick="tab('about')">使用指南 ↗</button></div>
+  <ol class="workflow" aria-label="操作进度"><li id="stepConnect" class="current"><span>01</span>连接设备</li><li id="stepScan"><span>02</span>搜索舵机</li><li id="stepDebug"><span>03</span>选择并调试</li><li class="workflow-tip" id="workflowTip">从左侧连接设备开始</li></ol>
+  <div class="tabs" role="tablist" aria-label="工作区"><button id="tab-debug" role="tab" aria-controls="debug" aria-selected="true" class="tab active" data-page="debug" onclick="tab('debug')">运动调试</button><button id="tab-program" role="tab" aria-controls="program" aria-selected="false" tabindex="-1" class="tab" data-page="program" onclick="tab('program')">参数与编程</button><button id="tab-about" role="tab" aria-controls="about" aria-selected="false" tabindex="-1" class="tab" data-page="about" onclick="tab('about')">使用说明</button><span class="tab-note">本机服务 · 无云端上传</span></div>
+  <div id="demoBanner" class="demo-banner" hidden><strong>演示模式</strong><span>当前为模拟设备，所有操作均不连接真实舵机。</span></div>
+  <div class="topline"><div class="device-heading"><span class="device-icon">◎</span><div><strong id="selected">尚未选择舵机</strong><span id="model" class="model-label">连接并搜索以查看设备</span></div></div><span id="torqueState" class="torque-state">扭矩 —</span></div>
+  <div id="notice" role="status" aria-live="polite" hidden></div>
+  <div id="debug" class="page active" role="tabpanel" aria-labelledby="tab-debug">
+    <div class="control-grid">
+      <section class="panel motion-panel"><h2>位置控制 <span class="section-number">01</span></h2><div class="body">
+        <div class="target-heading"><label for="position">目标位置 <small>步 / 0–4095</small></label><span id="angle" class="angle">0.00°</span></div>
+        <div class="target-input"><input aria-label="目标位置" id="position" type="number" min="0" max="4095" value="2048" oninput="document.getElementById('slider').value=this.value"><span>steps</span><button id="useCurrent" data-servo onclick="setGoal(state.pos)" disabled>采用当前位置</button></div>
+        <div class="goal"><input aria-label="目标位置滑杆" id="slider" type="range" min="0" max="4095" value="2048" oninput="setGoal(this.value)"></div><div class="scale"><span>0 / −180°</span><span>2048 / 0°</span><span>4095 / +180°</span></div>
+        <div class="controls"><label for="speed">速度 <input id="speed" type="number" min="1" max="3000" value="100"></label><label for="acc">加速度 <input id="acc" type="number" min="1" max="254" value="10"></label><span class="hint">寄存器原值</span></div>
+        <p class="motion-note" id="motionHint">选择舵机后，先读取位置，再在当前位置使能。</p>
+        <div class="buttons torque-actions"><button data-servo data-action="enable" onclick="torque(1)" disabled>在当前位置使能</button><button data-servo onclick="torque(0)" disabled>关闭扭矩</button></div>
+        <div class="motion-actions"><button data-servo data-action="move" class="primary" onclick="move()" disabled>写入目标 <span>↗</span></button><button data-servo data-action="stop" onclick="command('stop')" disabled>停止 / 保持</button><div class="jog-buttons"><button data-servo data-action="move" onclick="jog(-1)" disabled aria-label="负一度微调">−1°</button><button data-servo data-action="move" onclick="jog(1)" disabled aria-label="正一度微调">+1°</button></div></div>
+        <p class="hint bottom-hint">滑杆只编辑目标；点击「写入目标」才运动。±1° 以最新回读为起点。</p>
+      </div></section>
+      <section class="panel feedback-panel"><h2>实时反馈 <span id="feedbackState" class="feedback-state">等待设备</span></h2><div class="body"><div class="readout">
+        <div class="position-readout"><label>当前位置</label><b id="posValue">—</b><small>步</small><span id="positionAngle">等待回读</span></div>
+        <div><label>目标回读</label><b id="goalValue">—</b><small>步</small></div><div><label>电压</label><b id="voltValue">—</b><small>V</small></div><div><label>温度</label><b id="tempValue">—</b><small>°C</small></div><div><label>速度原值</label><b id="speedValue">—</b></div><div><label>负载原值</label><b id="loadValue">—</b></div>
+      </div><div class="feedback-footer"><span id="moving">移动：—</span><span id="status">状态：—</span></div><div class="hint" id="current">电流换算值：—</div><div class="hint feedback-caution">HD mode 4 电流仅供观察，不能用作保护。</div></div></section>
+    </div>
+    <section class="panel chart-panel"><div class="chartbar"><strong>位置追踪</strong><span class="legend" style="--color:#1f625c">实际位置</span><span class="legend dashed" style="--color:#c18a40">目标位置</span><div class="spacer"></div><button onclick="clearData()">清空</button><button onclick="exportCsv()">导出 CSV ↓</button></div><canvas id="chart" aria-label="最近30秒的实际位置和目标位置曲线"></canvas><div class="chartfoot"><span>最近 30 秒 · 位置步数 0–4095</span><span><b id="samples">0</b> / 6000 条反馈</span></div></section>
+    <section class="panel calibration-panel"><h2>装后校零 <span class="tag">HD-1910</span></h2><div class="body calibration"><div class="step"><b>1</b><span>托住关节<small>关闭扭矩</small></span></div><div class="step"><b>2</b><span>手动摆正<small>对齐模型 0°</small></span></div><button data-servo data-action="off" onclick="calibrate()" disabled>3 · 当前位置设为零位</button></div><div class="section-note">模型 0° 对应 2048，不等于站姿。自动备份、校准并回读，完成后保持断扭；请对单颗验证掉电保存与活动范围。</div></section>
+  </div>
+  <div id="program" class="page" role="tabpanel" aria-labelledby="tab-program" hidden>
+    <section class="panel"><h2>参数 / 内存表 <span class="tag">HD-1910 / HLS 布局</span></h2><div class="toolbar"><button data-servo class="primary" onclick="readRegisters()" disabled>读取参数</button><button data-servo onclick="saveRegisters()" disabled>保存 JSON ↓</button><button onclick="document.getElementById('loadFile').click()">载入 JSON 对照</button><input id="loadFile" type="file" accept=".json" hidden onchange="loadReference(this)"><label class="register-search"><span class="sr-only">筛选参数</span><input id="registerFilter" type="search" placeholder="筛选名称、地址或区域…" oninput="renderRegisters()"></label></div><div class="tablewrap"><table><thead><tr><th>地址</th><th>参数名称</th><th>区域</th><th>字节</th><th>当前值</th><th>文件值</th><th>操作</th></tr></thead><tbody id="registers"><tr><td colspan="7" class="empty">选择舵机后，点击「读取参数」</td></tr></tbody></table></div><div class="section-note">载入仅用于对照，不自动写入。写入前须关闭扭矩；EEPROM 自动备份、解锁、写入、回读并重新上锁。ID 使用下方专用操作。</div></section>
+    <section class="panel"><h2>设备操作</h2><div class="body"><div class="buttons"><label for="newId">新 ID <input id="newId" type="number" min="0" max="253" value="20"></label><button data-servo data-action="off" onclick="changeId()" disabled>修改 ID</button><button data-servo data-action="off" onclick="reboot()" disabled>重启舵机</button></div><p class="hint">修改 ID 前只连接目标这一颗。相同 ID 的多颗舵机无法通过搜索可靠区分，必须物理断开其他舵机。演示默认有 4 颗设备，因此会拒绝改 ID。</p></div></section>
+  </div>
+  <div id="about" class="page" role="tabpanel" aria-labelledby="tab-about" hidden>
+    <section class="panel guide-intro"><div class="body"><div class="eyebrow">QUICK START</div><h2>从第一次连接，到完成微调。</h2><p>这是针对 HD-1910 的独立社区工具。Python 访问电脑的 USB 串口，浏览器显示界面，无需 Windows、Wine 或浏览器串口授权。</p><div class="guide-grid"><div><b>01 / 连接</b><h3>先接 USB，再接舵机电源</h3><p>刷新端口，选择 /dev/cu.*，HD-1910 默认波特率为 1000000。点击「连接设备」。无硬件时选择演示设备。</p></div><div><b>02 / 搜索</b><h3>搜索并选择一颗舵机</h3><p>默认搜索 ID 0–35，可调整至 0–253。打开连接、搜索和选择舵机只读取，不开启扭矩或写运动目标。</p></div><div><b>03 / 微调</b><h3>使能，再用 ±1° 检查方向</h3><p>托住关节，点击「在当前位置使能」。编辑目标后点击「写入目标」才运动。超过当前位置 10° 会再次确认。</p></div><div><b>04 / 校零</b><h3>关闭扭矩，摆到模型零位</h3><p>摆正后点击「当前位置设为零位」。完成后保持断扭；先验证单颗掉电保存，再检查完整活动范围。旧姿态需要重录。</p></div></div></div></section>
+    <section class="panel"><h2>参数、备份与结束操作</h2><div class="body guide-copy"><p>在「参数与编程」读取参数，保存 JSON 可下载完整快照；载入 JSON 只显示差异，不自动覆盖。EEPROM 修改前自动备份，写入后回读并重新上锁。</p><p>自动备份：<code>~/Library/Application Support/MicroDuck FD/</code>。演示备份带 <code>demo-</code> 前缀；页面通信日志显示具体路径。CSV 导出与 JSON 保存由浏览器下载。</p><p>结束时先托住机身，再关闭当前舵机扭矩或点击「全部已搜索舵机卸力」。确认反馈后断开连接。关闭网页、串口或服务都不会自动卸力；终端按 Ctrl+C 结束服务。</p></div></section>
+    <section class="panel"><h2>适用范围与常见问题</h2><div class="body guide-copy"><details open><summary>支持哪些舵机与功能？</summary><p>针对型号值 7946 的 HD-1910，位置模式 0/4。其他型号仅开放读数与卸力。不含固件升级、.xdat 导入、群控或自动扫动。HD mode 4 的速度、加速度及电流不能作为可靠保护，校零也不能消除机械干涉。</p></details><details><summary>找不到串口或搜索不到设备</summary><p>检查 USB 数据线、舵机供电、TTL 总线接线与波特率；关闭占用同一串口的其他程序，再刷新端口。没有搜索结果时扩大 ID 范围。确认转接器型号后使用对应的 macOS 驱动。</p></details><details><summary>为什么按钮是灰色的？</summary><p>先连接、搜索并选择设备。写目标须有新鲜反馈、HD-1910 位置模式和已开启扭矩；校零、改 ID 和参数写入须关闭扭矩。通信中断后暂停写入，恢复反馈或重新搜索后再操作。</p></details><details><summary>演示验证和实机验证有什么区别？</summary><p>演示验证界面与模拟寄存器流程，不证明真实固件兼容性或机械安全。当前版本尚未完成实机验收，请先对单颗验证。</p></details></div></section>
+  </div>
+  <details class="panel log-panel"><summary>通信日志 <span id="stats">TX 0 / RX 0</span></summary><pre id="log" class="log" aria-label="通信日志">就绪。请选择串口，或使用演示设备。
+</pre></details>
+  <footer><span>MICRODUCK FD <b>0.2</b> · 社区工具</span><span>HD-1910 实机待验证</span><span id="clock">—</span></footer>
+</article>
+</main>
+<script>const token='__TOKEN__';</script><script src="/app.js"></script>
+</body></html>

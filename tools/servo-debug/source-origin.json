@@ -1,0 +1,14 @@
+{
+  "source": "microduck-replica",
+  "commit": "3599731c250a06648e18ca9fb1453b8a88410769",
+  "date": "2026-11-05",
+  "note": "Hashes identify the local source files before adaptation, not the modified files in this directory.",
+  "files": {
+    "tools/飞特/mac/fd_mac.py": "c3afbbe449807d09054e5982100e199a4fc329c8981c2a37cba030f5f7fc5820",
+    "tools/飞特/mac/index.html": "5606fcf51a72862826356f344f620e740da543eec060789aef4a17537fb17b46",
+    "tools/飞特/mac/test_fd_mac.py": "7f2edd029099f62ca1c0fc4e8fc3202df1e7b255f013fdfc30d926cdf8001c91",
+    "tools/飞特/mac/启动调试工具.command": "f40861b26c432d055c749930a96484d91903765a31ed438f596c910f7d4a26d4",
+    "tools/servo-web/feetech.py": "a2f2cdff17c631cfddb1d1db2ff98e7b0f131aa80b9d61181f6ad31637a174bb",
+    "tools/servo-web/test_calibration.py": "09d9d0301c35895acaf3acff0d84d6ad56519e27fcf98b768bd99863833a0cf8"
+  }
+}

@@ -2,6 +2,7 @@
 
 | 目录 | 功能 | 启动方式 | 是否操作实机 |
 |---|---|---|---|
+| [servo-debug](servo-debug/README.md) | 飞特 HD-1910 的 USB 串口调试、曲线、参数备份和校零 | macOS 双击 `servo-debug/启动调试工具.command` | 连接真实串口后可操作；演示设备不连接硬件 |
 | [calibrator](calibrator/README.md) | 单屏 3D 标定工作台、逐颗保存、回零 / HOME、实时读数与备份 | `cd tools/calibrator && python3 server.py --demo` | 默认模拟；显式使用 SSH 并进入标定后才接入实机 |
 | [servo-guide](servo-guide/README.md) | 舵机编号与装配对照 | `python3 -m http.server 8772 --bind 127.0.0.1 --directory tools/servo-guide/site` | 纯查看 |
 | [zero-fixture](zero-fixture/README.md) | 零位标定支架：6 件 STL、装配参考和打印说明 | 下载 STL，按毫米、100% 比例交给代打商家 | 实体定位工装，不发送控制命令 |

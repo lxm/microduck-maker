@@ -2,12 +2,13 @@
 
 **把 MicroDuck 从装配、标定到日常维护会用到的工具，放进一个持续维护的项目。**
 
-[工具目录](tools/README.md) · [标定工具使用说明](tools/calibrator/README.md) · [装配对照](tools/servo-guide/README.md) · [下载发布包](https://github.com/lxm/microduck-maker/releases) · [反馈问题](https://github.com/lxm/microduck-maker/issues)
+[工具目录](tools/README.md) · [飞特舵机调试](tools/servo-debug/README.md) · [标定工具使用说明](tools/calibrator/README.md) · [装配对照](tools/servo-guide/README.md) · [下载发布包](https://github.com/lxm/microduck-maker/releases) · [反馈问题](https://github.com/lxm/microduck-maker/issues)
 
 ## 现在可以用什么
 
 | 工具 | 用途 | 入口 |
 |---|---|---|
+| 飞特舵机调试 | USB 串口直连 HD-1910：搜索、微调、反馈曲线、校零与参数备份 | [tools/servo-debug](tools/servo-debug/) |
 | 逐关节零位标定 | 单屏 3D 工作台、逐颗标定、回零 / HOME、保持与备份 | [tools/calibrator](tools/calibrator/) |
 | 舵机编号与装配对照 | 飞特 HD-1910 版的 15 颗舵机位置、编号与装配检查 | [tools/servo-guide](tools/servo-guide/) · [在线查看](https://lxm.github.io/microduck-servo-guide/) |
 | 零位标定支架 | 6 件 STL、装配参考与代打说明 | [tools/zero-fixture](tools/zero-fixture/) |
@@ -44,11 +45,22 @@ python3 server.py --demo
 
 实机标定还需要兼容的板端运行环境与 SSH。先读 [适用范围与连接方法](tools/calibrator/README.md#适用范围)，再按 [详细操作说明](tools/calibrator/docs/usage.md) 执行。机械零位和站立 HOME 是不同概念，3D 参考按钮只改变画面。
 
+## 直接连接飞特舵机
+
+电脑通过 USB 转 TTL 转接器连接 HD-1910 时，使用 [MicroDuck FD 调试工作台](tools/servo-debug/README.md)。macOS 可双击 `tools/servo-debug/启动调试工具.command`，或从仓库根目录执行：
+
+```sh
+zsh tools/servo-debug/启动调试工具.command
+```
+
+选择「演示设备」可先体验完整流程；实机使用前按工具说明核对供电、串口与波特率。它与通过 SSH 操作机器人主板的标定工具是两个独立入口。
+
 ## 项目结构
 
 ```text
 microduck-maker/
 ├── tools/
+│   ├── servo-debug/      # USB 串口舵机调试工作台与演示设备
 │   ├── calibrator/       # 标定网页、板端代理、测试与说明
 │   ├── servo-guide/      # 3D 舵机编号与装配对照
 │   ├── zero-fixture/     # 零位标定支架 STL 与打印说明
@@ -69,15 +81,17 @@ microduck-maker/
 安装 Python 3.10+ 和 Node.js。Node.js 仅用于 JavaScript 语法校验，不是标定工具的运行依赖。
 
 ```sh
+python3 -m pip install -r tools/servo-debug/requirements.txt
 python3 scripts/validate.py
 ```
 
-验证包含标定工具及串口发现/依赖准备的离线测试、3D 引用文件哈希、网页静态资源，以及装配对照的网格、69 个装配变换和 15 个舵机编号、颈部板文件与制造包完整性。验证不连接机器人、不操作串口、不上传程序或改写实机。
+验证包含飞特调试工具的模拟协议、校零与 HTTP 检查，以及标定工具及串口发现/依赖准备的离线测试、3D 引用文件哈希、网页静态资源，以及装配对照的网格、69 个装配变换和 15 个舵机编号、颈部板文件与制造包完整性。验证不连接机器人、不操作串口、不上传程序或改写实机。
 
 当前工作台增加单屏布局与回 HOME 操作；离线测试通过不等同于跨机型实机验收。兼容条件及已知边界见各工具说明。贡献与发布方式见 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [发布说明](docs/releasing.md)。
 
 ## 来源与许可
 
+- 飞特舵机调试工作台继承原项目原创工具的 Apache-2.0 许可，来源和修改范围见 [工具说明](tools/servo-debug/README.md#目录与来源)。
 - lxm 原创的标定界面、维护代理、脚本，以及装配对照的原创网页和提取代码采用 [MIT](LICENSE)。
 - 标定工具引用的 Kissqy 参考代码保留其**个人非商业使用许可**；其 3D 模型与 Three.js 分别保留上游模型许可、MIT 许可。
 - 装配工具的 CAD 衍生模型采用 **CC BY-NC-SA 4.0**，保留机械行者Robo、fanhao375 和 Pollen Robotics 的署名。

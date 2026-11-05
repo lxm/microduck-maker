@@ -1,6 +1,6 @@
 # 来源与许可范围
 
-仓库根目录 MIT 许可证适用于 lxm 原创界面、维护逻辑、脚本和说明，不覆盖本页列出的第三方代码、几何模型或 CAD 衍生资源。
+仓库根目录 MIT 许可证适用于 lxm 原创界面、维护逻辑、脚本和说明，不覆盖本页列出的另行许可代码、第三方代码、几何模型或 CAD 衍生资源。
 
 ## 颈部连接板
 
@@ -60,3 +60,9 @@
 ## 硅胶脚底翻模
 
 模具与预览图衍生自 Pollen Robotics 的 Microduck 脚底几何，使用 fanhao375 整理的左右脚底 STL。衍生模型遵循 CC BY-NC-SA 的署名、非商业和相同方式共享条件。改动及固定来源见[模具说明](tools/silicone-sole-mold/README.md#几何检查与来源)。
+
+## 飞特舵机调试工具
+
+`tools/servo-debug/` 来自本地 microduck-replica 的独立 Mac 调试工具与 servo-web 串口协议模块。本次修改界面、静态资源组织与状态反馈，协议模块随目录打包。导入前基线与文件哈希见 [source-origin.json](tools/servo-debug/source-origin.json)。
+
+继承代码保留原项目原创工具的 Apache-2.0 许可，新增界面改动沿用该许可，不归入本仓库根 MIT。原声明与许可全文见 [SOURCE-LICENSE.txt](tools/servo-debug/licenses/SOURCE-LICENSE.txt) 和 [Apache-2.0.txt](tools/servo-debug/licenses/Apache-2.0.txt)。工具 README 为新写的使用说明，适用根 MIT；原项目文档未打包。本工具不捆绑官方 FD、驱动、厂商 SDK 或机器人模型。pyserial 3.5 通过依赖安装，保留其 BSD 许可。

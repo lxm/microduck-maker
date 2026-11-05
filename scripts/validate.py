@@ -102,6 +102,16 @@ def main():
                 continue
             require((md.parent / unquote(url.path)).exists(), f'Broken Markdown link in {md}: {target}')
     print('PASS: Python/JavaScript syntax, calibration assets and documentation links', flush=True)
+    servo = ROOT / 'tools/servo-debug'
+    for asset in ('app.js', 'tests/browser-smoke.cjs'):
+        run('node', '--check', servo / asset)
+    parser = Links()
+    parser.feed((servo / 'index.html').read_text())
+    for link in parser.links:
+        url = urlsplit(link)
+        if not url.scheme and url.path not in ('', '/'):
+            require((servo / url.path.lstrip('/')).is_file(), f'Missing servo debug asset: {link}')
+    run(sys.executable, '-m', 'unittest', 'discover', '-s', 'tools/servo-debug', '-v')
     run(sys.executable, '-m', 'unittest', 'discover', '-s', 'tools/calibrator', '-v')
     run(sys.executable, 'scripts/validate.py', cwd=ROOT / 'tools/servo-guide')
     print('PASS: all MicroDuck Maker offline validation', flush=True)
