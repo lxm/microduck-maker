@@ -1,0 +1,24 @@
+{
+  "left": {
+    "assembly_center_x_mm": -23,
+    "matching_side_difference_mm3": 0.039454944889681806,
+    "wrong_side_difference_mm3": 5539.533640211392,
+    "sampled_min_floor_mm": 1.9906113299967902
+  },
+  "right": {
+    "assembly_center_x_mm": 23,
+    "matching_side_difference_mm3": 0.039188618729219894,
+    "wrong_side_difference_mm3": 5539.5332983707285,
+    "sampled_min_floor_mm": 1.9884963586378674
+  },
+  "orientation": {
+    "print_to_assembly": "Subtract [50,34,6] then rotate 180 degrees around X",
+    "closed_interference_mm3": 0.0,
+    "rotated_180_wrong_way_interference_mm3": 70.72289039736759,
+    "units": [
+      "mm STL",
+      "cm-import STL",
+      "millimeter 3MF"
+    ]
+  }
+}
