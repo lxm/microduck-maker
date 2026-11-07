@@ -7,9 +7,9 @@
       "size_mm": [
         98.0,
         68.0,
-        16.0
+        18.0
       ],
-      "volume_mm3": 60037.31033853922,
+      "volume_mm3": 73365.31033853922,
       "watertight": true,
       "single_solid": true
     },
@@ -17,9 +17,9 @@
       "size_mm": [
         100.0,
         68.0,
-        15.407273292541504
+        16.90727424621582
       ],
-      "volume_mm3": 64317.86379071048,
+      "volume_mm3": 74247.24352340054,
       "watertight": true,
       "single_solid": true
     }
@@ -87,15 +87,22 @@
     }
   },
   "pair_net_mL": 12.490960843604599,
-  "cast_difference_mm3": 0.010677455148228614,
-  "minimum_base_floor_mm": 3.092869939030983,
-  "lid_plate_mm": 4.5,
+  "cast_difference_mm3": 0.07368875685886363,
+  "minimum_base_floor_mm": 5.092869939030983,
+  "lid_plate_mm": 6.0,
   "lid_quantity": 1,
+  "vents_per_foot": {
+    "side_count": 4,
+    "side_diameter_mm": 2.4,
+    "corner_count": 4,
+    "corner_diameter_mm": 1.8,
+    "mouth_flare_depth_mm": 1
+  },
   "material_comparison": {
     "reference": "V1 four STL pieces for one left/right pair",
     "original_solid_volume_cm3": 224.2036374241659,
-    "current_solid_volume_cm3": 124.3551741292497,
-    "solid_volume_reduction_percent": 44.5347205076852,
+    "current_solid_volume_cm3": 147.61255386193974,
+    "solid_volume_reduction_percent": 34.161392046162554,
     "scope": "geometric solid volume; actual filament depends on slicer settings"
   }
 }
