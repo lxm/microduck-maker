@@ -27,6 +27,10 @@ def word(r, a):
 def signed(value):
     return -(value & 0x7fff) if value & 0x8000 else value
 
+def position_count(row):
+    # HD1910 feedback uses bit 15 as sign, not an unsigned single-turn value.
+    return signed(word(row,56))
+
 def circular(value):
     return (value + 2048) % 4096 - 2048
 
@@ -69,8 +73,10 @@ def snapshot(bus, held=()):
             raise CalibrationError(f'ID{sid} EEPROM 未上锁，先核对现有维护操作')
         if r[65] != 0 or r[63] >= 48 or not 60 <= r[62] <= 84:
             raise CalibrationError(f'ID{sid} 状态/温度/电压不满足标定条件')
-        if word(r,56) > 4095 or abs(signed(word(r,31))) > 2047:
-            raise CalibrationError(f'ID{sid} 不在本工具支持的单圈坐标范围')
+        if abs(signed(word(r,31))) > 2047:
+            raise CalibrationError(f'ID{sid} EEPROM 零位偏移超出可写范围：{signed(word(r,31))}')
+        if sid in held and not 0<=position_count(r)<=4095:
+            raise CalibrationError(f'ID{sid} 保持时反馈超出单圈目标范围，请先断力重新标定')
     return rows
 
 def set_offset(bus, sid, value):
@@ -98,8 +104,8 @@ def transaction(bus, sid, target, before, persist, held=()):
                     continue
                 if after[str(other)][addr] != before[str(other)][addr]:
                     raise CalibrationError(f'非预期寄存器变化：ID{other}/{addr}')
-        expected = (word(before[str(sid)],56)+signed(original)-signed(target)) % 4096
-        if abs(circular(word(after[str(sid)],56)-expected)) > 4:
+        expected = (position_count(before[str(sid)])+signed(original)-signed(target)) % 4096
+        if abs(circular(position_count(after[str(sid)])-expected)) > 4:
             raise CalibrationError('写入期间关节发生移动或位置换算不符')
         persist(after)
         return after
@@ -153,8 +159,8 @@ class Session:
             zero_check=copy.deepcopy(self.zero_check),zero_inspection_supported=True,zero_inspection_ids=list(BODY_IDS),
             zero_inspection_profile='direct-2048-600',home_inspection_profile='home-600',
             mouth_closed=self.mouth_closed,servos=[dict(id=sid,name=NAMES[sid],
-                position=word(self.current[str(sid)],56),offset_raw=word(self.current[str(sid)],31),
-                angle_deg=(2048-word(self.current[str(sid)],56))*360/4096,
+                position=position_count(self.current[str(sid)]),offset_raw=word(self.current[str(sid)],31),
+                angle_deg=(2048-position_count(self.current[str(sid)]))*360/4096,
                 voltage=self.current[str(sid)][62]/10,temperature=self.current[str(sid)][63],
                 hold_position=word(self.current[str(sid)],42) if sid in self.held else None,
                 initial_offset_raw=word(self.initial[str(sid)],31),home=HOME[sid],limits=LIMITS[sid],
@@ -172,12 +178,13 @@ class Session:
         now=self.checked_snapshot()
         values=[]
         for _ in range(20):
-            values.append(word(read(self.bus,sid,56,2),0));time.sleep(.04)
-        if max(values)-min(values)>4 or any(x>4095 for x in values):
+            values.append(signed(word(read(self.bus,sid,56,2),0)));time.sleep(.04)
+        unwrapped=[values[0]+circular(v-values[0]) for v in values]
+        if max(unwrapped)-min(unwrapped)>4:
             raise CalibrationError('关节仍在移动，请保持这一颗不动再采样')
         if read(self.bus,sid,40,1)!=[0]:
             raise CalibrationError('采样期间通力状态改变')
-        position=round(statistics.median(values));old=word(now[str(sid)],31)
+        position=round(statistics.median(unwrapped))%4096;old=word(now[str(sid)],31)
         sample=dict(id=sid,position=position,old_offset_raw=old,time=time.time(),samples=values)
         if sid==34 and endpoint=='closed':
             self.mouth_closed=sample
@@ -187,7 +194,7 @@ class Session:
             closed=self.mouth_closed
             if not closed or closed['old_offset_raw']!=old or time.time()-closed['time']>600:
                 raise CalibrationError('请先重新采样闭嘴位置')
-            travel=position-closed['position']
+            travel=circular(position-closed['position'])
             if not -1024<=travel<=-16:
                 raise CalibrationError('本机嘴部张开应使计数减小，行程需16—1024；请核对端点')
             delta=closed['position']-2048
@@ -214,7 +221,7 @@ class Session:
         if time.time()-p['time']>30:
             raise CalibrationError('采样超过30秒，请保持关节位置重新采样')
         now=self.checked_snapshot();sid=p['id']
-        if abs(circular(word(now[str(sid)],56)-p['position']))>4:
+        if abs(circular(position_count(now[str(sid)])-p['position']))>4:
             raise CalibrationError('采样后这一颗关节移动了，请重新采样')
         self.save('intent',p)
         next_mouth=p['mouth'] if sid==34 else self.mouth
@@ -242,11 +249,12 @@ class Session:
         if sid in self.held:raise CalibrationError('这一颗已经在保持')
         if str(sid) not in self.completed:raise CalibrationError('先保存这一颗的标定，再单独使能')
         now=self.checked_snapshot();r=now[str(sid)]
-        position=word(r,56)
+        position=position_count(r)
+        if not 0<=position<=4095:raise CalibrationError('当前位置超出单圈目标范围，请先重新采样保存零位再保持')
         target=(self.mouth['open_raw'] if sid==34 else round(2048-self.completed[str(sid)]['known_angle']*4096/360))
         if abs(circular(position-target))>4:
             raise CalibrationError('这一颗已离开刚标定的位置，请手动摆回后再使能；工具不会驱动它归零')
-        samples=[word(read(self.bus,sid,56,2),0) for _ in range(3)]
+        samples=[signed(word(read(self.bus,sid,56,2),0)) for _ in range(3)]
         if any(abs(circular(x-position))>2 for x in samples):raise CalibrationError('关节在移动，取消使能')
         self.save('hold-intent',dict(id=sid,position=position,p=10 if sid==34 else 5,d=20,torque_limit=300))
         try:
@@ -255,8 +263,8 @@ class Session:
             for addr,data in [(48,(300).to_bytes(2,'little')),(50,[10 if sid==34 else 5]),(51,[20])]:
                 write_checked(self.bus,sid,addr,data,holding=True)
             if read(self.bus,sid,40,1)!=[0]:raise CalibrationError('写目标前通力状态改变')
-            latest=word(read(self.bus,sid,56,2),0)
-            if abs(circular(latest-position))>2:raise CalibrationError('设置保持参数时关节移动')
+            latest=signed(word(read(self.bus,sid,56,2),0))
+            if not 0<=latest<=4095 or abs(circular(latest-position))>2:raise CalibrationError('设置保持参数时关节移动')
             self.held.add(sid)  # Track before the potentially arming write, including lost ACK.
             write_checked(self.bus,sid,42,latest.to_bytes(2,'little'),holding=True)
             if read(self.bus,sid,40,1)==[0]:write_checked(self.bus,sid,40,[1],holding=True)
@@ -265,7 +273,7 @@ class Session:
                 for addr in range(56):
                     if other==sid and addr in (40,42,43,48,49,50,51):continue
                     if after[str(other)][addr]!=now[str(other)][addr]:raise CalibrationError('使能时其他参数发生变化')
-            if abs(circular(word(after[str(sid)],56)-latest))>8:raise CalibrationError('保持后位置偏差过大')
+            if abs(circular(position_count(after[str(sid)])-latest))>8:raise CalibrationError('保持后位置偏差过大')
             self.current=after;self.verified_at=time.time();self.save('held',dict(id=sid,registers=after))
             return self.status()
         except Exception:
@@ -314,16 +322,16 @@ class Session:
             # Arrival/progress deadlines replace the hold-error trip while moving.
             if self.zero_running() and self.zero_check.get('direct') and sid in BODY_IDS:continue
             r=self.current[str(sid)]
-            if abs(circular(word(r,56)-word(r,42)))>46:
+            if abs(circular(position_count(r)-word(r,42)))>46:
                 raise CalibrationError(f'ID{sid} 保持偏差超过4°；'+self.following_detail(sid))
         if self.zero_check:
-            self.zero_check['max_error_deg']=max(abs(word(self.current[str(s)],56)-self.zero_check['targets'][str(s)])*360/4096 for s in self.zero_check.get('ids',BODY_IDS))
+            self.zero_check['max_error_deg']=max(abs(position_count(self.current[str(s)])-self.zero_check['targets'][str(s)])*360/4096 for s in self.zero_check.get('ids',BODY_IDS))
         return self.status()
 
     def following_detail(self,sid):
         r=self.current[str(sid)]
-        return (f'目标 {word(r,42)}，实测 {word(r,56)}，'
-            f'差 {abs(circular(word(r,56)-word(r,42)))*360/4096:.2f}°，'
+        return (f'目标 {word(r,42)}，实测 {position_count(r)}，'
+            f'差 {abs(circular(position_count(r)-word(r,42)))*360/4096:.2f}°，'
             f'P{r[50]}/D{r[51]}，扭矩上限 {word(r,48)}，电压 {r[62]/10:.1f}V；'
             '请检查是否受力或卡住，不要强掰关节')
 
@@ -363,13 +371,13 @@ class Session:
         caps={str(s):min(torque_limit,word(now[str(s)],48)) for s in selected}
         if any(v<100 for v in caps.values()):raise CalibrationError('现有扭矩上限不足100，请先检查舵机参数')
         self.zero_check=dict(phase='arming',pose=pose,ids=selected,armed=0,progress=0,targets=targets,
-            max_error_deg=max(abs(word(now[str(s)],56)-targets[str(s)])*360/4096 for s in selected),speed_deg_s=None if direct else speed_deg_s,
+            max_error_deg=max(abs(position_count(now[str(s)])-targets[str(s)])*360/4096 for s in selected),speed_deg_s=None if direct else speed_deg_s,
             torque_limits=caps,waiting_for=[],direct=direct,commanded=0,
             gains={str(s):self.initial[str(s)][50:52] if direct else [5,20] for s in selected})
         self._zero_direct_watch={}
         self._zero_feedback=wait_for_feedback;self._zero_wait_since=None
         self._zero_started=time.monotonic();self._zero_last=self._zero_started
-        self._zero_distance=max(1,max(abs(word(now[str(s)],56)-targets[str(s)]) for s in selected))
+        self._zero_distance=max(1,max(abs(position_count(now[str(s)])-targets[str(s)]) for s in selected))
         self._zero_settled=0
         self.save('home-start' if pose=='home' else 'zero-start',dict(registers=now,inspection=self.zero_check))
         # Merely queue the operation. Each heartbeat performs a bounded step,
@@ -382,7 +390,7 @@ class Session:
 
     def validate_zero_range(self,rows):
         for sid in BODY_IDS:
-            raw=word(rows[str(sid)],56)
+            raw=position_count(rows[str(sid)])
             angle=(2048-raw)*360/4096
             valid=LIMITS[sid][0]<=angle<=LIMITS[sid][1]
             if not valid:raise CalibrationError(f'ID{sid} 当前超出关节范围，请断力后手动放回范围内再归零')
@@ -406,7 +414,7 @@ class Session:
         # Every servo receives its final target once; no host-side target ramp.
         if z['commanded']<len(selected):
             sid=selected[z['commanded']]
-            error=abs(word(self.current[str(sid)],56)-targets[str(sid)])
+            error=abs(position_count(self.current[str(sid)])-targets[str(sid)])
             self.zero_goal(sid,targets[str(sid)])
             now=time.monotonic()
             self._zero_direct_watch[sid]=dict(sent_at=now,improved_at=now,best_error=error)
@@ -414,7 +422,7 @@ class Session:
             self.refresh();self.validate_zero_range(self.current)
         now=time.monotonic()
         for sid,watch in self._zero_direct_watch.items():
-            error=abs(word(self.current[str(sid)],56)-targets[str(sid)])
+            error=abs(position_count(self.current[str(sid)])-targets[str(sid)])
             if error<=12:
                 watch['improved_at']=now
             else:
@@ -424,7 +432,7 @@ class Session:
                     raise CalibrationError(f'ID{sid} {label}15秒仍未到位；'+self.following_detail(sid))
                 if now-watch['improved_at']>5:
                     raise CalibrationError(f'ID{sid} {label}连续5秒未接近{targets[str(sid)]}；'+self.following_detail(sid))
-        remaining=max(abs(word(self.current[str(s)],56)-targets[str(s)]) for s in selected)
+        remaining=max(abs(position_count(self.current[str(s)])-targets[str(s)]) for s in selected)
         z['progress']=min(99,round(100*(1-min(1,remaining/self._zero_distance))))
         z['max_error_deg']=remaining*360/4096
         settled=z['commanded']==len(selected) and remaining<=12
@@ -445,12 +453,12 @@ class Session:
             self.validate_zero_range(self.current)
             if z['phase']=='arming':
                 sid=selected[z['armed']];row=self.current[str(sid)]
-                position=word(row,56)
+                position=position_count(row)
                 p,d=z['gains'][str(sid)]
                 for addr,data in [(48,z['torque_limits'][str(sid)].to_bytes(2,'little')),(50,[p]),(51,[d])]:
                     write_checked(self.bus,sid,addr,data,holding=True)
                     row[addr:addr+len(data)]=list(data)
-                latest=word(read(self.bus,sid,56,2),0)
+                latest=signed(word(read(self.bus,sid,56,2),0))
                 if abs(latest-position)>2:raise CalibrationError(f'ID{sid} 正在移动，已取消归零')
                 self.zero_goal(sid,latest)
                 self.refresh()
@@ -466,7 +474,7 @@ class Session:
                     # instead of advancing an open-loop goal toward the 4° trip.
                     remaining=max(abs(word(r,42)-2048) for r in (self.current[str(s)] for s in selected))
                     threshold=12 if remaining==0 else 23
-                    lagging=[sid for sid in selected if abs(word(self.current[str(sid)],56)-word(self.current[str(sid)],42))>threshold]
+                    lagging=[sid for sid in selected if abs(position_count(self.current[str(sid)])-word(self.current[str(sid)],42))>threshold]
                     z['waiting_for']=lagging
                     if lagging:
                         if self._zero_wait_since is None:self._zero_wait_since=now
@@ -485,12 +493,12 @@ class Session:
                     self.refresh()
                 remaining=max(abs(word(r,42)-2048) for r in (self.current[str(s)] for s in selected))
                 z['progress']=round(100*(1-min(1,remaining/self._zero_distance)))
-                settled=remaining==0 and all(abs(word(r,56)-2048)<=12 for r in (self.current[str(s)] for s in selected))
+                settled=remaining==0 and all(abs(position_count(r)-2048)<=12 for r in (self.current[str(s)] for s in selected))
                 self._zero_settled=self._zero_settled+1 if settled else 0
                 if self._zero_settled>=3:
                     z['phase']='holding';z['progress']=100
                     self.save('home-held' if z.get('pose')=='home' else 'zero-held',dict(registers=self.current,inspection=z))
-            z['max_error_deg']=max(abs(word(self.current[str(s)],56)-z['targets'][str(s)])*360/4096 for s in selected)
+            z['max_error_deg']=max(abs(position_count(self.current[str(s)])-z['targets'][str(s)])*360/4096 for s in selected)
             return self.status()
         except Exception as exc:
             self.zero_check['phase']='failed';self.zero_check['error']=str(exc)
@@ -509,7 +517,7 @@ class FakeBus:
             self.rows[sid]=r
     def read(self,sid,addr,n):return 0,bytes(self.rows[sid][addr:addr+n])
     def write(self,sid,addr,data):
-        r=self.rows[sid];physical=word(r,56)+signed(word(r,31));self.writes.append((sid,addr,list(data)))
+        r=self.rows[sid];physical=position_count(r)+signed(word(r,31));self.writes.append((sid,addr,list(data)))
         r[addr:addr+len(data)]=list(data)
         if addr==31:r[56:58]=list(((physical-signed(word(r,31)))%4096).to_bytes(2,'little'))
         if addr==42:

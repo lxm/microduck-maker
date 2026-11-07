@@ -48,7 +48,7 @@ python3 server.py --ssh radxa@robot.local --eeprom-only --bind 0.0.0.0
 
 ## 适用范围
 
-实机端要求 Linux、systemd、兼容 HD1910 维护反馈的 robotd，以及 15 颗 HD1910（ID 10–14、20–24、30–34），单圈 mode 4、1 Mbps；身体方向约定为 −1。板端需要 Python 3.10+、可用的非交互 sudo 和 SSH 密钥登录；pyserial 和 fuser 缺少时自动准备，需要下载时主板应能访问软件源。
+实机端要求 Linux、systemd，以及 15 颗 HD1910（ID 10–14、20–24、30–34），单圈 mode 4、1 Mbps；身体方向约定为 −1。不要求 robotd 正在运行或状态接口可用，进入时以串口独占后的实际舵机反馈为准。板端需要 Python 3.10+、可用的非交互 sudo 和 SSH 密钥登录；pyserial 和 fuser 缺少时自动准备，需要下载时主板应能访问软件源。
 
 支持发现板载 UART、USB/ACM 串口和 `/dev/serial/by-id/`、`by-path/` 稳定别名。**不是任意 MicroDuck 固件都能直接使用**：板端服务名、原生状态字段、锁与配置路径的具体要求见 [compatibility.md](docs/compatibility.md)。不同舵机型号、编号或模式不能直接套用。3D 外形来自上游参考模型，不代表 HD1910 的实际外观。
 

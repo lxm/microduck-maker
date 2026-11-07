@@ -20,6 +20,7 @@ from board_setup import port_argument
 
 HARDWARE=Path('/run/lxm-kissqy-hardware.json')
 UNITS=('codexpad-s10','padd','updaterd','robotd-kissqy-test','robotd')
+DAEMON_UNITS=('robotd-kissqy-test','robotd')
 SOCKET='/run/robotd.sock'
 
 def native_status():
@@ -70,13 +71,10 @@ def off_gate():
 
 def entry_gate():
     try:return off_gate()
-    except FileNotFoundError:
-        # A daemon that rejects a changed encoder zero never publishes hardware
-        # status. Calibration must still be reachable after a power cycle.
-        # This authorises no writes: stop all owners, then require a full direct
-        # snapshot (identity/mode/lock/health/torque=0) before creating Session.
-        if HARDWARE.exists() or Path(SOCKET).exists():raise
-        return dict(status_unavailable=True,direct_snapshot_required=True)
+    except (OSError,ValueError,KeyError,TypeError,CalibrationError) as exc:
+        # Daemon telemetry is diagnostic, not a dependency of EEPROM repair.
+        # Stop owners and require direct identity/health/torque readback instead.
+        return dict(status_unavailable=True,direct_snapshot_required=True,status_error=str(exc))
 
 class SerialBus:
     def __init__(self,port='/dev/serial0'):
@@ -132,15 +130,15 @@ class Maintenance:
         if before.get('port') and Path(before['port']).resolve()!=Path(self.port).resolve():
             raise CalibrationError('选择的串口与 robotd 当前串口不符；尚未停止服务')
         active=[u for u in UNITS if command('systemctl','is-active','--quiet',u,check=False).returncode==0]
-        if 'robotd' not in active or 'robotd-kissqy-test' in active:raise CalibrationError('需要唯一运行的 robotd 正常服务')
         path=Path('/opt/robot/calibration-backups')/(time.strftime('%Y%m%dT%H%M%S')+'-'+uuid.uuid4().hex[:8])
         self.journal=Journal(path)
         self.journal.save('maintenance-before',dict(hardware=before,active_units=active,links={n:str((Path('/opt/robot')/n/'current').resolve()) for n in ('daemon','models','controller')}))
         for u in active:
-            if u=='robotd':continue
+            if u in DAEMON_UNITS:continue
             self.stopped.append(u);command('systemctl','stop',u)
-        entry_gate() # Catch a Start received just before input services stopped.
-        self.stopped.append('robotd');self.daemon_stopped=True;command('systemctl','stop','robotd')
+        for u in active:
+            if u in DAEMON_UNITS:
+                self.stopped.append(u);self.daemon_stopped=True;command('systemctl','stop',u)
         for u in UNITS:
             if command('systemctl','is-active','--quiet',u,check=False).returncode==0:raise CalibrationError(f'{u} 仍运行')
         # Existing robotd is itself launched under this flock. Acquire it only
@@ -195,16 +193,17 @@ class Maintenance:
             if self.bus_lock:self.bus_lock.close();self.bus_lock=None
         try:
             if safe:
-                if 'robotd' in self.stopped:
-                    command('systemctl','start','robotd')
+                daemons=[u for u in DAEMON_UNITS if u in self.stopped]
+                for u in daemons:command('systemctl','start',u)
+                if daemons:
                     deadline=time.monotonic()+8
                     while True:
                         try:off_gate();break
                         except Exception:
-                            if time.monotonic()>deadline:raise CalibrationError('robotd 重启后未确认全部断力，手柄服务保持暂停')
+                            if time.monotonic()>deadline:raise CalibrationError('控制服务已恢复，但其状态接口未确认全部断力，手柄服务保持暂停')
                             time.sleep(.2)
                 for u in self.stopped:
-                    if u!='robotd':command('systemctl','start',u)
+                    if u not in DAEMON_UNITS:command('systemctl','start',u)
             else:raise CalibrationError(error or '未核验串口全部断力；服务保持暂停，请托稳后切断主电源')
         except Exception as exc:error=str(exc);safe=False
         finally:
