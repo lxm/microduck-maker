@@ -1,11 +1,11 @@
 {
-  "date": "2026-11-07",
+  "date": "2026-11-01",
   "version": "0.5.0-dev",
-  "description": "Calibration workbench source snapshot. Restrained technical single-screen desktop UI with narrower full-body 3D framing and wider tool panels including live readings with modal SSH logs and fixed body HOME goals; original gains, maximum 600 cap, target-specific arrival/progress checks and motion-token cancellation. HOME validated offline and in the web demo, not on hardware. Optional IPv4 LAN binding with destination Host, same-origin and CSRF validation; loopback remains the default. Calibration entry uses direct servo readback without a running robotd; signed and extended position recovery preserves separate motion guards.",
+  "description": "Calibration workbench source snapshot. Restrained technical single-screen desktop UI with narrower full-body 3D framing and wider tool panels including live readings with modal SSH logs and fixed body HOME goals; original gains, maximum 600 cap, target-specific arrival/progress checks and motion-token cancellation. HOME validated offline and in the web demo, not on hardware. Optional IPv4 LAN binding with destination Host, same-origin and CSRF validation; loopback remains the default.",
   "files": {
-    "agent.py": "a3e813cba7ef67439c12405295a75858ee8ed45af13420e5b6564d8cfaa5d1fc",
+    "agent.py": "f7d65f44898cfbaf4df0428ebfce03688dba2bd9fde07f484be2bcab04a43fa8",
     "board_setup.py": "a7c9a482b67a183c4b2414021280c8d099cba60b8a87a166c2c81d053ce2ab01",
-    "core.py": "e5135bf8e24df3f99b859687ff45e5cb1583a0f4b32b477c6da898cd77182eaf",
+    "core.py": "8650d4121f83afb6d4a263af8c3d9e6d4382dd71788a28d4c330141c01a0fce9",
     "gait_test.py": "98cad96d0bf4284ffa269b0c87c9cf17715dba9fd2f90df3428ad052af9117d9",
     "run-gait-test.sh": "6ea87b911126d4fe4359e9857ea3d8e45f4ccda1bea3c7bf621d58e0461ba879",
     "run.sh": "02123e9c563650b8794d45e683c39560ec11acbc9c19f5d8d291d1f324a90ca1",
@@ -17,14 +17,13 @@
     "static/view.js": "0eeb9b7dfb5088add8087b6b697c12601c93245f65e9a931626948227c01c61b",
     "storage.py": "91afca9108fd50e66387ed1b52f5e5b9cdbf6ff66571b659191a434b3febb156",
     "test_board_setup.py": "05ea611e00f02a0d85f477760706182986a1302a01b59cb5018642c3e9192ddf",
-    "test_calibrator.py": "3c0a4fe82fd79b2e090fa23a729c897ccc8f53530dcb40723787f581f0191426",
+    "test_calibrator.py": "584fe179cfb5d09abb9e133dabf9ed5528ba52f049a0ae3700c057969ebceacd",
     "test_direct_zero.py": "24d8677110202f5560f930426dd88648b87c76447048f2e7545e57c001773800",
     "test_gait_test.py": "514ac178604b384c3888598118d2ac542f5d83b4a26001588cac2f9227e6d830",
     "test_home.py": "4859ff964aade84975f064218c155c8e9e2265c674f17d4db62b903dcd33404e",
     "test_serial_adapter.py": "7518fed02dd6274a392f61db3e0c4c658400009ac22ad060807c218bf7f7f3a6",
     "test_setup_log.py": "78203cf1b675c7c2da56ff936250d3c5b1271b0d0873cfe7c64810a0d4c92089",
     "test_zero.py": "2edb971a2aaa120e83245bfae4fbdacc0d252ef505e0670d72837001aae05938",
-    "zero.py": "4915c04ae79f6aa315768bb7a39cceed5968c07c9ceaaefa3e4a18a9f9982d12",
-    "test_recovery.py": "decf32b1c34014fe62b1035b76ed94d23b30974a1fa8e2ec0809ea2ee2422e10"
+    "zero.py": "4915c04ae79f6aa315768bb7a39cceed5968c07c9ceaaefa3e4a18a9f9982d12"
   }
 }

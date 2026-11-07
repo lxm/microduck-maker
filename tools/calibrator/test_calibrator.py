@@ -331,7 +331,7 @@ class LifecycleTests(unittest.TestCase):
         with patch('agent.off_gate',side_effect=FileNotFoundError()),patch.object(agent.HARDWARE.__class__,'exists',return_value=False):
             self.assertTrue(agent.entry_gate()['direct_snapshot_required'])
         with patch('agent.off_gate',side_effect=CalibrationError('torque on')):
-            self.assertTrue(agent.entry_gate()['direct_snapshot_required'])
+            with self.assertRaises(CalibrationError):agent.entry_gate()
     def test_disconnect_relaxes_before_restart_and_inputs_after_gate(self):
         m=agent.Maintenance();m.session=Mock();m.bus=Mock();m.bus_lock=Mock();m.daemon_stopped=True;m.stopped=['codexpad-s10','robotd'];events=[]
         m.session.relax_all.side_effect=lambda:events.append('off')
