@@ -1,0 +1,212 @@
+{
+  "left": {
+    "source": "sole_left_左脚底.stl",
+    "variant": "D",
+    "profile": "body_1p5_rim_2p5",
+    "side_inset_mm": 1.5,
+    "rim_inset_mm": 2.5,
+    "scope": "full sidewall with optional tighter rim; bottom blend retained",
+    "rim_blend_z_range_mm": [
+      -4,
+      -1
+    ],
+    "core_max_width_length_mm": [
+      34.492513203323334,
+      46.8013058052784
+    ],
+    "approximate_opening_stretch_to_stock_foot_percent": [
+      15.723268194556539,
+      11.160714015464436
+    ],
+    "minimum_vent_edge_clearance_mm": 0.8095941424369812,
+    "floor_blend_height_range_mm": [
+      0.5,
+      2.5
+    ],
+    "sampled_central_floor_max_change_mm": 3.552713678800501e-15,
+    "core_xy_scale": [
+      0.8641304515516945,
+      0.8995983957613678
+    ],
+    "original_core_width_length_mm": [
+      36.80000454187393,
+      49.800001084804535
+    ],
+    "new_opening_width_length_mm": [
+      31.800004541873932,
+      44.800001084804535
+    ],
+    "added_silicone_mL": 2.4099969501858576,
+    "sha256": "db35f3b231c075fe1f9cb5449e7a698fb8ea97362daf8432be3e9700c2067574",
+    "boot_mm": [
+      41.09853692352772,
+      53.999999538064,
+      12.90735974907875
+    ],
+    "silicone_net_mL": 8.660279503302506,
+    "cast_difference_mm3": 1.5378782706391807e-14,
+    "vents_xy_mm": [
+      [
+        18.02847508341074,
+        0.0
+      ],
+      [
+        -17.91427817195654,
+        0.0
+      ],
+      [
+        0.0,
+        24.700000621378422
+      ],
+      [
+        0.0,
+        -24.699999690055847
+      ],
+      [
+        16.753730443699077,
+        23.455222621178706
+      ],
+      [
+        -16.709537104201498,
+        23.393351945882095
+      ],
+      [
+        16.408616120740714,
+        -22.972062569037
+      ],
+      [
+        -16.364563820697377,
+        -22.910389348976327
+      ]
+    ],
+    "vents_per_foot": 8,
+    "vent_diameters_mm": [
+      2.4,
+      2.4,
+      2.4,
+      2.4,
+      2.0,
+      2.0,
+      2.0,
+      2.0
+    ],
+    "outlet_flare_depth_mm": 1,
+    "verified_print_extents_mm": [
+      [
+        64.0,
+        76.0,
+        18.0
+      ],
+      [
+        68.0,
+        76.0,
+        16.905765533447266
+      ]
+    ]
+  },
+  "right": {
+    "source": "sole_right_右脚底.stl",
+    "variant": "D",
+    "profile": "body_1p5_rim_2p5",
+    "side_inset_mm": 1.5,
+    "rim_inset_mm": 2.5,
+    "scope": "full sidewall with optional tighter rim; bottom blend retained",
+    "rim_blend_z_range_mm": [
+      -4,
+      -1
+    ],
+    "core_max_width_length_mm": [
+      34.491108150584424,
+      46.8012581542412
+    ],
+    "approximate_opening_stretch_to_stock_foot_percent": [
+      15.723268194556539,
+      11.160714015464436
+    ],
+    "minimum_vent_edge_clearance_mm": 0.8095941424369812,
+    "floor_blend_height_range_mm": [
+      0.5,
+      2.5
+    ],
+    "sampled_central_floor_max_change_mm": 3.552713678800501e-15,
+    "core_xy_scale": [
+      0.8641304515516945,
+      0.8995983957613678
+    ],
+    "original_core_width_length_mm": [
+      36.80000454187393,
+      49.800001084804535
+    ],
+    "new_opening_width_length_mm": [
+      31.800004541873932,
+      44.800001084804535
+    ],
+    "added_silicone_mL": 2.4100624183539185,
+    "sha256": "a4f5c114aae7137d559cacfb71d77c981588850335de5a09a14f95a4192a218f",
+    "boot_mm": [
+      41.09873063862324,
+      53.999999538064,
+      12.907605618238449
+    ],
+    "silicone_net_mL": 8.660353978702997,
+    "cast_difference_mm3": 3.976826463622518e-15,
+    "vents_xy_mm": [
+      [
+        17.91432287544012,
+        0.0
+      ],
+      [
+        -18.02843037992716,
+        0.0
+      ],
+      [
+        0.0,
+        24.700000621378422
+      ],
+      [
+        0.0,
+        -24.699999690055847
+      ],
+      [
+        16.709556322552075,
+        23.3933788515729
+      ],
+      [
+        -16.753711256759328,
+        23.45519575946306
+      ],
+      [
+        16.364583015015292,
+        -22.910416221021407
+      ],
+      [
+        -16.40862573458865,
+        -22.97207602842411
+      ]
+    ],
+    "vents_per_foot": 8,
+    "vent_diameters_mm": [
+      2.4,
+      2.4,
+      2.4,
+      2.4,
+      2.0,
+      2.0,
+      2.0,
+      2.0
+    ],
+    "outlet_flare_depth_mm": 1,
+    "verified_print_extents_mm": [
+      [
+        64.0,
+        76.0,
+        18.0
+      ],
+      [
+        68.0,
+        76.0,
+        16.907596588134766
+      ]
+    ]
+  }
+}

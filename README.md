@@ -12,7 +12,7 @@
 | 逐关节零位标定 | 单屏 3D 工作台、逐颗标定、回零 / HOME、保持与备份 | [tools/calibrator](tools/calibrator/) |
 | 舵机编号与装配对照 | 飞特 HD-1910 版的 15 颗舵机位置、编号与装配检查 | [tools/servo-guide](tools/servo-guide/) · [在线查看](https://lxm.github.io/microduck-servo-guide/) |
 | 零位标定支架 | 6 件 STL、装配参考与代打说明 | [tools/zero-fixture](tools/zero-fixture/) |
-| 硅胶脚底翻模（正在尝试中） | V6.1 原纹理内壁加厚与角部排气模、打印尺寸和浇注方法，包紧效果待实测 | [下载模具与使用方法](tools/silicone-sole-mold/) |
+| 硅胶脚底翻模（正在尝试中） | V7 四种内壁加厚试验模，共用下模，附对比与浇注方法 | [下载模具与使用方法](tools/silicone-sole-mold/) |
 | 颈部舵机连接板 | D0.8.1 原配胶壳短线焊接版：KiCad、板级 3D、单板／六联制造文件与接线说明 | [tools/neck-interconnect](tools/neck-interconnect/) |
 
 仓库包含标定与装配工具的源码、第三方资源、使用说明和离线验证程序，以及零位标定支架的 STL 打印文件（不含支架 STEP）、颈部连接板的可编辑 PCB 和板级 STEP。支架保留原设计，已知配合问题和来源说明见其目录。颈部板当前收录原配胶壳短线穿孔焊接版，替代端子试装版待验证后单独发布。

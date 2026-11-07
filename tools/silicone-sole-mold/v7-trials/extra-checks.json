@@ -1,0 +1,34 @@
+{
+  "A": {
+    "full_exported_vent_bores_clear": true,
+    "minimum_bore_clearance_mm": 0.30959414243698125,
+    "core_max_width_length_mm": [
+      34.492513203323334,
+      46.8013058052784
+    ]
+  },
+  "B": {
+    "full_exported_vent_bores_clear": true,
+    "minimum_bore_clearance_mm": 0.5595941424369812,
+    "core_max_width_length_mm": [
+      33.85207021069146,
+      45.801740712103026
+    ]
+  },
+  "C": {
+    "full_exported_vent_bores_clear": true,
+    "minimum_bore_clearance_mm": 0.5595941424369812,
+    "core_max_width_length_mm": [
+      35.2616769828402,
+      47.80087089845378
+    ]
+  },
+  "D": {
+    "full_exported_vent_bores_clear": true,
+    "minimum_bore_clearance_mm": 0.8095941424369812,
+    "core_max_width_length_mm": [
+      34.492513203323334,
+      46.8013058052784
+    ]
+  }
+}

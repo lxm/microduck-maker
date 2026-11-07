@@ -1,0 +1,17 @@
+{
+  "left": {
+    "lower_mold_difference_from_V1_mm3": 0.0,
+    "central_floor_geometry_difference_mm3": 0.0001632812983957544,
+    "silicone_removed_from_V1_mm3": 0.00017302883797794545,
+    "added_silicone_mm3": 1762.6498588202744,
+    "assembled_collision_mm3": 0.0
+  },
+  "right": {
+    "lower_mold_difference_from_V1_mm3": 0.0,
+    "central_floor_geometry_difference_mm3": 0.0001681484345123132,
+    "silicone_removed_from_V1_mm3": 0.00017274315490388502,
+    "added_silicone_mm3": 1762.6863004073705,
+    "assembled_collision_mm3": 0.0
+  },
+  "wrong_left_lower_right_upper_overlap_mm3": 98.20813339168043
+}
