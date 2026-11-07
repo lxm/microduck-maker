@@ -1,0 +1,101 @@
+{
+  "status": "experimental; geometry verified; physical casting pending",
+  "units": "mm",
+  "layout": "one left/right pair; one connected base and one connected lid",
+  "parts": {
+    "pair_base": {
+      "size_mm": [
+        98.0,
+        68.0,
+        16.0
+      ],
+      "volume_mm3": 60037.31033853922,
+      "watertight": true,
+      "single_solid": true
+    },
+    "pair_lid": {
+      "size_mm": [
+        100.0,
+        68.0,
+        15.407273292541504
+      ],
+      "volume_mm3": 64317.86379071048,
+      "watertight": true,
+      "single_solid": true
+    }
+  },
+  "feet": {
+    "left": {
+      "source": "sole_left_左脚底.stl",
+      "sha256": "db35f3b231c075fe1f9cb5449e7a698fb8ea97362daf8432be3e9700c2067574",
+      "inner": {
+        "max_vertex_change_mm": 0.6489500411374285,
+        "plane_z_equals_ax_by_c": [
+          0.08516635438697023,
+          -0.00010115116412285358,
+          -9.747777682648707
+        ],
+        "mesh_simplification_tolerance_mm": 0.005,
+        "protected_upper_collar_max_change_mm": 0.0
+      },
+      "outer": {
+        "max_vertex_change_mm": 1.6403375433983223,
+        "plane_z_equals_ax_by_c": [
+          0.0852448025297559,
+          -0.0001751366291145207,
+          -11.74750395019131
+        ],
+        "mesh_simplification_tolerance_mm": 0.005,
+        "protected_upper_collar_max_change_mm": 0.0
+      },
+      "volume_mL": 6.246842473414034,
+      "sampled_min_vertical_thickness_mm": 1.8911400066524324,
+      "sampled_max_vertical_change_outer_inner_mm": [
+        0.14527055994454408,
+        0.14584930019100106
+      ]
+    },
+    "right": {
+      "source": "sole_right_右脚底.stl",
+      "sha256": "a4f5c114aae7137d559cacfb71d77c981588850335de5a09a14f95a4192a218f",
+      "inner": {
+        "max_vertex_change_mm": 0.649491353565577,
+        "plane_z_equals_ax_by_c": [
+          -0.08516864551793876,
+          -0.00016871229399659983,
+          -9.747732180173688
+        ],
+        "mesh_simplification_tolerance_mm": 0.005,
+        "protected_upper_collar_max_change_mm": 0.0
+      },
+      "outer": {
+        "max_vertex_change_mm": 1.635438107227077,
+        "plane_z_equals_ax_by_c": [
+          -0.08525637902869129,
+          -0.00012570876622829057,
+          -11.747763439179781
+        ],
+        "mesh_simplification_tolerance_mm": 0.005,
+        "protected_upper_collar_max_change_mm": 0.0
+      },
+      "volume_mL": 6.244118370190564,
+      "sampled_min_vertical_thickness_mm": 1.8863835773295063,
+      "sampled_max_vertical_change_outer_inner_mm": [
+        0.14606636805004491,
+        0.14649267351290796
+      ]
+    }
+  },
+  "pair_net_mL": 12.490960843604599,
+  "cast_difference_mm3": 0.010677455148228614,
+  "minimum_base_floor_mm": 3.092869939030983,
+  "lid_plate_mm": 4.5,
+  "lid_quantity": 1,
+  "material_comparison": {
+    "reference": "V1 four STL pieces for one left/right pair",
+    "original_solid_volume_cm3": 224.2036374241659,
+    "current_solid_volume_cm3": 124.3551741292497,
+    "solid_volume_reduction_percent": 44.5347205076852,
+    "scope": "geometric solid volume; actual filament depends on slicer settings"
+  }
+}
