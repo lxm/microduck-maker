@@ -1,0 +1,124 @@
+{
+  "left": {
+    "source": "sole_left_左脚底.stl",
+    "side_inset_mm": 1.0,
+    "scope": "full sidewall; smooth transition near the bottom",
+    "floor_blend_height_range_mm": [
+      0.5,
+      2.5
+    ],
+    "sampled_central_floor_max_change_mm": 3.552713678800501e-15,
+    "core_xy_scale": [
+      0.9456521806206778,
+      0.9598393583045471
+    ],
+    "original_core_width_length_mm": [
+      36.80000454187393,
+      49.800001084804535
+    ],
+    "new_opening_width_length_mm": [
+      34.80000454187393,
+      47.800001084804535
+    ],
+    "added_silicone_mL": 1.361454110044844,
+    "sha256": "db35f3b231c075fe1f9cb5449e7a698fb8ea97362daf8432be3e9700c2067574",
+    "boot_mm": [
+      41.09853692352772,
+      53.999999538064,
+      12.90735974907875
+    ],
+    "silicone_net_mL": 7.611736663161494,
+    "cast_difference_mm3": 1.2077304081944615e-14,
+    "vents_xy_mm": [
+      [
+        18.77847508341074,
+        0.0
+      ],
+      [
+        -18.66427817195654,
+        0.0
+      ],
+      [
+        0.0,
+        25.450000621378422
+      ],
+      [
+        0.0,
+        -25.449999690055847
+      ]
+    ],
+    "verified_print_extents_mm": [
+      [
+        64.0,
+        76.0,
+        18.0
+      ],
+      [
+        68.0,
+        76.0,
+        16.905765533447266
+      ]
+    ]
+  },
+  "right": {
+    "source": "sole_right_右脚底.stl",
+    "side_inset_mm": 1.0,
+    "scope": "full sidewall; smooth transition near the bottom",
+    "floor_blend_height_range_mm": [
+      0.5,
+      2.5
+    ],
+    "sampled_central_floor_max_change_mm": 3.552713678800501e-15,
+    "core_xy_scale": [
+      0.9456521806206778,
+      0.9598393583045471
+    ],
+    "original_core_width_length_mm": [
+      36.80000454187393,
+      49.800001084804535
+    ],
+    "new_opening_width_length_mm": [
+      34.80000454187393,
+      47.800001084804535
+    ],
+    "added_silicone_mL": 1.3615134422927513,
+    "sha256": "a4f5c114aae7137d559cacfb71d77c981588850335de5a09a14f95a4192a218f",
+    "boot_mm": [
+      41.09873063862324,
+      53.999999538064,
+      12.907605618238449
+    ],
+    "silicone_net_mL": 7.611805002641829,
+    "cast_difference_mm3": 1.0026430640602824e-14,
+    "vents_xy_mm": [
+      [
+        18.66432287544012,
+        0.0
+      ],
+      [
+        -18.77843037992716,
+        0.0
+      ],
+      [
+        0.0,
+        25.450000621378422
+      ],
+      [
+        0.0,
+        -25.449999690055847
+      ]
+    ],
+    "verified_print_extents_mm": [
+      [
+        64.0,
+        76.0,
+        18.0
+      ],
+      [
+        68.0,
+        76.0,
+        16.907596588134766
+      ]
+    ]
+  }
+}
